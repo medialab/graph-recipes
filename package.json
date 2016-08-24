@@ -1,0 +1,19 @@
+{
+  "name": "graph-surgery",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "bower": "^1.7.9"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "graph-surgery"
+  },
+  "author": "jacomyma",
+  "license": "MIT"
+}
