@@ -91,6 +91,9 @@ html, body, .ng-scope:not(.viz-card), .pretty-split-pane-frame {
 .upload-area-container.success .upload-area{
   background-color: #5cb85c;
 }
+.upload-area-container.error .upload-area{
+  background-color: #FF0000;
+}
 .upload-text{
   position: absolute;
   margin-top: -28px;

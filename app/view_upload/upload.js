@@ -43,39 +43,67 @@ angular.module('gsurgery.view_upload', ['ngRoute'])
       }
       ,onload: function(evt){
         var target = evt.target || evt.srcElement
-        store.set('gexf', target.result)
-        $scope.loadingMessage = 'PARSING...'
-        $scope.dropClass = 'success'
-        $scope.$apply()
-
-        $timeout(function(){
-          $location.url('/board')
-        }, 150)
+        
+        if (target.result) {
+          var gexf
+          try {
+            gexf = $.parseXML(target.result)
+          } catch(e) {
+            parsingFail()
+          }
+          if (gexf) {
+            var g
+            try {
+              g = json_graph_api.parseGEXF(gexf)
+            } catch(e) {
+              parsingFail()
+            }
+            if(g) {
+              store.set('graph', g)
+              parsingSuccess()
+            } else {
+              parsingFail()
+            }
+          } else {
+            parsingFail()
+          }
+        } else {
+          parsingFail()
+        }
       }
     })
   }
 
-  $scope.loadExample = function (dataUrl, jsUrl) {
+  $scope.loadExample = function (dataUrl) {
     $scope.loadingMessage = 'LOADING...'
     $.get(dataUrl, function (data) {
-      store.set('gexf', data)
-      $scope.loadingMessage = 'PARSING...'
-      $scope.dropClass = 'success'
-      $scope.$apply()
-      if (jsUrl) {
-        $.get(jsUrl, function (jsData) {
-          store.set('js', jsData)
-          $scope.$apply()
-          $timeout(function(){
-            $location.url('/board')
-          }, 150)
-        })
-      } else {
-        $timeout(function(){
-          $location.url('/board')
-        }, 150)
+      try{
+        var g = json_graph_api.parseGEXF(data)
+        if (g) {
+          store.set('graph', g)
+          parsingSuccess()
+        } else {
+          parsingFail()
+        }
+      } catch(e) {
+        parsingFail()
       }
+
     })
+  }
+
+  function parsingSuccess() {
+    $scope.loadingMessage = 'PARSED'
+    $scope.dropClass = 'success'
+    $scope.$apply()
+    $timeout(function(){
+      $location.url('/board')
+    }, 250)
+  }
+  function parsingFail() {
+    $scope.loadingMessage = 'CANNOT PARSE'
+    $scope.dropClass = 'error'
+    $scope.$apply()
   }
 
   // Make the text area droppable
