@@ -27,6 +27,7 @@ angular.module('gsurgery.view_upload', ['ngRoute'])
   }
 
   $scope.readFile = function(file){
+    store.set('graphname', file.name.replace(/\.[^\.]*$/, ''))
     var fileLoader = new FileLoader()
     fileLoader.read(file, {
       onloadstart: function(evt){
@@ -81,6 +82,7 @@ angular.module('gsurgery.view_upload', ['ngRoute'])
         var g = json_graph_api.parseGEXF(data)
         if (g) {
           store.set('graph', g)
+          store.set('graphname', 'example')
           parsingSuccess()
         } else {
           parsingFail()

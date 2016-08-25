@@ -23,9 +23,10 @@ angular.module('gsurgery.view_board', ['ngRoute'])
   }
 
   $scope.downloadOutput = function () {
-    // FIXME: update this code to current context
-    // var blob = new Blob([d3.csv.format(_output)], {type: "text/csv; charset=UTF-8"})
-    // saveAs(blob, 'output.csv')
+
+    var blob = new Blob(json_graph_api.buildGEXF(window.g), {'type':'text/gexf+xml;charset=utf-8'});
+    saveAs(blob, store.get('graphname') + " (edited).gexf");
+
   }
 
 }]);
