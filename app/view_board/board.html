@@ -1,17 +1,30 @@
 <div style="padding: 12px">
   <p>
+    <span style="font-size: 1.6em">
+      {{filename}}
+    </span>
+    <span>
+      {{nodesCount}} nodes
+    </span>
+    <span>
+      {{edgesCount}} edges
+    </span>
+    <span class="pull-right">
+      <button
+        ng-click="refreshGraph()"
+        title="Reload"
+      ><i class="fa fa-refresh"></i> RELOAD ORIGINAL GRAPH</button>
+    </span>
+  </p>
+  <p>
     TO DO: a user interface.
     <br>
     Do your funny stuff in the console...
   </p>
   <p>
     <button
-      class="btn btn-xs btn-link"
       ng-click="downloadOutput()"
-      title="Download CSV"
-      data-toggle="tooltip"
-      data-placement="right"
-      data-container="body"
+      title="Download"
     ><i class="fa fa-save"></i> SAVE GEXF</button>
   </p>
 </div>
