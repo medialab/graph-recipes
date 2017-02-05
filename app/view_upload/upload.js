@@ -18,7 +18,7 @@ angular.module('graphrecipes.view_upload', ['ngRoute'])
 
   // File loading interactions
   $scope.loadFile = function(){
-    $('#hidden-file-input').trigger('click');
+    document.querySelector('input#hidden-file-input').click()
   }
 
   $scope.setFile = function(element) {
@@ -46,16 +46,27 @@ angular.module('graphrecipes.view_upload', ['ngRoute'])
         var target = evt.target || evt.srcElement
         
         if (target.result) {
-          var gexf
+          var gexf_dom
           try {
-            gexf = $.parseXML(target.result)
+            gexf_dom = new DOMParser().parseFromString(target.result, "application/xml")
           } catch(e) {
             parsingFail()
           }
-          if (gexf) {
+          if (gexf_dom) {
             var g
             try {
-              g = json_graph_api.parseGEXF(gexf)
+              var gexf_json = gexf.parse(gexf_dom)
+              
+              g = new graphology.Graph()
+
+              gexf_json.nodes.forEach(function(n){
+                g.addNode(n.id, n.attributes)
+              })
+
+              gexf_json.edges.forEach(function(e){
+                g.addEdge(e.source, e.target, e.attributes)
+              })
+
             } catch(e) {
               parsingFail()
             }
@@ -77,7 +88,7 @@ angular.module('graphrecipes.view_upload', ['ngRoute'])
 
   $scope.loadExample = function (dataUrl) {
     $scope.loadingMessage = 'LOADING...'
-    $.get(dataUrl, function (data) {
+    /*$.get(dataUrl, function (data) {
       try{
         var g = json_graph_api.parseGEXF(data)
         if (g) {
@@ -91,7 +102,7 @@ angular.module('graphrecipes.view_upload', ['ngRoute'])
         parsingFail()
       }
 
-    })
+    })*/
   }
 
   function parsingSuccess() {
