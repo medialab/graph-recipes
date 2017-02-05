@@ -22,9 +22,8 @@ angular.module('graphrecipes.view_board', ['ngRoute'])
   $scope.refreshGraph = function () {
     window.g = $scope.originalGraph
     if (window.g) {
-      json_graph_api.buildIndexes(g)
-      $scope.nodesCount = g.nodes.length
-      $scope.edgesCount = g.edges.length
+      $scope.nodesCount = g.order
+      $scope.edgesCount = g.size
     } else {
       $timeout(function(){
         $location.url('/upload')

@@ -67,6 +67,7 @@ html, body, .ng-scope:not(.viz-card), .pretty-split-pane-frame {
   height:0;
 
   user-select: none;
+  outline: none;
   cursor: pointer;
 
 }
