@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('gsurgery.view_board', ['ngRoute'])
+angular.module('graphrecipes.view_board', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/board', {

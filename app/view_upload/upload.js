@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('gsurgery.view_upload', ['ngRoute'])
+angular.module('graphrecipes.view_upload', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/upload', {

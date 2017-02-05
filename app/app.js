@@ -1,10 +1,10 @@
 'use strict';
 
 // Declare app level module which depends on views, and components
-angular.module('gsurgery', [
+angular.module('graphrecipes', [
   'ngRoute',
-  'gsurgery.view_upload',
-  'gsurgery.view_board'
+  'graphrecipes.view_upload',
+  'graphrecipes.view_board'
 ]).
 config(['$routeProvider', function($routeProvider) {
   $routeProvider.otherwise({redirectTo: '/upload'});
