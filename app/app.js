@@ -3,6 +3,7 @@
 // Declare app level module which depends on views, and components
 angular.module('graphrecipes', [
   'ngRoute',
+  'ngMaterial',
   'graphrecipes.view_upload',
   'graphrecipes.view_board'
 ]).
