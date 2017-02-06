@@ -102,13 +102,13 @@ config(['$routeProvider', function($routeProvider) {
           animIntervals.forEach(function(interval){
             interval.cancel()
           })
+          sprites.forEach(hideSprite)
           switch (scope.animStatus) {
             case 'off':
-              sprites.forEach(hideSprite)
+              // Nothing to do, everything off by default
               break;
 
             case 'choose-recipe':
-              sprites.forEach(hideSprite)
               showSprite('background')
               showSprite('closeddoor')
               showSprite('closedovendoor')
@@ -119,11 +119,50 @@ config(['$routeProvider', function($routeProvider) {
               addAnimInterval([
                 {'clienthead3': true , 'thinkbubble': true , 'clienthead1': false, 'clientarm1': false, 'menu': false},
                 {'clienthead3': false, 'thinkbubble': false, 'clienthead1': true , 'clientarm1': true , 'menu': true}
-              ], 2000)
+              ], 1500)
               break;
 
-            default:
-              sprites.forEach(hideSprite)
+            case 'edit-script':
+              showSprite('background')
+              showSprite('opendoor')
+              showSprite('closedovendoor')
+              showSprite('clientarm1')
+              showSprite('cookstanding')
+              showSprite('menu')
+              addAnimInterval([
+                {
+                  'clienthead1': false,
+                  'clienthead2': true,
+                  'clientbubble': true,
+                  'cookbubble': false
+                },
+                {
+                  'clienthead1': true,
+                  'clienthead2': false,
+                  'clientbubble': false,
+                  'cookbubble': true
+                }
+              ], 9*75)
+              addAnimInterval([
+                {'cookarmnote': true, 'pen1': true},
+                {'pen1': false, 'pen2': true},
+                {'pen2': false, 'pen3': true},
+                {'pen3': false, 'pen2': true},
+                {'pen2': false, 'pen1': true},
+                {'pen1': false, 'pen2': true},
+                {'pen2': false, 'pen3': true},
+                {'pen3': false, 'pen2': true},
+                {'pen2': false, 'pen1': true},
+                {'pen1': false, 'cookarmnote': false},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {}
+              ], 75)
               break;
           }
         }
@@ -139,7 +178,7 @@ config(['$routeProvider', function($routeProvider) {
           }
         }
 
-        var count = 1
+        var count = 0
         var interval = $interval(function(){
           count = (count + 1)%sequence.length
           
