@@ -1,63 +1,16 @@
-body{
-  font-family: 'Roboto', sans-serif;
-}
-
-/* app css stylesheet */
-
-.menu {
-  list-style: none;
-  border-bottom: 0.1em solid black;
-  margin-bottom: 2em;
-  padding: 0 0 0.5em;
-}
-
-.menu:before {
-  content: "[";
-}
-
-.menu:after {
-  content: "]";
-}
-
-.menu > li {
-  display: inline;
-}
-
-.menu > li:before {
-  content: "|";
-  padding-right: 0.3em;
-}
-
-.menu > li:nth-child(1):before {
-  content: "";
-  padding: 0;
-}
-
 html, body, .ng-scope:not(.viz-card), .pretty-split-pane-frame {
   height: 100%;
   min-height: 100%;
 }
 
-
-/* JS editor */
-/*#js-editor-container {
-  overflow: hidden;
+#sidecol {
+  width: 300px;
 }
-#js-editor {
-  margin: 0;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100%;
-}
-*/
-
 
 /* Uploader */
 .upload-background{
   background-color: #EDE9E2;
+  height: 100%;
 }
 .upload-area-container{
   position: relative;
@@ -72,12 +25,12 @@ html, body, .ng-scope:not(.viz-card), .pretty-split-pane-frame {
 
 }
 .upload-area-container .upload-area{
-  width: 300px;
-  height: 300px;
+  width: 200px;
+  height: 200px;
   background-color: #FFFFFF;
   box-sizing: border-box;
-  transform-origin: 150px 150px;
-  transform: translate(-150px,-150px) rotate(-45deg);
+  transform-origin: 100px 100px;
+  transform: translate(-100px,-100px) rotate(-45deg);
   box-shadow: -2px 2px 3px 0 rgba(0, 0, 0, 0.1);
 
   -webkit-transition: background-color .2s; /* Safari */

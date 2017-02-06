@@ -1,45 +1,43 @@
-<div class="upload-info">
-  <h1>Graph Recipes</h1>
-  <br>
-  <p>
-    Sample networks: TODO
-  </p>
-  <!-- <button class="btn btn-link" ng-click="loadExample('data/movies.csv', 'data/movies')">Movies</button> -->
-  <br>
-  <br>
-  <br>
-  <br>
+<div layout="row">
+  <div layout="column" id="sidecol">
+    <div class="upload-background">
+      <div
+        class="upload-area-container"
+        id="uploader"
+        ng-paste="handlePaste()"
+        ng-click="loadFile()"
+        ng-class="dropClass"
+      >
+        <div class="upload-area">
+        </div>
+        <div class="upload-icon">
+          <md-icon> file_upload </md-icon>
+        </div>
+        <div class="upload-text">
+          <div class="upload-text-main">
+            {{loadingMessage=='' ? 'LOAD GRAPH' : loadingMessage}}
+          </div>
+          <div class="upload-text-sub">
+            CLICK or DRAG A FILE
+          </div>
+        </div>
+      </div>
+    </div>
 
-  <p>
-    + <a href="http://tools.medialab.sciences-po.fr/">more tools</a>
+    <!-- This hidden input is used for loading the files via the dropdown of the nav tabs -->
+    <input id="hidden-file-input" type="file" name="hidden-file-input" style="display: none;" onchange="angular.element(this).scope().setFile(this)"/>
+  </div>
+  
+  <div layout="column" layout-padding id="content" flex>
+    <h1>Graph Recipes</h1>
     <br>
-    <a href="http://www.medialab.sciences-po.fr/"><img src="medialab.png"></a>
-  </p>
-
-</div>
-<div class="upload-background">
-  <div
-    class="upload-area-container"
-    id="uploader"
-    ng-paste="handlePaste()"
-    ng-click="loadFile()"
-    ng-class="dropClass"
-  >
-    <div class="upload-area">
-    </div>
-    <div class="upload-icon">
-      <md-icon> file_upload </md-icon>
-    </div>
-    <div class="upload-text">
-      <div class="upload-text-main">
-        {{loadingMessage=='' ? 'LOAD GRAPH' : loadingMessage}}
-      </div>
-      <div class="upload-text-sub">
-        CLICK or DRAG A FILE
-      </div>
-    </div>
+    <p>
+      Sample networks: TODO
+    </p>
+    <p>
+      + <a href="http://tools.medialab.sciences-po.fr/">more tools</a>
+      <br>
+      <a href="http://www.medialab.sciences-po.fr/"><img src="medialab.png"></a>
+    </p>
   </div>
 </div>
-
-<!-- This hidden input is used for loading the files via the dropdown of the nav tabs -->
-<input id="hidden-file-input" type="file" name="hidden-file-input" style="display: none;" onchange="angular.element(this).scope().setFile(this)"/>
