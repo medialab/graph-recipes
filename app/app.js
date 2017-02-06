@@ -99,8 +99,8 @@ config(['$routeProvider', function($routeProvider) {
 
       function applyStatus(e, os, ns) {
         if (os != ns) {
-          animIntervals.forEach(function(interval){
-            interval.cancel()
+          animIntervals.forEach(function(promise){
+            $interval.cancel(promise)
           })
           sprites.forEach(hideSprite)
           switch (scope.animStatus) {
@@ -110,6 +110,9 @@ config(['$routeProvider', function($routeProvider) {
 
             case 'choose-recipe':
               showSprite('background')
+              showSprite('foodstacktop')
+              showSprite('foodstackmiddle')
+              showSprite('foodstackbottom')
               showSprite('closeddoor')
               showSprite('closedovendoor')
               showSprite('cooksleeping')
@@ -124,6 +127,9 @@ config(['$routeProvider', function($routeProvider) {
 
             case 'edit-script':
               showSprite('background')
+              showSprite('foodstacktop')
+              showSprite('foodstackmiddle')
+              showSprite('foodstackbottom')
               showSprite('opendoor')
               showSprite('closedovendoor')
               showSprite('clientarm1')
@@ -164,6 +170,101 @@ config(['$routeProvider', function($routeProvider) {
                 {}
               ], 75)
               break;
+
+            case 'cooking':
+              showSprite('background')
+              showSprite('closeddoor')
+              showSprite('closedovendoor')
+              showSprite('clienthead3')
+              showSprite('casserole')
+              addAnimInterval([
+                {
+                  'foodcut': true,
+                  'cooklegs': true,
+                  'splash': false,
+                  'cooktop1': false,
+                  'cooktop2': true,
+                  'cookarmknife1': true
+                },
+                {'cookarmknife1': false, 'cookarmknife2': true},
+                {'cookarmknife2': false, 'cookarmknife3': true, 'foodbits': true},
+                {'cookarmknife3': false, 'cookarmknife2': true},
+                {'cookarmknife2': false, 'cookarmknife1': true, 'foodbits': false},
+                {'cookarmknife1': false, 'cookarmknife2': true},
+                {'cookarmknife2': false, 'cookarmknife3': true, 'foodbits': true},
+                {'cookarmknife3': false, 'cookarmknife2': true},
+                {'cookarmknife2': false, 'cookarmknife1': true, 'foodbits': false},
+                {'cookarmknife1': false, 'cookarmknife2': true},
+                {'cookarmknife2': false, 'cookarmknife3': true, 'foodbits': true},
+                {
+                  'cookarmknife3': false,
+                  'foodbits': false,
+                  'foodcut': false,
+                  'cooktop2': false,
+                  'cooktop1': true,
+                },
+                {'flyingfoodbit': true},
+                {
+                  'flyingfoodbit': false,
+                  'splash': true
+                }
+              ], 50)
+
+              addAnimInterval([
+                {
+                  'foodstackbottom': true,
+                  'foodstackmiddle': true,
+                  'foodstacktop': true
+                },
+                {'foodstacktop': false},
+                {'foodstackmiddle': false},
+                {'foodstackbottom': false}
+              ], 14*50)
+
+              // Phase 2
+              $timeout(function(){
+                animIntervals.forEach(function(promise){
+                  $interval.cancel(promise)
+                })
+                sprites.forEach(hideSprite)
+                showSprite('background')
+                showSprite('clienthead3')
+                showSprite('closeddoor')
+                addAnimInterval([
+                  {
+                    'cookoven': true,
+                    'openovendoor': true,
+                    'casserole': true
+                  },
+                  {'casserole': false, 'ovenfood': true},
+                  {'openovendoor': false, 'closedovendoor': true}
+                ], 150)
+
+                // Phase 3
+                $timeout(function(){
+                  animIntervals.forEach(function(promise){
+                    $interval.cancel(promise)
+                  })
+                  sprites.forEach(hideSprite)
+                  showSprite('background')
+                  showSprite('clienthead3')
+                  showSprite('closeddoor')
+                  showSprite('closedovendoor')
+                  showSprite('ovenfood')
+                  showSprite('cooksleeping')
+                  showSprite('wait')
+                  addAnimInterval([
+                    {'zzz': true}, {'zzz': false}
+                  ], 600)
+                  addAnimInterval([
+                    {'smokebig': true, 'smokesmall': false}, {'smokebig': false, 'smokesmall': true}
+                  ], 800)
+
+                }, 3*150)
+
+              }, 14*50*4)
+
+              break;
           }
         }
       }
@@ -180,10 +281,10 @@ config(['$routeProvider', function($routeProvider) {
 
         var count = 0
         var interval = $interval(function(){
-          count = (count + 1)%sequence.length
-          
-          for(sprite in sequence[count]) {
-            if (sequence[count][sprite]) {
+          count = count + 1
+          var moment = sequence[count%sequence.length]
+          for(sprite in moment) {
+            if (moment[sprite]) {
               showSprite(sprite)
             } else {
               hideSprite(sprite)
