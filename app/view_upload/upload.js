@@ -9,8 +9,8 @@ angular.module('graphrecipes.view_upload', ['ngRoute'])
   });
 }])
 
-.controller('UploadCtrl', ['droppable', '$scope', 'FileLoader', 'store', '$location', '$timeout'
-, function(                 droppable ,  $scope ,  FileLoader ,  store ,  $location ,  $timeout) {
+.controller('UploadCtrl', ['droppable', '$scope', 'FileLoader', 'store', '$location', '$timeout', '$http'
+, function(                 droppable ,  $scope ,  FileLoader ,  store ,  $location ,  $timeout ,  $http) {
 
   $scope.dropClass
   $scope.loadingMessage = ''
@@ -88,21 +88,43 @@ angular.module('graphrecipes.view_upload', ['ngRoute'])
 
   $scope.loadExample = function (dataUrl) {
     $scope.loadingMessage = 'LOADING...'
-    /*$.get(dataUrl, function (data) {
-      try{
-        var g = json_graph_api.parseGEXF(data)
-        if (g) {
-          store.set('graph', g)
-          store.set('graphname', 'example')
-          parsingSuccess()
-        } else {
+    store.set('graphname', dataUrl.replace(/\.[^\.]*$/, ''))
+    $http.get(dataUrl).then(function (data) {
+      $timeout(function(){
+        var gexf_dom
+        try {
+          gexf_dom = new DOMParser().parseFromString(data.data, "application/xml")
+        } catch(e) {
           parsingFail()
         }
-      } catch(e) {
-        parsingFail()
-      }
+        if (gexf_dom) {
+          var g
+          try {
+            var gexf_json = gexf.parse(gexf_dom)
+            
+            g = new graphology.Graph()
 
-    })*/
+            gexf_json.nodes.forEach(function(n){
+              g.addNode(n.id, n.attributes)
+            })
+
+            gexf_json.edges.forEach(function(e){
+              g.addEdge(e.source, e.target, e.attributes)
+            })
+          } catch(e) {
+            parsingFail()
+          }
+          if(g) {
+            store.set('graph', g)
+            parsingSuccess()
+          } else {
+            parsingFail()
+          }
+        }
+      })
+    }, function(){
+      parsingFail()
+    })
   }
 
   function parsingSuccess() {

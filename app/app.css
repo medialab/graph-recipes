@@ -47,7 +47,7 @@ h1 .subtitle {
           transition: background-color .2s;
 }
 .upload-area-container:hover .upload-area, .upload-area-container.over .upload-area{
-  background-color: #c7528a;
+  background-color: #53aaea;
 }
 .upload-area-container.loading .upload-area{
   background-color: #46b8da;
@@ -109,4 +109,20 @@ h1 .subtitle {
   font-weight: 200;
   margin-top: 0px;
   margin-bottom: 3px;
+}
+
+/* Links */
+
+a {
+  transition: color .4s;
+  color: #53aaea;
+  text-decoration: none;
+}
+
+a:link,
+a:visited { color: #53aaea; }
+a:hover   { color: #7FDBFF; }
+a:active  {
+  transition: color .3s;
+  color: #007BE6;
 }
