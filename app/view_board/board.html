@@ -1,30 +1,44 @@
-<div style="padding: 12px">
-  <p>
-    <span style="font-size: 1.6em">
-      {{filename}}
-    </span>
-    <span>
-      {{nodesCount}} nodes
-    </span>
-    <span>
-      {{edgesCount}} edges
-    </span>
-    <span class="pull-right">
-      <button
-        ng-click="refreshGraph()"
-        title="Reload"
-      ><i class="fa fa-refresh"></i> RELOAD ORIGINAL GRAPH</button>
-    </span>
-  </p>
-  <p>
-    TO DO: a user interface.
+<div layout="row">
+  <div layout="column" id="sidecol">
+    <div lcd  style="width:300px; height:370px; overflow:hidden;"></div>
+    <div layout flex>
+      <p>
+        <span style="font-size: 1.6em">
+          {{filename}}
+        </span>
+        <span>
+          {{nodesCount}} nodes
+        </span>
+        <span>
+          {{edgesCount}} edges
+        </span>
+        <span class="pull-right">
+          <button
+            ng-click="refreshGraph()"
+            title="Reload"
+          ><i class="fa fa-refresh"></i> RELOAD ORIGINAL GRAPH</button>
+        </span>
+      </p>
+      <p>
+        <button
+          ng-click="downloadOutput()"
+          title="Download"
+        ><i class="fa fa-save"></i> SAVE GEXF</button>
+      </p>
+      
+    </div>
+  </div>
+  <div layout="column" layout-padding id="content" flex class="fancy-text">
+    <h1>Graph Recipes</h1>
     <br>
-    Do your funny stuff in the console...
-  </p>
-  <p>
-    <button
-      ng-click="downloadOutput()"
-      title="Download"
-    ><i class="fa fa-save"></i> SAVE GEXF</button>
-  </p>
+    <p>
+      Sample networks: TODO
+    </p>
+    <p>
+      + <a href="http://tools.medialab.sciences-po.fr/">more tools</a>
+      <br>
+      <a href="http://www.medialab.sciences-po.fr/"><img src="medialab.png"></a>
+    </p>
+  </div>
 </div>
+

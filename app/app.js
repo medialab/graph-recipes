@@ -85,11 +85,20 @@ config(['$routeProvider', function($routeProvider) {
       // obj.removeClass("ng-hide");
 
       $timeout(function(){
-        sprites.forEach(function(sprite) {
-          obj[0].contentDocument.getElementById(sprite).style.display = "none"
-        })
+        sprites.forEach(hideSprite)
+        showSprite('background')
+        showSprite('closeddoor')
+        showSprite('closedovendoor')
+        showSprite('clienthead3')
+        showSprite('cooksleeping')
       }, 100)
       
+      function hideSprite(s) {
+        obj[0].contentDocument.getElementById(s).style.display = "none"
+      }
+      function showSprite(s) {
+        obj[0].contentDocument.getElementById(s).style.display = "inline"
+      }
     }
   }
 })
