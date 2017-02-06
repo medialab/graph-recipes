@@ -1,31 +1,28 @@
 <div layout="row">
   <div layout="column" id="sidecol">
     <div lcd  style="width:300px; height:370px; overflow:hidden;" anim-status="'choose-recipe'"></div>
-    <div layout flex>
-      <p>
-        <span style="font-size: 1.6em">
-          {{filename}}
-        </span>
-        <span>
-          {{nodesCount}} nodes
-        </span>
-        <span>
-          {{edgesCount}} edges
-        </span>
-        <span class="pull-right">
-          <button
-            ng-click="refreshGraph()"
-            title="Reload"
-          ><i class="fa fa-refresh"></i> RELOAD ORIGINAL GRAPH</button>
-        </span>
-      </p>
-      <p>
-        <button
+    <div layout="column" layout-padding flex class="command-zone">
+      <div style="font-size: 1.6em">
+        {{filename}}
+      </div>
+      <div>
+        {{nodesCount}} nodes, 
+        {{edgesCount}} edges
+      </div>
+      <div>
+        <md-button
+          ng-click="refreshGraph()"
+          title="Reload"
+          class="md-raised"
+        ><md-icon>refresh</md-icon> RELOAD ORIGINAL GRAPH</md-button>
+      </div>
+      <div>
+        <md-button
           ng-click="downloadOutput()"
           title="Download"
-        ><i class="fa fa-save"></i> SAVE GEXF</button>
-      </p>
-      
+          class="md-raised"
+        ><md-icon>save</md-icon> SAVE GEXF</md-button>
+      </div>
     </div>
   </div>
   <div layout="column" layout-padding id="content" flex class="fancy-text">

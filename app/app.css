@@ -7,11 +7,26 @@ html, body, .ng-scope:not(.viz-card), .pretty-split-pane-frame {
   width: 300px;
 }
 
+.command-zone {
+  font-family: 'Raleway', sans-serif;
+}
+
 .fancy-text {
-  font-family: 'Slabo 27px', serif;
-  font-size: 1.1em;
+  font-family: 'Raleway', sans-serif;
+  font-size: 1.4em;
   color: #534b45;
   background-color: #EDE9E2;
+}
+
+.fancy-text h1, .fancy-text h2, .fancy-text h3, .fancy-text h4, .fancy-text h5, .fancy-text h6 {
+  font-family: 'Lobster', cursive;
+}
+
+h1 .subtitle {
+  font-family: 'Raleway', cursive;
+  font-weight: 300;
+  font-size: 0.6em;
+  display: block;
 }
 
 /* Uploader */
@@ -46,11 +61,11 @@ html, body, .ng-scope:not(.viz-card), .pretty-split-pane-frame {
 .upload-text{
   height: 200px;
   margin-top: -86px;
-  font-weight: 300;
+  /*font-weight: 300;*/
   text-align: center;
 }
 .upload-text .upload-text-main{
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Raleway', sans-serif;
   font-size: 36px;
 }
 .upload-area-container:hover   .upload-text .upload-text-main,
@@ -61,7 +76,7 @@ html, body, .ng-scope:not(.viz-card), .pretty-split-pane-frame {
   color: #FFF;
 }
 .upload-text .upload-text-sub{
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Raleway', sans-serif;
   color: #AAA;
   font-size: 18px;
 }
