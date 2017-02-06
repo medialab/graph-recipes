@@ -265,6 +265,70 @@ config(['$routeProvider', function($routeProvider) {
               }, 14*50*4)
 
               break;
+
+            case 'service':
+              showSprite('background')
+              showSprite('closeddoor')
+              showSprite('clienthead3')
+              addAnimInterval([
+                {
+                  'closedovendoor': true,
+                  'cookoven': true,
+                  'ovenfood': true
+                },
+                {'closedovendoor': false, 'openovendoor': true},
+                {
+                  'ovenfood': false,
+                  'cookoven': false,
+                  'closeddoor': false,
+                  'opendoor': true,
+                  'cookserving': true,
+                },
+                {'clienthead3': false, 'clienthead2': true},
+                {'cookserving': false, 'cookstanding': true, 'dish': true},
+                {
+                  'clienthead2': false,
+                  'clienthead1': true,
+                  'clientarm1': true,
+                  'spoon': true,
+                  'cookstanding': false,
+                  'opendoor': false,
+                  'closeddoor': true,
+                  'cooksleeping': true
+                }
+              ], 300)
+
+              // Phase 2
+              $timeout(function(){
+                animIntervals.forEach(function(promise){
+                  $interval.cancel(promise)
+                })
+                sprites.forEach(hideSprite)
+                showSprite('background')
+                showSprite('closeddoor')
+                showSprite('openovendoor')
+                showSprite('cooksleeping')
+                showSprite('dish')
+                addAnimInterval([
+                  {'zzz': true}, {'zzz': false}
+                ], 600)
+                addAnimInterval([
+                  {
+                    'clienthead1': false,
+                    'clienthead2': true,
+                    'clientarm1': true,
+                    'spoon': true
+                  },
+                  {
+                    'clientarm1': false,
+                    'spoon': false,
+                    'clientarm2': true
+                  },
+                  {'flyingdishpiece1': true},
+                  {'flyingdishpiece1': false, 'flyingdishpiece2': true, 'clientarm2': false, 'clientarm1': true},
+                  {'clienthead2': false, 'clienthead1': true, 'flyingdishpiece2': false, 'spoon': true}
+                ], 100)
+              }, 6*300)
           }
         }
       }
