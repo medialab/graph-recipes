@@ -5,7 +5,8 @@ angular.module('graphrecipes', [
   'ngRoute',
   'ngMaterial',
   'graphrecipes.view_upload',
-  'graphrecipes.view_board'
+  'graphrecipes.view_board',
+  'graphrecipes.recipes_list'
 ]).
 config(['$routeProvider', function($routeProvider) {
   $routeProvider.otherwise({redirectTo: '/upload'});

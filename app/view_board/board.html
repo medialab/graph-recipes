@@ -26,8 +26,12 @@
     </div>
   </div>
   <div layout="column" layout-padding id="content" flex class="fancy-text">
-    <h1>Select a recipe</h1>
-    TODO: a list of recipes
+    <h1>Recipes:</h1>
+    
+    <div layout="column" ng-repeat="r in recipes">
+      <h3>{{r.name}}</h3>
+      <p>{{r.desc}}</p>
+    </div>
   </div>
 </div>
 

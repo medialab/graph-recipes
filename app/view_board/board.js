@@ -9,14 +9,15 @@ angular.module('graphrecipes.view_board', ['ngRoute'])
   });
 }])
 
-.controller('BoardCtrl', ['$scope', '$timeout',  'store', '$location'
-  ,function(               $scope ,  $timeout ,   store ,  $location) {
+.controller('BoardCtrl', ['$scope', '$timeout',  'store', '$location', 'recipesList'
+  ,function(               $scope ,  $timeout ,   store ,  $location,   recipesList ) {
   
   // Scope variables
   $scope.filename
   $scope.originalGraph
   $scope.nodesCount
   $scope.edgesCount
+  $scope.recipes = recipesList
 
   // Scope functions
   $scope.refreshGraph = function () {
