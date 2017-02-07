@@ -105,7 +105,13 @@ angular.module('graphrecipes.view_upload', ['ngRoute'])
             g = new graphology.Graph()
 
             gexf_json.nodes.forEach(function(n){
-              g.addNode(n.id, n.attributes)
+              var attributes = n.attributes
+              attributes.x = n.viz.position.x
+              attributes.y = n.viz.position.y
+              attributes.color = n.viz.color
+              attributes.label = n.label
+              attributes.size = n.size
+              g.addNode(n.id, attributes)
             })
 
             gexf_json.edges.forEach(function(e){
