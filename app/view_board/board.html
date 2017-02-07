@@ -20,16 +20,18 @@
           class="md-raised"
         ><md-icon>save</md-icon> SAVE GEXF</md-button>
       </div>
-      <div ng-show="status=='end'" layout="column">
+      <div layout="column">
         <md-button
           ng-click="pickRecipe(recipe)"
           title="Edit"
           class="md-raised"
+          ng-show="status=='end'"
         ><md-icon>arrow_back</md-icon> Return to recipe</md-button>
         <md-button
           ng-click="closeRecipe()"
           title="Back to list"
           class="md-raised"
+          ng-show="status=='end' || status=='edit'"
         ><md-icon>menu</md-icon> Pick another recipe</md-button>
       </div>
     </div>
