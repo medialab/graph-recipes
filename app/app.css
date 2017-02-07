@@ -8,6 +8,7 @@
 
 .content {
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .fancy-text {
@@ -82,8 +83,8 @@ h3.script-title {
   background-color: #FFFFFF;
   box-sizing: border-box;
   width: 100%;
-  height: 100px;
-  border-radius: 25px;
+  height: 100%;
+  border-radius: 2px;
   box-shadow: 0px 2px 5px 0 rgba(0, 0, 0, 0.3);
 
   -webkit-transition: background-color .2s; 
@@ -101,34 +102,29 @@ h3.script-title {
 .upload-area-container.error .upload-area{
   background-color: #FF0000;
 }
-.upload-text{
-  height: 200px;
-  margin-top: -86px;
-  text-align: center;
-}
-.upload-text .upload-text-main{
+.upload-text-main{
   font-family: 'Raleway', sans-serif;
   font-size: 36px;
 }
-.upload-area-container:hover   .upload-text .upload-text-main,
-.upload-area-container.over    .upload-text .upload-text-main,
-.upload-area-container.loading .upload-text .upload-text-main,
-.upload-area-container.success .upload-text .upload-text-main
+.upload-area-container:hover   .upload-text-main,
+.upload-area-container.over    .upload-text-main,
+.upload-area-container.loading .upload-text-main,
+.upload-area-container.success .upload-text-main
 {
   color: #FFF;
 }
-.upload-text .upload-text-sub{
+.upload-text-sub{
   font-family: 'Raleway', sans-serif;
   color: #AAA;
   font-size: 18px;
 }
-.upload-area-container:hover   .upload-text .upload-text-sub,
-.upload-area-container.over    .upload-text .upload-text-sub
+.upload-area-container:hover   .upload-text-sub,
+.upload-area-container.over    .upload-text-sub
 {
   color: #FFF;
 }
-.upload-area-container.loading .upload-text .upload-text-sub,
-.upload-area-container.success .upload-text .upload-text-sub
+.upload-area-container.loading .upload-text-sub,
+.upload-area-container.success .upload-text-sub
 {
   display: none;
 }

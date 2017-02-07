@@ -255,6 +255,7 @@ config(['$routeProvider', function($routeProvider) {
 
               // Phase 2
               $timeout(function(){
+                if (scope.animStatus != 'cooking') { return }
                 animIntervals.forEach(function(promise){
                   $interval.cancel(promise)
                 })
@@ -274,6 +275,7 @@ config(['$routeProvider', function($routeProvider) {
 
                 // Phase 3
                 $timeout(function(){
+                  if (scope.animStatus != 'cooking') { return }
                   animIntervals.forEach(function(promise){
                     $interval.cancel(promise)
                   })
@@ -332,6 +334,7 @@ config(['$routeProvider', function($routeProvider) {
 
               // Phase 2
               $timeout(function(){
+                if (scope.animStatus != 'service') { return }
                 animIntervals.forEach(function(promise){
                   $interval.cancel(promise)
                 })

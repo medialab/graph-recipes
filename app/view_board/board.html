@@ -2,31 +2,40 @@
   <div layout="column" id="sidecol">
     <div lcd  style="width:300px; height:370px; overflow:hidden;" anim-status="lcdStatus"></div>
     <div layout="column" layout-padding flex class="command-zone">
-      <div style="font-size: 1.6em">
-        {{filename}}
-      </div>
       <div>
+        <span style="font-size: 1.6em">{{filename}}</span>
+        <br>
         {{nodesCount}} nodes, 
         {{edgesCount}} edges
       </div>
-      <div>
+      <div layout="column">
         <md-button
           ng-click="refreshGraph()"
           title="Reload"
           class="md-raised"
         ><md-icon>refresh</md-icon> RELOAD ORIGINAL GRAPH</md-button>
-      </div>
-      <div>
         <md-button
           ng-click="downloadOutput()"
           title="Download"
           class="md-raised"
         ><md-icon>save</md-icon> SAVE GEXF</md-button>
       </div>
+      <div ng-show="status=='end'" layout="column">
+        <md-button
+          ng-click="pickRecipe(recipe)"
+          title="Edit"
+          class="md-raised"
+        ><md-icon>arrow_back</md-icon> Return to {{recipe.name}}</md-button>
+        <md-button
+          ng-click="closeRecipe()"
+          title="Back to list"
+          class="md-raised"
+        ><md-icon>menu</md-icon> Pick another recipe</md-button>
+      </div>
     </div>
   </div>
 
-  <div layout flex>
+  <div layout class="content" flex>
     <div layout="column" layout-fill layout-padding class="fancy-text" ng-if="status=='list'">
       <h1 class="main-title">Recipes</h1>
       
@@ -65,18 +74,7 @@
         is being processed<br><br><br>
       </div>
 
-      <div ng-show="status=='end'" flex layout="column" layout-align="center center">
-        <md-button
-          ng-click="pickRecipe(recipe)"
-          title="Edit"
-          class="md-raised"
-        ><md-icon>refresh</md-icon> Return to {{recipe.name}}</md-button>
-        <md-button
-          ng-click="closeRecipe()"
-          title="Back to list"
-          class="md-raised"
-        ><md-icon>menu</md-icon> Pick another recipe</md-button>
-      </div>
+      
 
       <div js-editor file="'recipes/'+recipe.file" flex ng-if="status=='edit'"></div>
     </div>
