@@ -74,6 +74,9 @@ h3.script-title {
 }
 
 /* Uploader */
+.upload-background {
+  background-color: #7595af;
+}
 .upload-area-container{
   user-select: none;
   outline: none;
