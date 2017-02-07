@@ -1,6 +1,6 @@
-<div layout="row" layout-fill>
+<div layout="row" layout-fill >
   <div layout="column" id="sidecol">
-    <div lcd  style="width:300px; height:370px; overflow:hidden;" anim-status="'choose-recipe'"></div>
+    <div lcd  style="width:300px; height:370px; overflow:hidden;" anim-status="lcdStatus"></div>
     <div layout="column" layout-padding flex class="command-zone">
       <div style="font-size: 1.6em">
         {{filename}}
@@ -26,39 +26,61 @@
     </div>
   </div>
 
-  <div layout="column" layout-padding flex class="fancy-text" ng-if="!recipe">
-    <h1 class="main-title">Recipes</h1>
-    
-    <div layout="column" ng-repeat="r in recipes" class="menu-item" ng-click="pickRecipe(r)">
-      <h3>{{r.name}}</h3>
-      <p>{{r.desc}}</p>
+  <div layout flex>
+    <div layout="column" layout-fill layout-padding class="fancy-text" ng-if="status=='list'">
+      <h1 class="main-title">Recipes</h1>
+      
+      <div layout="column" ng-repeat="r in recipes" class="menu-item" ng-click="pickRecipe(r)">
+        <h3>{{r.name}}</h3>
+        <p>{{r.desc}}</p>
+      </div>
+
+      <div flex></div>
     </div>
 
-    <div flex></div>
-  </div>
+    <div layout="column" layout-fill class="fancy-text" ng-if="status!='list'">
+      <div layout="row" ng-if="status=='edit'">
+        <div layout="column" layout-padding flex>
+          <h3 class="script-title">{{recipe.name}}</h3>
+          {{recipe.desc}}
+        </div>
+        <div class="close-recipe">
+          <md-button class="md-icon-button" aria-label="Close" ng-click="closeRecipe()">
+            <md-icon>close</md-icon>
+          </md-button>
+        </div>
+      </div>
 
-  <div layout="column" flex class="fancy-text" ng-if="recipe">
-    <div layout="row">
-      <div layout="column" layout-padding flex>
+      <div class="exec-button-row" ng-show="status=='edit'">
+        <md-button
+          ng-click="executeScript()"
+          title="Execute recipe"
+          class="md-raised"
+        ><md-icon>play_arrow</md-icon> Execute recipe</md-button>
+        <span class="shortcut-info">or hit [CTRL] + [ENTER] from the panel</span>
+      </div>
+
+      <div ng-show="status=='run'" flex layout="column" layout-align="center center">
         <h3 class="script-title">{{recipe.name}}</h3>
-        {{recipe.desc}}
+        is being processed<br><br><br>
       </div>
-      <div class="close-recipe">
-        <md-button class="md-icon-button" aria-label="Close" ng-click="closeRecipe()">
-          <md-icon>close</md-icon>
-        </md-button>
+
+      <div ng-show="status=='end'" flex layout="column" layout-align="center center">
+        <md-button
+          ng-click="pickRecipe(recipe)"
+          title="Edit"
+          class="md-raised"
+        ><md-icon>refresh</md-icon> Return to {{recipe.name}}</md-button>
+        <md-button
+          ng-click="closeRecipe()"
+          title="Back to list"
+          class="md-raised"
+        ><md-icon>menu</md-icon> Pick another recipe</md-button>
       </div>
+
+      <div js-editor file="'recipes/'+recipe.file" flex ng-if="status=='edit'"></div>
     </div>
-    <div>
-      <md-button
-        ng-click="execCode()"
-        title="Execute recipe"
-        class="md-raised"
-      ><md-icon>play_arrow</md-icon> Execute recipe [CTRL + ENTER]</md-button>
-    </div>
-    <div id="js-editor-container" flex>
-      <pre id="js-editor" layout layout-fill></pre>
-    </div>
+
   </div>
 
 </div>

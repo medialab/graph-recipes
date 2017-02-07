@@ -19,6 +19,8 @@ angular.module('graphrecipes.view_board', ['ngRoute'])
   $scope.edgesCount
   $scope.recipes = recipesList
   $scope.recipe = undefined
+  $scope.lcdStatus = 'choose-recipe'
+  $scope.status = 'list' // list | edit | run | end
 
   // Scope functions
   $scope.refreshGraph = function () {
@@ -39,25 +41,32 @@ angular.module('graphrecipes.view_board', ['ngRoute'])
   }
 
   $scope.pickRecipe = function(r) {
+    $scope.lcdStatus = 'edit-script'
     $scope.recipe = r
-    $http.get('recipes/'+r.file).then(function (data) {
-      $timeout(function(){
-        // INITIALIZATION
-        if(data.data){
-          document.querySelector('#js-editor').textContent = data.data
-        }
-        // Init Ace JS editor panel
-        // Note: we keep editor in global scope to be able to edit settings from the console
-        window.editor = ace.edit("js-editor");
-        window.editor.setTheme("ace/theme/chrome");
-        window.editor.setFontSize(14)
-        window.editor.getSession().setMode("ace/mode/javascript");
-      })
-    })
+    $scope.status = 'edit'
   }
 
   $scope.closeRecipe = function() {
     $scope.recipe = undefined
+    $scope.lcdStatus = 'choose-recipe'
+    $scope.status = 'list'
+  }
+
+  $scope.codeKeyPress = function(e){
+    if((e.which == 13 || e.which == 10) && (e.ctrlKey || e.shiftKey)){
+      $scope.executeScript()
+    }
+  }
+
+  $scope.executeScript = function() {
+    $scope.lcdStatus = 'cooking'
+    $scope.status = 'run'
+    $timeout(function(){
+      var code = window.editor.getValue()
+      eval(code)
+      $scope.lcdStatus = 'service'
+      $scope.status = 'end'
+    }, 4000)
   }
 
   // Init

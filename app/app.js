@@ -25,6 +25,35 @@ config(['$routeProvider', function($routeProvider) {
 })
 
 // Directives
+.directive('jsEditor', function ($timeout, $interval, $http) {
+  return {
+    restrict: 'A',
+    scope: {
+      file: '='
+    },
+    templateUrl: 'jsEditor.html',
+    link: function(scope, element, attrs, ctrl) {
+      $http.get(scope.file).then(function (data) {
+        $timeout(function(){
+          // INITIALIZATION
+          if(data.data){
+            document.querySelector('#js-editor').textContent = data.data
+          }
+          // Init Ace JS editor panel
+          // Note: we keep editor in global scope to be able to edit settings from the console
+          window.editor = ace.edit("js-editor");
+          window.editor.setTheme("ace/theme/chrome");
+          window.editor.setFontSize(14)
+          window.editor.getSession().setMode("ace/mode/javascript");
+        })
+      })
+      scope.$on('$destroy', function(){
+        window.editor.destroy()
+      })
+    }
+  }
+})
+
 .directive('lcd', function ($timeout, $interval) {
   return {
     restrict: 'A',

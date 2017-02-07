@@ -157,12 +157,10 @@ h3.script-title {
 #js-editor-container {
   overflow: hidden;
 }
-/*#js-editor {
-  margin: 0;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100%;
-}*/
+.shortcut-info {
+  font-size: 0.8em;
+  opacity: 0.6;
+}
+.exec-button-row {
+  padding-bottom: 6px;
+}
