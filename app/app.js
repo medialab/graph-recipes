@@ -90,11 +90,13 @@ config(['$routeProvider', function($routeProvider) {
       }, 100)
       
       function hideSprite(s) {
-        obj[0].contentDocument.getElementById(s).style.display = "none"
+        if (obj[0].contentDocument)
+          obj[0].contentDocument.getElementById(s).style.display = "none"
       }
       
       function showSprite(s) {
-        obj[0].contentDocument.getElementById(s).style.display = "inline"
+        if (obj[0].contentDocument)
+          obj[0].contentDocument.getElementById(s).style.display = "inline"
       }
 
       function applyStatus(e, os, ns) {
