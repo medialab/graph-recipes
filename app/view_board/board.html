@@ -25,7 +25,7 @@
           ng-click="pickRecipe(recipe)"
           title="Edit"
           class="md-raised"
-        ><md-icon>arrow_back</md-icon> Return to {{recipe.name}}</md-button>
+        ><md-icon>arrow_back</md-icon> Return to recipe</md-button>
         <md-button
           ng-click="closeRecipe()"
           title="Back to list"
@@ -47,7 +47,7 @@
       <div flex></div>
     </div>
 
-    <div layout="column" layout-fill class="fancy-text" ng-if="status!='list'">
+    <div layout="column" layout-fill class="fancy-text" ng-if="status=='edit'">
       <div layout="row" ng-if="status=='edit'">
         <div layout="column" layout-padding flex>
           <h3 class="script-title">{{recipe.name}}</h3>
@@ -69,14 +69,15 @@
         <span class="shortcut-info">or hit [CTRL] + [ENTER] from the panel</span>
       </div>
 
-      <div ng-show="status=='run'" flex layout="column" layout-align="center center">
+      <!-- <div ng-show="status=='run'" flex layout="column" layout-align="center center">
         <h3 class="script-title">{{recipe.name}}</h3>
         is being processed<br><br><br>
-      </div>
-
-      
+      </div> -->
 
       <div js-editor file="'recipes/'+recipe.file" flex ng-if="status=='edit'"></div>
+    </div>
+
+    <div layout="column" layout-fill layout-padding ng-if="status=='run' || status=='end'" id="playground">
     </div>
 
   </div>

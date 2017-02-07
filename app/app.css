@@ -163,3 +163,8 @@ h3.script-title {
 .exec-button-row {
   padding-bottom: 6px;
 }
+
+/* Playground */
+#playground {
+  background-color: #FFF;
+}

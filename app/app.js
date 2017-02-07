@@ -42,13 +42,15 @@ config(['$routeProvider', function($routeProvider) {
           // Init Ace JS editor panel
           // Note: we keep editor in global scope to be able to edit settings from the console
           window.editor = ace.edit("js-editor");
-          window.editor.setTheme("ace/theme/chrome");
+          window.editor.setTheme("ace/theme/clouds");
           window.editor.setFontSize(14)
           window.editor.getSession().setMode("ace/mode/javascript");
         })
       })
       scope.$on('$destroy', function(){
-        window.editor.destroy()
+        if (window.editor) {
+          window.editor.destroy()
+        }
       })
     }
   }
