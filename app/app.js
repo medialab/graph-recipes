@@ -247,10 +247,8 @@ config(['$routeProvider', function($routeProvider) {
               addAnimInterval([
                 {
                   'foodstackbottom': true,
-                  'foodstackmiddle': true,
-                  'foodstacktop': true
+                  'foodstackmiddle': true
                 },
-                {'foodstacktop': false},
                 {'foodstackmiddle': false},
                 {'foodstackbottom': false}
               ], 14*50)
@@ -298,7 +296,7 @@ config(['$routeProvider', function($routeProvider) {
 
                 }, 3*150)
 
-              }, 14*50*4)
+              }, 14*50*3)
 
               break;
 

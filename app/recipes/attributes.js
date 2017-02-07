@@ -24,10 +24,10 @@ div1.selectAll('div')
 		.text(function(d){return d['Attribute'] + ' (' + d['Nodes Count'] + ' nodes)' });
 
 // Format the table as a CSV Download it (UNCOMMENT TO USE)
-saveAs(
-	new Blob([d3.csvFormat(nodeAttributesTable)], {'type':'text/csv;charset=utf-8'}),
-	"Node Attributes of " + store.get('graphname') + ".csv"
-);
+// saveAs(
+// 	new Blob([d3.csvFormat(nodeAttributesTable)], {'type':'text/csv;charset=utf-8'}),
+// 	"Node Attributes of " + store.get('graphname') + ".csv"
+// );
 
 // Get a list of edges attributes
 attributes = {};
@@ -55,7 +55,7 @@ div2.selectAll('div')
 		.text(function(d){return d['Attribute'] + ' (' + d['Edges Count'] + ' edges)' });
 
 // Format the table as a CSV Download it (UNCOMMENT TO USE)
-saveAs(
-	new Blob([d3.csvFormat(edgeAttributesTable)], {'type':'text/csv;charset=utf-8'}),
-	"Edge Attributes of " + store.get('graphname') + ".csv"
-);
+// saveAs(
+// 	new Blob([d3.csvFormat(edgeAttributesTable)], {'type':'text/csv;charset=utf-8'}),
+// 	"Edge Attributes of " + store.get('graphname') + ".csv"
+// );
