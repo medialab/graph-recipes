@@ -18,6 +18,7 @@ angular.module('graphrecipes.view_board', ['ngRoute'])
   $scope.nodesCount
   $scope.edgesCount
   $scope.recipes = recipesList
+  $scope.recipe = undefined
 
   // Scope functions
   $scope.refreshGraph = function () {
@@ -35,6 +36,14 @@ angular.module('graphrecipes.view_board', ['ngRoute'])
   $scope.downloadOutput = function () {
     var blob = new Blob(json_graph_api.buildGEXF(window.g), {'type':'text/gexf+xml;charset=utf-8'});
     saveAs(blob, store.get('graphname') + " (edited).gexf");
+  }
+
+  $scope.pickRecipe = function(r) {
+    $scope.recipe = r
+  }
+
+  $scope.closeRecipe = function() {
+    $scope.recipe = undefined
   }
 
   // Init

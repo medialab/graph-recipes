@@ -1,4 +1,4 @@
-<div layout="row">
+<div layout="row" layout-fill>
   <div layout="column" id="sidecol">
     <div lcd  style="width:300px; height:370px; overflow:hidden;" anim-status="'choose-recipe'"></div>
     <div layout="column" layout-padding flex class="command-zone">
@@ -25,13 +25,41 @@
       </div>
     </div>
   </div>
-  <div layout="column" layout-padding id="content" flex class="fancy-text">
-    <h1>Recipes:</h1>
+
+  <div layout="column" layout-padding flex class="fancy-text" ng-if="!recipe">
+    <h1 class="main-title">Recipes</h1>
     
-    <div layout="column" ng-repeat="r in recipes">
+    <div layout="column" ng-repeat="r in recipes" class="menu-item" ng-click="pickRecipe(r)">
       <h3>{{r.name}}</h3>
       <p>{{r.desc}}</p>
     </div>
+
+    <div flex></div>
   </div>
+
+  <div layout="column" flex class="fancy-text" ng-if="recipe">
+    <div layout="row">
+      <div layout="column" layout-padding flex>
+        <h3 class="script-title">{{recipe.name}}</h3>
+        {{recipe.desc}}
+      </div>
+      <div class="close-recipe">
+        <md-button class="md-icon-button" aria-label="Close" ng-click="closeRecipe()">
+          <md-icon>close</md-icon>
+        </md-button>
+      </div>
+    </div>
+    <div>
+      <md-button
+        ng-click="execCode()"
+        title="Execute recipe"
+        class="md-raised"
+      ><md-icon>play_arrow</md-icon> Execute recipe [CTRL + ENTER]</md-button>
+    </div>
+    <div>
+      {{recipe.file}}
+    </div>
+  </div>
+
 </div>
 
