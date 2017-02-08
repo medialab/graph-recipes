@@ -57,6 +57,7 @@ angular.module('graphrecipes.view_upload', ['ngRoute'])
             try {
               var gexf_json = gexf.parse(gexf_dom)
               
+              // FIXME: register the type of network (oriented...)
               g = new graphology.Graph()
 
               gexf_json.nodes.forEach(function(n){

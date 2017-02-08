@@ -126,6 +126,7 @@ angular.module('graphrecipes.view_board', ['ngRoute'])
     console.log(model)
 
     // Write the GEXF
+    // FIXME: register the type of network (oriented...)
     var myGexf = gexf.create({model:model})
     g.nodes().forEach(function(nid){
       var attributesObject = g.getNodeAttributes(nid)
