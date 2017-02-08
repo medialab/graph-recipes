@@ -1,10 +1,14 @@
 /* Recipes list */
 angular.module('graphrecipes.recipes_list', [])
 .constant('recipesList', [
-	{
+	/*{
 		'name': 'Test',
 		'desc': 'Hold the door, Hold door, Holdoor, Hodor',
 		'file': 'test.js'
+	},*/{
+		'name': 'Betweenness Centrality',
+		'desc': 'Compute that centrality measure',
+		'file': 'betweenness.js'
 	},
 	{
 		'name': 'All of the attributes',
