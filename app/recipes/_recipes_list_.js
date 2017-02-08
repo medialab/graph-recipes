@@ -6,6 +6,10 @@ angular.module('graphrecipes.recipes_list', [])
 		'desc': 'Hold the door, Hold door, Holdoor, Hodor',
 		'file': 'test.js'
 	},*/{
+		'name': 'Nothing, I\'m fine',
+		'desc': 'An empty project, in case you are not hungry - or want to cook by yourself',
+		'file': 'empty.js'
+	},{
 		'name': 'Betweenness Centrality',
 		'desc': 'Compute that centrality measure',
 		'file': 'betweenness.js'

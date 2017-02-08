@@ -1,6 +1,7 @@
 // Compute the betweenness centrality, normalized, undirected,
 // and store it in the attribute "bc"
 betweennessCentrality(g, true, false, 'bc')
+d3.select('#playground').html('Betweenness centrality stored in "bc" parameter')
 
 // ---
 
