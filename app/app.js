@@ -117,7 +117,7 @@ config(['$routeProvider', function($routeProvider) {
       // obj.removeClass("ng-hide");
 
       $timeout(function(){
-        sprites.forEach(hideSprite)
+        // sprites.forEach(hideSprite)
         scope.$watch('animStatus', applyStatus)
       }, 100)
       
