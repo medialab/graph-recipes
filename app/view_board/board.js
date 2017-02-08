@@ -217,7 +217,7 @@ angular.module('graphrecipes.view_board', ['ngRoute'])
     $scope.status = 'run'
     $timeout(function(){
       var code = window.editor.getValue()
-      eval(code)
+      eval(';(function(){'+code+'})();')
       $scope.lcdStatus = 'service'
       $scope.status = 'end'
     }, 4000)

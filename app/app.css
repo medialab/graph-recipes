@@ -167,4 +167,9 @@ h3.script-title {
 /* Playground */
 #playground {
   background-color: #FFF;
+  overflow: auto;
+}
+#dummy-font-div {
+  /* Load the fonts we plan to use in the canvas */
+  font-family: 'Open Sans Condensed', sans-serif;
 }

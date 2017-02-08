@@ -10,5 +10,10 @@ angular.module('graphrecipes.recipes_list', [])
 		'name': 'All of the attributes',
 		'desc': 'Look at them, all of them.',
 		'file': 'attributes.js'
+	},
+	{
+		'name': 'Pixel Image',
+		'desc': 'Paint a simple pixel image that you can download.',
+		'file': 'simplecanvas.js'
 	}
 ])
