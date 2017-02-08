@@ -395,3 +395,8 @@ config(['$routeProvider', function($routeProvider) {
     }
   }
 })
+
+// Utils
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}

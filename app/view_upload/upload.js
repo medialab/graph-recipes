@@ -92,6 +92,7 @@ angular.module('graphrecipes.view_upload', ['ngRoute'])
     })
   }
 
+  // FIXME: factor this with normal loading
   $scope.loadExample = function (dataUrl) {
     $scope.loadingMessage = 'LOADING...'
     store.set('graphname', dataUrl.replace(/\.[^\.]*$/, ''))
