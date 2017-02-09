@@ -1,5 +1,7 @@
 'use strict';
 
+var isNumeric = require('../utils.js').isNumeric;
+
 angular.module('graphrecipes.view_board', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {
@@ -11,7 +13,7 @@ angular.module('graphrecipes.view_board', ['ngRoute'])
 
 .controller('BoardCtrl', ['$scope', '$timeout',  'store', '$location', 'recipesList', '$http'
   ,function(               $scope ,  $timeout ,   store ,  $location,   recipesList ,  $http) {
-  
+
   // Scope variables
   $scope.filename
   $scope.originalGraph

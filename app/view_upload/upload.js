@@ -1,5 +1,7 @@
 'use strict';
 
+var graphology = require('graphology');
+
 angular.module('graphrecipes.view_upload', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {
@@ -44,7 +46,7 @@ angular.module('graphrecipes.view_upload', ['ngRoute'])
       }
       ,onload: function(evt){
         var target = evt.target || evt.srcElement
-        
+
         if (target.result) {
           var gexf_dom
           try {
@@ -56,7 +58,7 @@ angular.module('graphrecipes.view_upload', ['ngRoute'])
             var g
             try {
               var gexf_json = gexf.parse(gexf_dom)
-              
+
               // FIXME: register the type of network (oriented...)
               g = new graphology.Graph()
 
@@ -109,7 +111,7 @@ angular.module('graphrecipes.view_upload', ['ngRoute'])
           var g
           try {
             var gexf_json = gexf.parse(gexf_dom)
-            
+
             g = new graphology.Graph()
 
             gexf_json.nodes.forEach(function(n){
@@ -197,7 +199,7 @@ angular.module('graphrecipes.view_upload', ['ngRoute'])
         }
       else
         this.reader.onload = settings.onload
-      
+
       this.reader.readAsText(file)
     }
 
@@ -206,7 +208,7 @@ angular.module('graphrecipes.view_upload', ['ngRoute'])
     }
 
     this.reader = undefined
-    
+
     this.errorHandler = function(evt){
       var target = evt.target || evt.srcElement
       switch(target.error.code) {
@@ -227,7 +229,7 @@ angular.module('graphrecipes.view_upload', ['ngRoute'])
 
 .factory('store', [function(){
   var savedData = {}
-  
+
   function set(key, data){
     savedData[key] = data
   }
