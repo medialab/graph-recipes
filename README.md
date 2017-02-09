@@ -2,9 +2,24 @@
 
 A small static website in Angular to tinker with networks, based on Graphology.
 
-## Installation
+## Install
+
+### Standalone (Node)
 ```
 npm install
+npm run build
+```
+
+### Install for Apache
+```
+npm install
+npm run watch
+```
+
+### Dev mode
+```
+npm install
+npm run dev
 ```
 
 ## Usage
