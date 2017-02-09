@@ -1,5 +1,24 @@
 'use strict';
 
+// Requiring module's CSS
+require('angular-material/angular-material.min.css');
+
+// Requiring angular-related modules that will spit things in the global scope
+require('angular');
+require('angular-animate');
+require('angular-aria');
+require('angular-material');
+require('angular-route');
+
+// Making some modules global for the custom scripts to consume
+var d3 = require('d3');
+window.d3 = d3;
+
+// Requiring own modules
+require('./view_upload/upload.js');
+require('./view_board/board.js');
+require('./recipes/_recipes_list_.js');
+
 // Declare app level module which depends on views, and components
 angular.module('graphrecipes', [
   'ngRoute',
@@ -120,12 +139,12 @@ config(['$routeProvider', function($routeProvider) {
         // sprites.forEach(hideSprite)
         scope.$watch('animStatus', applyStatus)
       }, 100)
-      
+
       function hideSprite(s) {
         if (obj[0].contentDocument)
           obj[0].contentDocument.getElementById(s).style.display = "none"
       }
-      
+
       function showSprite(s) {
         if (obj[0].contentDocument)
           obj[0].contentDocument.getElementById(s).style.display = "inline"
@@ -395,8 +414,3 @@ config(['$routeProvider', function($routeProvider) {
     }
   }
 })
-
-// Utils
-function isNumeric(n) {
-  return !isNaN(parseFloat(n)) && isFinite(n);
-}

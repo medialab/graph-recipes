@@ -10,22 +10,22 @@ function betweennessCentrality(g, normalized, directed, attributeName) {
   if ( normalized === undefined ) {
     normalized = true
   }
-  
+
   if ( directed === undefined ) {
     directed = false
   }
 
   // From https://networkx.github.io/documentation/latest/_modules/networkx/algorithms/centrality/betweenness.html#edge_betweenness_centrality
-  
+
   betweenness_centrality()
   edge_betweenness_centrality()
-  
+
   function betweenness_centrality() {
     var betweenness = {}
     g.nodes().forEach(function(nid){
       betweenness[nid] = 0
     })
-    
+
     g.nodes().forEach(function(sid){
       var sp = _single_source_shortest_path_basic(sid)
       var S = sp.S
@@ -51,7 +51,7 @@ function betweennessCentrality(g, normalized, directed, attributeName) {
       var id = g.source(eid)+'|'+g.target(eid)
       betweenness[id] = 0
     })
-    
+
     g.nodes().forEach(function(sid){
       var s = g.getNodeAttributes(sid)
       var sp = _single_source_shortest_path_basic(sid)
