@@ -23,5 +23,10 @@ angular.module('graphrecipes.recipes_list', [])
 		'name': 'Pixel Image',
 		'desc': 'Paint a simple pixel image that you can download.',
 		'file': 'simplecanvas.js'
+	},
+	{
+		'name': 'Vector Image',
+		'desc': 'Paint a simple vector image that you can download (SVG).',
+		'file': 'simplesvg.js'
 	}
 ])

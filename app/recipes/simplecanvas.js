@@ -3,9 +3,9 @@ var settings = {}
 // Feel free to edit following settings
 
 // Canvas size
-settings.canvas_width =  1000
-settings.canvas_height = 1000
-settings.canvas_offset = 20 // Margin
+settings.width =  1000
+settings.height = 1000
+settings.offset = 20 // Margin
 
 // Zoom
 settings.zoom_enabled = false // Disabled by default
@@ -26,7 +26,7 @@ settings.save_at_the_end = true
 // --- (end of settings)
 
 // Create the canvas
-document.querySelector('#playground').innerHTML = '<div style="width:'+settings.canvas_width+'; height:'+settings.canvas_height+';"><canvas id="cnvs" width="'+settings.canvas_width+'" height="'+settings.canvas_height+'"></canvas></div>'
+document.querySelector('#playground').innerHTML = '<div style="width:'+settings.width+'; height:'+settings.height+';"><canvas id="cnvs" width="'+settings.width+'" height="'+settings.height+'"></canvas></div>'
 var canvas = document.querySelector('#cnvs')
 var ctx = canvas.getContext("2d")
 
@@ -35,7 +35,7 @@ rescaleGraphToCanvas()
 
 // Paint a white background
 ctx.beginPath()
-ctx.rect(0, 0, settings.canvas_width, settings.canvas_height)
+ctx.rect(0, 0, settings.width, settings.height)
 ctx.fillStyle="white"
 ctx.fill()
 ctx.closePath()
@@ -136,26 +136,26 @@ function rescaleGraphToCanvas() {
 
   dx = -xbarycenter
   dy = -ybarycenter
-  ratio = ( settings.canvas_width - 2 * settings.canvas_offset ) / (2 * dmax)
+  ratio = ( settings.width - 2 * settings.offset ) / (2 * dmax)
 
   // Initial resize
   g.nodes().forEach(function(nid){
   	var n = g.getNodeAttributes(nid)
-    n.x = settings.canvas_height / 2 + (n.x - dx) * ratio
-    n.y = settings.canvas_height / 2 + (n.y - dy) * ratio
+    n.x = settings.height / 2 + (n.x - dx) * ratio
+    n.y = settings.height / 2 + (n.y - dy) * ratio
     n.size *= ratio
   })
 
   // Additionnal zoom resize
   if (settings.zoom_enabled) {
-    dx = settings.zoom_point.x * settings.canvas_width// - settings.canvas_width / 2
-    dy = settings.zoom_point.y * settings.canvas_height// - settings.canvas_height / 2
+    dx = settings.zoom_point.x * settings.width// - settings.width / 2
+    dy = settings.zoom_point.y * settings.height// - settings.height / 2
     ratio = 1/settings.zoom_window_size
 
     g.nodes().forEach(function(nid){
   		var n = g.getNodeAttributes(nid)
-      n.x = settings.canvas_height / 2 + (n.x - dx) * ratio
-      n.y = settings.canvas_height / 2 + (n.y - dy) * ratio
+      n.x = settings.height / 2 + (n.x - dx) * ratio
+      n.y = settings.height / 2 + (n.y - dy) * ratio
       n.size *= ratio
     })
   }
