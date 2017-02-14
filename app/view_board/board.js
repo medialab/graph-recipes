@@ -216,6 +216,7 @@ angular.module('graphrecipes.view_board', ['ngRoute'])
     $scope.lcdStatus = 'cooking'
     $scope.status = 'run'
     $timeout(function(){
+      document.querySelector('#playground').innerHTML = ''
       var code = window.editor.getValue()
       eval(';(function(){'+code+'})();')
       $scope.lcdStatus = 'service'
