@@ -17,7 +17,7 @@ angular.module('graphrecipes.recipes_list', [])
 	},
 	{
 		'name': 'Pixel Image (simple)',
-		'desc': 'Paint a simple pixel image that you can download.',
+		'desc': 'Paint a simple pixel image that you can download (PNG).',
 		'file': 'simplecanvas.js'
 	},
 	{
@@ -29,5 +29,10 @@ angular.module('graphrecipes.recipes_list', [])
 		'name': 'Vector Image *Deluxe!*',
 		'desc': 'Paint a highly configurable vector image that you can download (SVG).',
 		'file': 'deluxesvg.js'
+	},
+	{
+		'name': 'Heatmap',
+		'desc': 'Paint and download a heat map of nodes (PNG)',
+		'file': 'heatmap.js'
 	}
 ])
