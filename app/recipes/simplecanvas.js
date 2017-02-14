@@ -9,7 +9,7 @@ settings.offset = 20 // Margin
 
 // Zoom
 settings.zoom_enabled = false // Disabled by default
-settings.zoom_window_size = .6 // Unzooms if <1
+settings.zoom_window_size = .4 // Unzooms if >1
 settings.zoom_point = {x:0.5, y:0.5}
 
 // Drawing nodes, labels and edges
@@ -31,7 +31,7 @@ var canvas = document.querySelector('#cnvs')
 var ctx = canvas.getContext("2d")
 
 // Change the coordinates of the network to fit the canvas space
-rescaleGraphToCanvas()
+rescaleGraphToGraphicSpace()
 
 // Paint a white background
 ctx.beginPath()
@@ -106,7 +106,7 @@ if (settings.save_at_the_end) {
 // ---
 // Functions
 
-function rescaleGraphToCanvas() {
+function rescaleGraphToGraphicSpace() {
 
   // General barycenter resize
   var xbarycenter = 0
@@ -134,28 +134,26 @@ function rescaleGraphToCanvas() {
     dmax = Math.max(dmax, d)
   })
 
-  dx = -xbarycenter
-  dy = -ybarycenter
-  ratio = ( settings.width - 2 * settings.offset ) / (2 * dmax)
+  ratio = ( Math.min(settings.width, settings.height) - 2 * settings.offset ) / (2 * dmax)
 
   // Initial resize
   g.nodes().forEach(function(nid){
   	var n = g.getNodeAttributes(nid)
-    n.x = settings.height / 2 + (n.x - dx) * ratio
-    n.y = settings.height / 2 + (n.y - dy) * ratio
+    n.x = settings.width / 2 + (n.x - xbarycenter) * ratio
+    n.y = settings.height / 2 + (n.y - ybarycenter) * ratio
     n.size *= ratio
   })
 
   // Additionnal zoom resize
   if (settings.zoom_enabled) {
-    dx = settings.zoom_point.x * settings.width// - settings.width / 2
-    dy = settings.zoom_point.y * settings.height// - settings.height / 2
+    xbarycenter = settings.zoom_point.x * settings.width// - settings.width / 2
+    ybarycenter = settings.zoom_point.y * settings.height// - settings.height / 2
     ratio = 1/settings.zoom_window_size
 
     g.nodes().forEach(function(nid){
   		var n = g.getNodeAttributes(nid)
-      n.x = settings.height / 2 + (n.x - dx) * ratio
-      n.y = settings.height / 2 + (n.y - dy) * ratio
+      n.x = settings.width / 2 + (n.x - xbarycenter) * ratio
+      n.y = settings.height / 2 + (n.y - ybarycenter) * ratio
       n.size *= ratio
     })
   }

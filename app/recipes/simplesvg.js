@@ -535,10 +535,12 @@ function rescaleGraphToSVG() {
   dy = -ybarycenter
   ratio = ( settings.width - 2 * settings.offset ) / (2 * dmax)
 
+  console.log('Resize nodes to width',settings.width,'dx',dx,'height',settings.height,'dy',dy,'ratio',ratio)
+
   // Initial resize
   g.nodes().forEach(function(nid){
   	var n = g.getNodeAttributes(nid)
-    n.x = settings.height / 2 + (n.x - dx) * ratio
+    n.x = settings.width / 2 + (n.x - dx) * ratio
     n.y = settings.height / 2 + (n.y - dy) * ratio
     n.size *= ratio
   })
@@ -551,7 +553,7 @@ function rescaleGraphToSVG() {
 
     g.nodes().forEach(function(nid){
   		var n = g.getNodeAttributes(nid)
-      n.x = settings.height / 2 + (n.x - dx) * ratio
+      n.x = settings.width / 2 + (n.x - dx) * ratio
       n.y = settings.height / 2 + (n.y - dy) * ratio
       n.size *= ratio
     })
