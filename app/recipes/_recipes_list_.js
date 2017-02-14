@@ -1,11 +1,7 @@
 /* Recipes list */
 angular.module('graphrecipes.recipes_list', [])
 .constant('recipesList', [
-	/*{
-		'name': 'Test',
-		'desc': 'Hold the door, Hold door, Holdoor, Hodor',
-		'file': 'test.js'
-	},*/{
+	{
 		'name': 'Nothing, I\'m fine',
 		'desc': 'An empty project, in case you are not hungry - or want to cook by yourself',
 		'file': 'empty.js'
@@ -20,13 +16,18 @@ angular.module('graphrecipes.recipes_list', [])
 		'file': 'attributes.js'
 	},
 	{
-		'name': 'Pixel Image',
+		'name': 'Pixel Image (simple)',
 		'desc': 'Paint a simple pixel image that you can download.',
 		'file': 'simplecanvas.js'
 	},
 	{
-		'name': 'Vector Image',
+		'name': 'Vector Image (simple)',
 		'desc': 'Paint a simple vector image that you can download (SVG).',
 		'file': 'simplesvg.js'
+	},
+	{
+		'name': 'Vector Image *Deluxe!*',
+		'desc': 'Paint a highly configurable vector image that you can download (SVG).',
+		'file': 'deluxesvg.js'
 	}
 ])
