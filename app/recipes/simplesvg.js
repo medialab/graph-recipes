@@ -9,7 +9,7 @@ settings.offset = 20 // Margin
 
 // Zoom
 settings.zoom_enabled = false // Disabled by default
-settings.zoom_window_size = .6 // Unzooms if <1
+settings.zoom_window_size = .4 // Unzooms if >1
 settings.zoom_point = {x:0.5, y:0.5}
 
 // Nodes
@@ -132,7 +132,7 @@ g.nodes().forEach(function(nid){
 
 })
 
-// // Let's draw every edge START + END
+// Let's draw every edge START + END
 g.edges().forEach(function(eid){
 	var e = g.getEdgeAttributes(eid)
 	var ns = g.getNodeAttributes(g.source(eid))
@@ -457,11 +457,11 @@ function drawEdge(s /*settings*/){
 
 		if ( s.endOnly ) {
 
-			return interpolateValues( distance - settings.node_size * s.target.size - 1.1 * settings.node_margin, distance, 12)
+			return interpolateValues( distance - Math.min(settings.node_size * s.source.size + 1.1 * settings.node_margin, distance), distance, 12)
 		
 		} else if ( s.startOnly ) {
 
-			return interpolateValues( 0, settings.node_size * s.source.size + 1.1 * settings.node_margin, 12)
+			return interpolateValues( 0, Math.min(settings.node_size * s.source.size + 1.1 * settings.node_margin, distance), 12)
 		
 		} else {
 
