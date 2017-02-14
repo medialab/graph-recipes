@@ -1,52 +1,56 @@
 <div layout="row" layout-fill >
   <div layout="column" id="sidecol">
     <div lcd  style="width:300px; height:370px; overflow:hidden;" anim-status="lcdStatus"></div>
-    <div layout="column" layout-padding flex class="command-zone">
-      <div>
-        <span style="font-size: 1.6em">{{filename}}</span>
-        <br>
-        {{nodesCount}} nodes, 
-        {{edgesCount}} edges
-      </div>
-      <div layout="column">
-        <md-button
-          ng-click="refreshGraph()"
-          title="Reload"
-          class="md-raised"
-        ><md-icon>refresh</md-icon> RELOAD ORIGINAL GRAPH</md-button>
-        <md-button
-          ng-click="downloadOutput()"
-          title="Download"
-          class="md-raised"
-        ><md-icon>save</md-icon> SAVE GEXF</md-button>
-      </div>
-      <div layout="column">
-        <md-button
-          ng-click="pickRecipe(recipe)"
-          title="Edit"
-          class="md-raised"
-          ng-show="status=='end'"
-        ><md-icon>arrow_back</md-icon> Return to recipe</md-button>
-        <md-button
-          ng-click="closeRecipe()"
-          title="Back to list"
-          class="md-raised"
-          ng-show="status=='end' || status=='edit'"
-        ><md-icon>menu</md-icon> Pick another recipe</md-button>
+    <div layout flex>
+      <div layout="column" layout-fill layout-padding class="command-zone">
+        <div>
+          <span style="font-size: 1.6em">{{filename}}</span>
+          <br>
+          {{nodesCount}} nodes, 
+          {{edgesCount}} edges
+        </div>
+        <div layout="column">
+          <md-button
+            ng-click="refreshGraph()"
+            title="Reload"
+            class="md-raised"
+          ><md-icon>refresh</md-icon> RELOAD ORIGINAL GRAPH</md-button>
+          <md-button
+            ng-click="downloadOutput()"
+            title="Download"
+            class="md-raised"
+          ><md-icon>save</md-icon> SAVE GEXF</md-button>
+        </div>
+        <div layout="column">
+          <md-button
+            ng-click="pickRecipe(recipe)"
+            title="Edit"
+            class="md-raised"
+            ng-show="status=='end'"
+          ><md-icon>arrow_back</md-icon> Return to recipe</md-button>
+          <md-button
+            ng-click="closeRecipe()"
+            title="Back to list"
+            class="md-raised"
+            ng-show="status=='end' || status=='edit'"
+          ><md-icon>menu</md-icon> Pick another recipe</md-button>
+        </div>
       </div>
     </div>
   </div>
 
   <div layout class="content" flex>
-    <div layout="column" layout-fill layout-padding class="fancy-text" ng-if="status=='list'">
-      <h1 class="main-title">Recipes</h1>
-      
-      <div layout="column" ng-repeat="r in recipes" class="menu-item" ng-click="pickRecipe(r)">
-        <h3>{{r.name}}</h3>
-        <p>{{r.desc}}</p>
-      </div>
+    <div layout="column" layout-fill class="fancy-text" ng-if="status=='list'">
+      <div layout-padding class="menu-container">
+        <h1 class="main-title">Recipes</h1>
+        
+        <div layout="column" ng-repeat="r in recipes" class="menu-item" ng-click="pickRecipe(r)">
+          <h3>{{r.name}}</h3>
+          <p>{{r.desc}}</p>
+        </div>
 
-      <div flex></div>
+        <div flex></div>
+      </div>
     </div>
 
     <div layout="column" layout-fill class="fancy-text" ng-if="status=='edit'">

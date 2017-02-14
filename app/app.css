@@ -4,6 +4,7 @@
 
 .command-zone {
   font-family: 'Raleway', sans-serif;
+  overflow-y: auto;
 }
 
 .content {
@@ -49,6 +50,9 @@ a:active  {
 }
 
 /* Menu items */
+.menu-container {
+  overflow-y: auto;
+}
 .menu-item {
   cursor: pointer;
 }
