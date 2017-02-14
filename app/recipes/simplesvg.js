@@ -3,6 +3,7 @@ var settings = {}
 // Feel free to edit following settings
 
 // General
+settings.save_at_the_end = false
 settings.width = 1000
 settings.height = 1000
 settings.offset = 20 // Margin
@@ -127,7 +128,26 @@ g.nodes().forEach(function(nid){
 		.attr('font-size', settings.label_font_size)
 		.attr('fill', color)
 	
-});
+})
+
+// Save if needed
+if (settings.save_at_the_end) {
+	saveSVG()
+}
+
+// ---
+// Functions
+
+function saveSVG() {
+	// Download SVG
+	var svgFileContent = []
+	svgFileContent.push('<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="'+settings.width+'" height="'+settings.height+'" viewBox="0 0 '+settings.width+' '+settings.height+'">')
+	svgFileContent.push(svg.html())
+	svgFileContent.push('</svg>')
+
+	var blob = new Blob(svgFileContent, {type: "image/svg+xml;charset=utf-8"})
+	saveAs(blob, store.get('graphname') + ".svg")
+}
 
 function drawEdge(s /*settings*/){
 
@@ -156,9 +176,6 @@ function drawEdge(s /*settings*/){
 		edgePathElement.attr(k, s.style[k])
 	}
 }
-
-// ---
-// Functions
 
 function rescaleGraphToGraphicSpace() {
 

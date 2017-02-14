@@ -3,6 +3,7 @@ var settings = {}
 // Feel free to edit following settings
 
 // Canvas size
+settings.save_at_the_end = false
 settings.width =  1000
 settings.height = 1000
 settings.offset = 20 // Margin
@@ -19,9 +20,6 @@ settings.font_size = 14
 settings.font_family = 'Open Sans Condensed, sans-serif'
 settings.font_weight = 300
 settings.edge_color = 'rgba(200, 200, 200, 0.3)'
-
-// Download image at the end?
-settings.save_at_the_end = true
 
 // --- (end of settings)
 
