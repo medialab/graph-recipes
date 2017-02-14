@@ -1,6 +1,7 @@
 'use strict';
 
 var graphology = require('graphology');
+var gexf = require('graphology-gexf/browser');
 
 angular.module('graphrecipes.view_upload', ['ngRoute'])
 
@@ -47,47 +48,17 @@ angular.module('graphrecipes.view_upload', ['ngRoute'])
         var target = evt.target || evt.srcElement
 
         if (target.result) {
-          var gexf_dom
+          var g;
+
           try {
-            gexf_dom = new DOMParser().parseFromString(target.result, "application/xml")
+            g = gexf.parser(graphology.Graph, target.result);
           } catch(e) {
             parsingFail()
           }
-          if (gexf_dom) {
-            var g
-            try {
-              var gexf_json = gexf.parse(gexf_dom)
 
-              // FIXME: register the type of network (oriented...)
-              g = new graphology.Graph()
-
-              gexf_json.nodes.forEach(function(n){
-                var attributes = n.attributes
-                if (n.viz) {
-                  attributes.x = n.viz.position.x
-                  attributes.y = n.viz.position.y
-                  attributes.size = n.viz.size
-                } else {
-                  attributes.size = 1
-                }
-                attributes.color = n.viz.color
-                attributes.label = n.label
-                g.addNode(n.id, attributes)
-              })
-
-              gexf_json.edges.forEach(function(e){
-                g.addEdge(e.source, e.target, e.attributes)
-              })
-
-            } catch(e) {
-              parsingFail()
-            }
-            if(g) {
-              store.set('graph', g)
-              parsingSuccess()
-            } else {
-              parsingFail()
-            }
+          if(g) {
+            store.set('graph', g)
+            parsingSuccess()
           } else {
             parsingFail()
           }
@@ -104,45 +75,19 @@ angular.module('graphrecipes.view_upload', ['ngRoute'])
     store.set('graphname', dataUrl.replace(/\.[^\.]*$/, ''))
     $http.get(dataUrl).then(function (data) {
       $timeout(function(){
-        var gexf_dom
+        var g;
+
         try {
-          gexf_dom = new DOMParser().parseFromString(data.data, "application/xml")
-        } catch(e) {
+          g = gexf.parser(graphology.Graph, data.data);
+        } catch(e) {console.log(e);
           parsingFail()
         }
-        if (gexf_dom) {
-          var g
-          try {
-            var gexf_json = gexf.parse(gexf_dom)
 
-            g = new graphology.Graph()
-
-            gexf_json.nodes.forEach(function(n){
-              var attributes = n.attributes
-              if (n.viz) {
-                attributes.x = n.viz.position.x
-                attributes.y = n.viz.position.y
-                attributes.size = n.viz.size
-              } else {
-                attributes.size = 1
-              }
-              attributes.color = n.viz.color
-              attributes.label = n.label
-              g.addNode(n.id, attributes)
-            })
-
-            gexf_json.edges.forEach(function(e){
-              g.addEdge(e.source, e.target, e.attributes)
-            })
-          } catch(e) {
-            parsingFail()
-          }
-          if(g) {
-            store.set('graph', g)
-            parsingSuccess()
-          } else {
-            parsingFail()
-          }
+        if(g) {
+          store.set('graph', g)
+          parsingSuccess()
+        } else {
+          parsingFail()
         }
       })
     }, function(){
