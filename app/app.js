@@ -71,6 +71,11 @@ config(['$routeProvider', function($routeProvider) {
           window.editor.destroy()
         }
       })
+      scope.codeKeyPress = function(e){
+        if((e.which == 13 || e.which == 10) && (e.ctrlKey || e.shiftKey)){
+          scope.$parent.executeScript()
+        }
+      }
     }
   }
 })

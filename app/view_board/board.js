@@ -206,12 +206,6 @@ angular.module('graphrecipes.view_board', ['ngRoute'])
     $scope.status = 'list'
   }
 
-  $scope.codeKeyPress = function(e){
-    if((e.which == 13 || e.which == 10) && (e.ctrlKey || e.shiftKey)){
-      $scope.executeScript()
-    }
-  }
-
   $scope.executeScript = function() {
     $scope.lcdStatus = 'cooking'
     $scope.status = 'run'
