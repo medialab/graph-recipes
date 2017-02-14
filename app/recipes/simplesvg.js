@@ -41,7 +41,7 @@ var svg = svgContainer.append("svg")
 	.attr('height', settings.height)
 
 // Change the coordinates of the network to fit the SVG space
-rescaleGraphToSVG()
+rescaleGraphToGraphicSpace()
 
 // Set a default size and color to each node (in case they have no "color" attribute)
 g.nodes().forEach(function(nid){
@@ -501,7 +501,7 @@ function lightenChannel(r){
 	return Math.floor(255 - ((255-r) / settings.color_lightening))
 }
 
-function rescaleGraphToSVG() {
+function rescaleGraphToGraphicSpace() {
 
   // General barycenter resize
   var xbarycenter = 0
@@ -515,8 +515,6 @@ function rescaleGraphToSVG() {
   	var n = g.getNodeAttributes(nid)
     // We use node size as weight (default to 1)
     n.size = n.size || 1
-    n.x = n.x || 100 * Math.random() - 50
-    n.y = -n.y || 100 * Math.random() - 50
     xbarycenter += n.size * n.x
     ybarycenter += n.size * n.y
     wtotal += n.size
@@ -531,30 +529,26 @@ function rescaleGraphToSVG() {
     dmax = Math.max(dmax, d)
   })
 
-  dx = -xbarycenter
-  dy = -ybarycenter
-  ratio = ( settings.width - 2 * settings.offset ) / (2 * dmax)
-
-  console.log('Resize nodes to width',settings.width,'dx',dx,'height',settings.height,'dy',dy,'ratio',ratio)
+  ratio = ( Math.min(settings.width, settings.height) - 2 * settings.offset ) / (2 * dmax)
 
   // Initial resize
   g.nodes().forEach(function(nid){
   	var n = g.getNodeAttributes(nid)
-    n.x = settings.width / 2 + (n.x - dx) * ratio
-    n.y = settings.height / 2 + (n.y - dy) * ratio
+    n.x = settings.width / 2 + (n.x - xbarycenter) * ratio
+    n.y = settings.height / 2 + (n.y - ybarycenter) * ratio
     n.size *= ratio
   })
 
   // Additionnal zoom resize
   if (settings.zoom_enabled) {
-    dx = settings.zoom_point.x * settings.width// - settings.width / 2
-    dy = settings.zoom_point.y * settings.height// - settings.height / 2
+    xbarycenter = settings.zoom_point.x * settings.width// - settings.width / 2
+    ybarycenter = settings.zoom_point.y * settings.height// - settings.height / 2
     ratio = 1/settings.zoom_window_size
 
     g.nodes().forEach(function(nid){
   		var n = g.getNodeAttributes(nid)
-      n.x = settings.width / 2 + (n.x - dx) * ratio
-      n.y = settings.height / 2 + (n.y - dy) * ratio
+      n.x = settings.width / 2 + (n.x - xbarycenter) * ratio
+      n.y = settings.height / 2 + (n.y - ybarycenter) * ratio
       n.size *= ratio
     })
   }
