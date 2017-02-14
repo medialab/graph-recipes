@@ -34,5 +34,10 @@ angular.module('graphrecipes.recipes_list', [])
 		'name': 'Heatmap',
 		'desc': 'Paint and download a heat map of nodes (PNG)',
 		'file': 'heatmap.js'
+	},
+	{
+		'name': 'Fuzzy cluster contours',
+		'desc': 'Paint and download a network with cluster contours "à la heatmap" (PNG)',
+		'file': 'fuzzyclusters.js'
 	}
 ])
