@@ -12,10 +12,10 @@ settings.height = 1000
 settings.offset = 20 // Margin
 
 // Clusters
-settings.cluster_spreading = 100 // More = bigger and rounder contour
+settings.cluster_spreading = 150 // More = bigger and rounder contour
 settings.cluster_opacity = 0.8 // [0, 1]
 settings.cluster_contour = true // true = a contour line, false = a fuzzy stain
-settings.cluster_contour_threshold = 0.1 // [0, 1] More = narrower contour
+settings.cluster_contour_threshold = 0.3 // [0, 1] More = narrower contour
 
 // Drawing nodes, labels and edges
 settings.display_label = false
@@ -54,10 +54,16 @@ for (cl in classesIndex) {
 	count++
 }
 
-// Compute layers
+// Init layers
 var layers = []
 for (cl in classesIndex) {
-	var imgd = (function(){
+	layers.push({cl:cl})
+}
+
+// Compute pixel values
+layers.forEach(function(layer){
+	layer.pixelValues = (function(){
+
 		// Compute heatmap values
 		var pixelValues = new Float32Array(settings.width * settings.height)
 		var i
@@ -75,7 +81,7 @@ for (cl in classesIndex) {
 		// Values from nodes
 		g.nodes()
 		.filter(function(nid){
-			return g.getNodeAttribute(nid, settings.cluster_attribute) == cl
+			return g.getNodeAttribute(nid, settings.cluster_attribute) == layer.cl
 		})
 		.forEach(function(nid){
 			n = g.getNodeAttributes(nid)
@@ -95,15 +101,26 @@ for (cl in classesIndex) {
 			}
 		})
 
-		var maxValue = d3.max(pixelValues)
+		return pixelValues
+	})()
+})
 
+var maxValue = d3.max(layers.map(function(layer){
+	return d3.max(layer.pixelValues)
+}))
+
+// Compute layers image data
+layers.forEach(function(layer){
+	layer.imgd = (function(){
 		// Paint heatmap
 		var imgd = ctx.getImageData(0, 0, settings.width, settings.height)
 		var pix = imgd.data
 		var pixlen
+		var i
+		var value
 		for ( i = 0, pixlen = pix.length; i < pixlen; i += 4 ) {
-			value = pixelValues[i/4] / maxValue
-			var color = d3.rgb(classesIndex[cl])
+			value = layer.pixelValues[i/4] / maxValue
+			var color = d3.rgb(classesIndex[layer.cl])
 			if (settings.cluster_contour) {
 				if (value > settings.cluster_contour_threshold) {
 				  pix[i  ] = color.r // red
@@ -143,9 +160,10 @@ for (cl in classesIndex) {
 		}
 
     return imgd
+
 	})()
-	layers.push(imgd)
-}
+
+})
 
 // Merge layers
 var imgd = ctx.createImageData(settings.width, settings.height)
@@ -156,8 +174,8 @@ for ( i = 0, pixlen = pix.length; i < pixlen; i += 4 ) {
 	var channel
 	for (channel = 0; channel <= 2; channel++) {
 		pix[i+channel] = 255
-		layers.forEach(function(l){
-			pix[i+channel] -= Math.floor((255-l.data[i+channel]) * l.data[i+3]/255)
+		layers.forEach(function(layer){
+			pix[i+channel] -= Math.floor((255-layer.imgd.data[i+channel]) * layer.imgd.data[i+3]/255)
 		})
 	}
 	pix[i+3] = 255
