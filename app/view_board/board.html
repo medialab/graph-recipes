@@ -2,8 +2,8 @@
   <div layout="column" id="sidecol">
     <div lcd  style="width:300px; height:370px; overflow:hidden;" anim-status="lcdStatus"></div>
     <div layout flex>
-      <div layout="column" layout-fill layout-padding class="command-zone">
-        <div>
+      <div layout="column" layout-fill class="command-zone">
+        <div layout-padding>
           <span style="font-size: 1.6em">{{filename}}</span>
           <br>
           {{nodesCount}} nodes, 
@@ -15,6 +15,8 @@
             title="Reload"
             class="md-raised"
           ><md-icon>refresh</md-icon> RELOAD ORIGINAL GRAPH</md-button>
+        </div>
+        <div layout="column">
           <md-button
             ng-click="downloadOutput()"
             title="Download"
@@ -28,6 +30,8 @@
             class="md-raised"
             ng-show="status=='end'"
           ><md-icon>arrow_back</md-icon> Return to recipe</md-button>
+        </div>
+        <div layout="column">
           <md-button
             ng-click="closeRecipe()"
             title="Back to list"
@@ -35,6 +39,7 @@
             ng-show="status=='end' || status=='edit'"
           ><md-icon>menu</md-icon> Pick another recipe</md-button>
         </div>
+        <div flex></div>
       </div>
     </div>
   </div>
