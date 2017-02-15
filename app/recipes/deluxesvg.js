@@ -309,16 +309,13 @@ function drawEdge(s /*settings*/){
 		console.error('Cannot draw edge without a source and target', s)
 	}
 
-	s.color = s.color || '#666'
 	s.width = s.width || 1
-
-	s.whiteBorder = s.whiteBorder || false
 
 	s.startOnly = s.startOnly || false
 	s.endOnly = s.endOnly || false
 	s.backgroundOnly = s.backgroundOnly || false
 
-	s.backgroundStyle = s.backgroundStyle || {fill:'#FFF'}
+	s.backgroundStyle = s.backgroundStyle || {fill:'#EEE'}
 	s.centralLineStyle = s.centralLineStyle || {fill:'none', stroke:'#666', 'stroke-width': settings.edge_stroke_width}
 
 	// Edge draw engine
