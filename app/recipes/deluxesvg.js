@@ -253,7 +253,7 @@ nodesBySize.forEach(function(nid){
 
 		// Then, draw the label only if wanted
 		var labelCoordinates = {
-			x: n.x + settings.node_size * n.size,
+			x: n.x + 0.5 * settings.label_white_border_thickness + settings.node_size * n.size,
 			y: n.y + 0.32 * fontSize
 		}
 
