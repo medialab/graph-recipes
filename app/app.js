@@ -43,29 +43,38 @@ config(['$routeProvider', function($routeProvider) {
   }
 })
 
+// Service
+.factory('cache', function(){
+  var ns = {}
+  ns.recipes = {}
+  return ns
+})
+
+
 // Directives
-.directive('jsEditor', function ($timeout, $interval, $http) {
+.directive('jsEditor', function ($timeout, $interval, $http, cache) {
   return {
     restrict: 'A',
     scope: {
-      file: '='
+      file: '=',
+      remind: '='
     },
     templateUrl: 'jsEditor.html',
     link: function(scope, element, attrs, ctrl) {
-      $http.get(scope.file).then(function (data) {
-        $timeout(function(){
-          // INITIALIZATION
-          if(data.data){
-            document.querySelector('#js-editor').textContent = data.data
-          }
-          // Init Ace JS editor panel
-          // Note: we keep editor in global scope to be able to edit settings from the console
-          window.editor = ace.edit("js-editor");
-          window.editor.setTheme("ace/theme/clouds");
-          window.editor.setFontSize(14)
-          window.editor.getSession().setMode("ace/mode/javascript");
+      if (scope.remind) {
+        document.querySelector('#js-editor').textContent = cache.recipes[scope.file]
+        initAceJS()
+      } else {
+        $http.get(scope.file).then(function (data) {
+          $timeout(function(){
+            // INITIALIZATION
+            if(data.data){
+              document.querySelector('#js-editor').textContent = data.data
+            }
+            initAceJS()
+          })
         })
-      })
+      }
       scope.$on('$destroy', function(){
         if (window.editor) {
           window.editor.destroy()
@@ -75,6 +84,16 @@ config(['$routeProvider', function($routeProvider) {
         if((e.which == 13 || e.which == 10) && (e.ctrlKey || e.shiftKey)){
           scope.$parent.executeScript()
         }
+        cache.recipes[scope.file] = window.editor.getValue()
+      }
+
+      function initAceJS() {
+        // Init Ace JS editor panel
+        // Note: we keep editor in global scope to be able to edit settings from the console
+        window.editor = ace.edit("js-editor");
+        window.editor.setTheme("ace/theme/clouds");
+        window.editor.setFontSize(14)
+        window.editor.getSession().setMode("ace/mode/javascript");
       }
     }
   }

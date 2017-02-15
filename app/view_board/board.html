@@ -25,7 +25,7 @@
         </div>
         <div layout="column">
           <md-button
-            ng-click="pickRecipe(recipe)"
+            ng-click="backToRecipe()"
             title="Edit"
             class="md-raised"
             ng-show="status=='end'"
@@ -85,7 +85,7 @@
         is being processed<br><br><br>
       </div> -->
 
-      <div js-editor file="'recipes/'+recipe.file" flex ng-if="status=='edit'"></div>
+      <div js-editor file="'recipes/'+recipe.file" remind="remindRecipe" flex ng-if="status=='edit'"></div>
     </div>
 
     <div layout="column" layout-fill layout-padding ng-if="status=='run' || status=='end'" id="playground">

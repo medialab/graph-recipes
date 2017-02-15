@@ -49,6 +49,13 @@ angular.module('graphrecipes.view_board', ['ngRoute'])
     $scope.lcdStatus = 'edit-script'
     $scope.recipe = r
     $scope.status = 'edit'
+    $scope.remindRecipe = false
+  }
+
+   $scope.backToRecipe = function() {
+    $scope.lcdStatus = 'edit-script'
+    $scope.status = 'edit'
+    $scope.remindRecipe = true
   }
 
   $scope.closeRecipe = function() {
