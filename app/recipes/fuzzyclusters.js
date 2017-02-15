@@ -2,21 +2,24 @@ var settings = {}
 
 // Feel free to edit following settings
 
+// WHICH ATTRIBUTES DESCRIBES CLUSTERS?
+settings.cluster_attribute = 'Language' // This only works for the demo network
+
 // Canvas size
 settings.save_at_the_end = false
 settings.width =  1000
 settings.height = 1000
 settings.offset = 20 // Margin
 
-// WHICH ATTRIBUTES DESCRIBES CLUSTERS?
-settings.clusters_attribute = 'Language' // This only works for the demo network
-
-// Heatmap
-settings.spreading = 100.0 // Pixel diameter of each nodes' "heat" area
+// Clusters
+settings.cluster_spreading = 100 // More = bigger and rounder contour
+settings.cluster_opacity = 0.8 // [0, 1]
+settings.cluster_contour = true // true = a contour line, false = a fuzzy stain
+settings.cluster_contour_threshold = 0.1 // [0, 1] More = narrower contour
 
 // Drawing nodes, labels and edges
 settings.display_label = false
-settings.node_size = 2.0
+settings.node_size = 0.6
 settings.font_size = 9
 settings.font_family = 'Open Sans Condensed, sans-serif'
 settings.font_weight = 300
@@ -36,7 +39,7 @@ rescaleGraphToGraphicSpace()
 var classesIndex = {}
 var cl
 g.nodes().forEach(function(nid){
-	classesIndex[g.getNodeAttribute(nid, settings.clusters_attribute)] = true
+	classesIndex[g.getNodeAttribute(nid, settings.cluster_attribute)] = true
 })
 
 // Colors
@@ -72,16 +75,18 @@ for (cl in classesIndex) {
 		// Values from nodes
 		g.nodes()
 		.filter(function(nid){
-			return g.getNodeAttribute(nid, settings.clusters_attribute) == cl
+			return g.getNodeAttribute(nid, settings.cluster_attribute) == cl
 		})
 		.forEach(function(nid){
 			n = g.getNodeAttributes(nid)
-			for (x = Math.max(0, Math.floor(n.x - settings.spreading/2) ); x <= Math.min(settings.width, Math.floor(n.x + settings.spreading/2) ); x++ ){
-				for (y = Math.max(0, Math.floor(n.y - settings.spreading/2) ); y <= Math.min(settings.height, Math.floor(n.y + settings.spreading/2) ); y++ ){
+			for (x = Math.max(0, Math.floor(n.x - settings.cluster_spreading/2) ); x <= Math.min(settings.width, Math.floor(n.x + settings.cluster_spreading/2) ); x++ ){
+				for (y = Math.max(0, Math.floor(n.y - settings.cluster_spreading/2) ); y <= Math.min(settings.height, Math.floor(n.y + settings.cluster_spreading/2) ); y++ ){
 					d = Math.sqrt(Math.pow(n.x - x, 2) + Math.pow(n.y - y, 2))
-					if (d < settings.spreading / 2) {
-						// Compute value: d=0 -> 1, d=spreading/2 -> 
-						value = n.size * (1 - 2 * d / settings.spreading)
+					if (d < settings.cluster_spreading / 2) {
+						// Compute base value: d=0 -> 1, d=spreading/2 -> 0
+						value = 1 - 2 * d / settings.cluster_spreading
+						// Take node size in account
+						value *= n.size
 						// Add value to the pixel
 						i = x + settings.width * y
 						pixelValues[i] = pixelValues[i] + value
@@ -98,35 +103,44 @@ for (cl in classesIndex) {
 		var pixlen
 		for ( i = 0, pixlen = pix.length; i < pixlen; i += 4 ) {
 			value = pixelValues[i/4] / maxValue
-			if (value > 0.3) {
-				var color = d3.rgb(classesIndex[cl])
+			var color = d3.rgb(classesIndex[cl])
+			if (settings.cluster_contour) {
+				if (value > settings.cluster_contour_threshold) {
+				  pix[i  ] = color.r // red
+				  pix[i+1] = color.g // green
+				  pix[i+2] = color.b // blue
+				  pix[i+3] = Math.floor(settings.cluster_opacity * 255)
+				}
+			} else {
 			  pix[i  ] = color.r // red
 			  pix[i+1] = color.g // green
 			  pix[i+2] = color.b // blue
-			  pix[i+3] = 200 // i+3 is alpha (the fourth element)
+			  pix[i+3] = Math.floor(settings.cluster_opacity * 255 * value)
 			}
 		}
 
-		// Convolute: blur
-		imgd = convolute(imgd,
-		[  0, .1,  0,
-	    .1, .6, .1,
-	     0, .1,  0 ]
-    )
+		if (settings.cluster_contour) {
+			// Convolute: blur
+			imgd = convolute(imgd,
+			[  0, .1,  0,
+		    .1, .6, .1,
+		     0, .1,  0 ]
+	    )
 
-		// Convolute: contour
-		imgd = convolute(imgd,
-		[  0, -1,  0,
-	    -1,  4, -1,
-	     0, -1,  0 ]
-    )
+			// Convolute: contour
+			imgd = convolute(imgd,
+			[  0, -1,  0,
+		    -1,  4, -1,
+		     0, -1,  0 ]
+	    )
 
-		// Convolute: blur
-		imgd = convolute(imgd,
-		[ .1, .3, .1,
-	    .3, .8, .3,
-	    .1, .3, .1 ]
-    )
+			// Convolute: blur
+			imgd = convolute(imgd,
+			[ .1, .3, .1,
+		    .3, .8, .3,	
+		    .1, .3, .1 ]
+	    )
+		}
 
     return imgd
 	})()
@@ -183,32 +197,30 @@ g.nodes().forEach(function(nid){
     ctx.strokeStyle = '#FFFFFF'
     ctx.fillText(
       n.label
-    , n.x + settings.node_size * 1.4
+    , n.x + settings.node_size * n.size * 1.4
     , n.y + 0.3 * settings.font_size
     )
     ctx.strokeText(
       n.label
-    , n.x + settings.node_size * 1.4
+    , n.x + settings.node_size * n.size * 1.4
     , n.y + 0.3 * settings.font_size
     )
     ctx.lineWidth = 0
     ctx.fillStyle = n.color
     ctx.fillText(
       n.label
-    , n.x + settings.node_size * 1.4
+    , n.x + settings.node_size * n.size * 1.4
     , n.y + 0.3 * settings.font_size
     )
   }
 
   ctx.beginPath()
-  ctx.arc(n.x, n.y, settings.node_size, 0, 2 * Math.PI, false)
+  ctx.arc(n.x, n.y, settings.node_size * n.size, 0, 2 * Math.PI, false)
   ctx.lineWidth = 0
-  ctx.fillStyle = d3.rgb(classesIndex[n[settings.clusters_attribute]]).toString()
+  ctx.fillStyle = d3.rgb(classesIndex[n[settings.cluster_attribute]]).toString()
   ctx.shadowColor = 'transparent'
   ctx.fill()
 })
-
-
 
 // Save if needed
 if (settings.save_at_the_end) {
