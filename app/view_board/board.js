@@ -1,5 +1,6 @@
 'use strict';
 
+var gexf = require('graphology-gexf');
 var isNumeric = require('../utils.js').isNumeric;
 
 angular.module('graphrecipes.view_board', ['ngRoute'])
@@ -38,159 +39,9 @@ angular.module('graphrecipes.view_board', ['ngRoute'])
   }
 
   $scope.downloadOutput = function () {
-    // Look at the attributes
-    var attname
+    var xml = gexf.write(g);
 
-    var nAttributes = {}
-    g.nodes().forEach(function(nid){
-      var attributesObject = g.getNodeAttributes(nid)
-      for (attname in attributesObject) {
-        if (['x', 'y', 'color', 'label', 'size'].indexOf(attname) < 0) {
-          var attvalue = attributesObject[attname]
-          var atttype = nAttributes[attname]
-          if (attvalue === true || attvalue === false) {
-            attvalue = attvalue.toString()
-          }
-          if (isNumeric(+attvalue)) {
-            if (Number.isInteger(+attvalue)) {
-              // value is integer
-              if (nAttributes[attname] != 'float' && nAttributes[attname] != 'string') {
-                nAttributes[attname] = 'integer'
-              }
-            } else {
-              // value is float
-              if (nAttributes[attname] != 'string') {
-                nAttributes[attname] = 'float'
-              }
-            }
-
-          } else {
-            nAttributes[attname] = 'string'
-          }
-        }
-      }
-    })
-
-    var eAttributes = {}
-    g.edges().forEach(function(eid){
-      var attributesObject = g.getEdgeAttributes(eid)
-      for (attname in attributesObject) {
-        var attvalue = attributesObject[attname]
-        var atttype = eAttributes[attname]
-        if (attvalue === true || attvalue === false) {
-          attvalue = attvalue.toString()
-        }
-        if (isNumeric(+attvalue)) {
-          if (Number.isInteger(+attvalue)) {
-            // value is integer
-            if (eAttributes[attname] != 'float' && eAttributes[attname] != 'string') {
-              eAttributes[attname] = 'integer'
-            }
-          } else {
-            // value is float
-            if (eAttributes[attname] != 'string') {
-              eAttributes[attname] = 'float'
-            }
-          }
-
-        } else {
-          eAttributes[attname] = 'string'
-        }
-      }
-    })
-
-    // Build the attributes model
-    var model = {node:[], edge:[]}
-    var k
-    var count = 0
-    for (k in nAttributes) {
-      count++
-      var id = k.toLowerCase().replace(/[^a-z]/g, '') + '-' + count
-      model.node.push({
-        id: id,
-        label: k,
-        type: nAttributes[k]
-      })
-      nAttributes[k] = id
-    }
-    count = 0
-    for (k in eAttributes) {
-      count++
-      var id = k.toLowerCase().replace(/[^a-z]/g, '') + '-' + count
-      model.edge.push({
-        id: id,
-        label: k,
-        type: eAttributes[k]
-      })
-      eAttributes[k] = id
-    }
-
-    // Write the GEXF
-    // FIXME: register the type of network (oriented...)
-    var myGexf = gexf.create({model:model})
-    g.nodes().forEach(function(nid){
-      var attributesObject = g.getNodeAttributes(nid)
-      var n = {
-        id: nid,
-        viz: {
-          position: {}
-        }
-      }
-
-      if (attributesObject.hasOwnProperty('label')) {
-        n.label = attributesObject.label
-        delete attributesObject.label
-      }
-
-      if (attributesObject.hasOwnProperty('x')) {
-        n.viz.position.x = attributesObject.x
-        delete attributesObject.x
-      }
-
-      if (attributesObject.hasOwnProperty('y')) {
-        n.viz.position.y = attributesObject.y
-        delete attributesObject.y
-      }
-
-      if (attributesObject.hasOwnProperty('color')) {
-        n.viz.color = attributesObject.color
-        delete attributesObject.color
-      }
-
-      if (attributesObject.hasOwnProperty('size')) {
-        n.size = attributesObject.size
-        delete attributesObject.size
-      }
-
-      n.attributes = {}
-      var k
-      for (k in attributesObject) {
-        n.attributes[nAttributes[k]] = attributesObject[k]
-      }
-
-      myGexf.addNode(n)
-    });
-
-    g.edges().forEach(function(eid){
-      var attributesObject = g.getEdgeAttributes(eid)
-      var e = {
-        id: eid,
-        source: g.source(eid),
-        target: g.target(eid),
-        viz: {
-          position: {}
-        }
-      }
-
-      e.attributes = {}
-      var k
-      for (k in attributesObject) {
-        e.attributes[eAttributes[k]] = attributesObject[k]
-      }
-      myGexf.addEdge(e);
-    })
-
-    var blob = new Blob([myGexf.serialize()], {'type':'text/gexf+xml;charset=utf-8'});
+    var blob = new Blob([xml], {'type':'text/gexf+xml;charset=utf-8'});
     saveAs(blob, store.get('graphname') + " via Graph Recipes.gexf");
   }
 

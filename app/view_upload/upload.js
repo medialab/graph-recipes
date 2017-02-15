@@ -51,7 +51,7 @@ angular.module('graphrecipes.view_upload', ['ngRoute'])
           var g;
 
           try {
-            g = gexf.parser(graphology.Graph, target.result);
+            g = gexf.parse(graphology.Graph, target.result);
           } catch(e) {
             parsingFail()
           }
@@ -78,7 +78,7 @@ angular.module('graphrecipes.view_upload', ['ngRoute'])
         var g;
 
         try {
-          g = gexf.parser(graphology.Graph, data.data);
+          g = gexf.parse(graphology.Graph, data.data);
         } catch(e) {console.log(e);
           parsingFail()
         }
