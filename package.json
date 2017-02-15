@@ -11,7 +11,7 @@
     "angular-route": "^1.6.1",
     "d3": "^4.2.2",
     "graphology": "^0.5.1",
-    "graphology-gexf": "^0.2.0"
+    "graphology-gexf": "^0.2.1"
   },
   "devDependencies": {
     "css-loader": "^0.26.1",
