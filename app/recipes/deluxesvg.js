@@ -16,6 +16,7 @@ settings.zoom_point = {x:0.5, y:0.5}
 // Nodes
 settings.node_margin = 5.0 // Nodes have a free space around them. This sets the size of this free space.
 settings.node_size = 0.4
+settings.node_stroke_width = 0.5 // Nodes white contour
 
 // Nodes labels
 settings.label_count = 20 // How much node labels you want to show (the biggest)
@@ -226,6 +227,8 @@ nodesBySize.forEach(function(nid){
 	svg.append("path")
 		.attr('d', circle.toString())
 		.attr('fill', color.toString())
+		.attr('stroke', '#FFF')
+		.attr('stroke-width', settings.node_stroke_width)
 
 })
 
