@@ -14,7 +14,9 @@ settings.zoom_window_size = .4 // Unzooms if >1
 settings.zoom_point = {x:0.5, y:0.5}
 
 // Nodes
-settings.node_size = 3
+settings.node_margin = 5.0 // Nodes have a free space around them. This sets the size of this free space.
+settings.node_size = 0.4
+settings.node_stroke_width = 1.0 // Nodes white contour
 
 // Nodes labels
 settings.label_count = 20 // How much node labels you want to show (the biggest nodes)
@@ -96,13 +98,22 @@ nodesBySize.reverse() // Because we draw from background to foreground
 nodesBySize.forEach(function(nid){
 	var n = g.getNodeAttributes(nid)
 
+  var color = d3.rgb(n.color)
+
   ctx.lineCap="round"
   ctx.lineJoin="round"
 
   ctx.beginPath()
-  ctx.arc(n.x, n.y, settings.node_size, 0, 2 * Math.PI, false)
+  ctx.arc(n.x, n.y, settings.node_size * n.size + settings.node_stroke_width, 0, 2 * Math.PI, false)
   ctx.lineWidth = 0
-  ctx.fillStyle = n.color
+  ctx.fillStyle = '#FFFFFF'
+  ctx.shadowColor = 'transparent'
+  ctx.fill()
+
+  ctx.beginPath()
+  ctx.arc(n.x, n.y, settings.node_size * n.size, 0, 2 * Math.PI, false)
+  ctx.lineWidth = 0
+  ctx.fillStyle = color.toString()
   ctx.shadowColor = 'transparent'
   ctx.fill()
 })
