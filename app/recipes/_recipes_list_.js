@@ -36,6 +36,11 @@ angular.module('graphrecipes.recipes_list', [])
 		'file': 'heatmap.js'
 	},
 	{
+		'name': 'Voronoi',
+		'desc': 'Draw areas according to which node is the closest (PNG)',
+		'file': 'voronoi.js'
+	},
+	{
 		'name': 'Fuzzy cluster contours',
 		'desc': 'Paint and download a network with cluster contours "à la heatmap" (PNG)',
 		'file': 'fuzzyclusters.js'
