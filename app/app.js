@@ -62,8 +62,13 @@ config(['$routeProvider', function($routeProvider) {
     templateUrl: 'jsEditor.html',
     link: function(scope, element, attrs, ctrl) {
       if (scope.remind) {
-        document.querySelector('#js-editor').textContent = cache.recipes[scope.file]
-        initAceJS()
+        $timeout(function(){
+          // INITIALIZATION
+          if(cache.recipes[scope.file]){
+            document.querySelector('#js-editor').textContent = cache.recipes[scope.file]
+          }
+          initAceJS()
+        })
       } else {
         $http.get(scope.file).then(function (data) {
           $timeout(function(){
