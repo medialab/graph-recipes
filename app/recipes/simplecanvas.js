@@ -8,11 +8,6 @@ settings.width =  1000
 settings.height = 1000
 settings.offset = 20 // Margin
 
-// Zoom
-settings.zoom_enabled = false // Disabled by default
-settings.zoom_window_size = .4 // Unzooms if >1
-settings.zoom_point = {x:0.5, y:0.5}
-
 // Drawing nodes, labels and edges
 settings.display_label = true
 settings.node_size = 3
@@ -141,18 +136,4 @@ function rescaleGraphToGraphicSpace() {
     n.y = settings.height / 2 + (n.y - ybarycenter) * ratio
     n.size *= ratio
   })
-
-  // Additionnal zoom resize
-  if (settings.zoom_enabled) {
-    xbarycenter = settings.zoom_point.x * settings.width// - settings.width / 2
-    ybarycenter = settings.zoom_point.y * settings.height// - settings.height / 2
-    ratio = 1/settings.zoom_window_size
-
-    g.nodes().forEach(function(nid){
-  		var n = g.getNodeAttributes(nid)
-      n.x = settings.width / 2 + (n.x - xbarycenter) * ratio
-      n.y = settings.height / 2 + (n.y - ybarycenter) * ratio
-      n.size *= ratio
-    })
-  }
 }

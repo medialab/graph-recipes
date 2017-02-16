@@ -49,7 +49,7 @@ rescaleGraphToGraphicSpace()
 g.nodes().forEach(function(nid){
 	var n = g.getNodeAttributes(nid)
 	if (n.color === undefined){
-		n.color = 'rgb(200,200,200)'
+		n.color = 'rgb(100,100,100)'
 	}
 })
 
