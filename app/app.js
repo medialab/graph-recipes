@@ -75,6 +75,7 @@ config(['$routeProvider', function($routeProvider) {
             // INITIALIZATION
             if(data.data){
               document.querySelector('#js-editor').textContent = data.data
+              cache.recipes[scope.file] = data.data
             }
             initAceJS()
           })
@@ -89,7 +90,6 @@ config(['$routeProvider', function($routeProvider) {
         if((e.which == 13 || e.which == 10) && (e.ctrlKey || e.shiftKey)){
           scope.$parent.executeScript()
         }
-        cache.recipes[scope.file] = window.editor.getValue()
       }
 
       function initAceJS() {
@@ -99,6 +99,12 @@ config(['$routeProvider', function($routeProvider) {
         window.editor.setTheme("ace/theme/clouds");
         window.editor.setFontSize(14)
         window.editor.getSession().setMode("ace/mode/javascript");
+        window.editor.on('change', function(){
+          $timeout(function(){
+            cache.recipes[scope.file] = window.editor.getValue()
+            scope.$apply()
+          })
+        })
       }
     }
   }
