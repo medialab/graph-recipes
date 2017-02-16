@@ -36,7 +36,7 @@ angular.module('graphrecipes.recipes_list', [])
 		'desc': 'Colors according to which node is the closest (PNG)',
 		'file': 'voronoi.js'
 	},
-	{
+	{	
 		'name': 'Pixel Image *Deluxe!*',
 		'desc': 'Paint a highly configurable pixel image that you can download (PNG).',
 		'file': 'deluxecanvas.js'
@@ -45,6 +45,11 @@ angular.module('graphrecipes.recipes_list', [])
 		'name': 'Vector Image *Deluxe!*',
 		'desc': 'Paint a highly configurable vector image that you can download (SVG).',
 		'file': 'deluxesvg.js'
+	},
+	{
+		'name': 'Attributes Grand Degustation',
+		'desc': 'Everything you ever wanted to know about attributes',
+		'file': 'fulldiagnostic.js'
 	},
 	{
 		'name': 'Heatmap Dessert',
