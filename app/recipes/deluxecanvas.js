@@ -28,7 +28,7 @@ settings.label_font_family = 'Open Sans Condensed, sans-serif'
 settings.label_font_weight = 300
 
 // Edges
-settings.edge_color = 'rgba(100, 100, 100, 0.3)'
+settings.edge_thickness = 0.5
 
 // --- (end of settings)
 
@@ -139,48 +139,51 @@ g.nodes().forEach(function(nid){
   }
 })
 
-
-// Draw each edge
-g.edges().forEach(function(eid){
-	var ns = g.getNodeAttributes(g.source(eid))
-	var nt = g.getNodeAttributes(g.target(eid))
-
-  ctx.beginPath()
-  ctx.lineCap="round"
-  ctx.lineJoin="round"
-  ctx.strokeStyle = settings.edge_color
-  ctx.fillStyle = 'rgba(0, 0, 0, 0)';
-  ctx.lineWidth = settings.edge_thickness
-  ctx.moveTo(ns.x, ns.y)
-  ctx.lineTo(nt.x, nt.y)
-  ctx.stroke()
-  ctx.closePath()
-})
-
 // Convert distance map to a visually pleasant gradient
 var gradient = function(d){
-  return 0.5 - 0.5 * Math.cos(Math.PI - Math.pow(d, 2) * Math.PI)
+  return 0.5 + 0.5 * Math.cos(Math.PI - Math.pow(d, 2) * Math.PI)
 }
 for (i in dPixelMap) {
   dPixelMap[i] = gradient(dPixelMap[i])
 }
 
-// Paint voronoi map
-var imgd = ctx.getImageData(0, 0, settings.width, settings.height)
-var pix = imgd.data
-var pixlen
-for ( i = 0, pixlen = pix.length; i < pixlen; i += 4 ) {
-  var vid = vidPixelMap[i/4]
-  var d = dPixelMap[i/4]
-  if (vid > 0) {
-    var color = d3.rgb(g.getNodeAttributes(nodesIndex[vid]).color || '#999')
-    pix[i  ] = Math.floor(pix[i  ] + d * (255 - pix[i  ]))
-    pix[i+1] = Math.floor(pix[i+1] + d * (255 - pix[i+1]))
-    pix[i+2] = Math.floor(pix[i+2] + d * (255 - pix[i+2]))
-    pix[i+3] = 255
+// Draw each edge
+g.edges().forEach(function(eid){
+  var ns = g.getNodeAttributes(g.source(eid))
+  var nt = g.getNodeAttributes(g.target(eid))
+  var d = Math.sqrt(Math.pow(ns.x - nt.x, 2) + Math.pow(ns.y - nt.y, 2))
+  var color = d3.color(ns.color || '#DDD')
+  // Build path
+  var path = []
+  for (i=0; i<1; i+=1/d) {
+    x = (1-i)*ns.x + i*nt.x
+    y = (1-i)*ns.y + i*nt.y
+    path.push([x,y])
   }
-}
-ctx.putImageData( imgd, 0, 0 )
+  var lastp
+  path.forEach(function(p, pi){
+    if (lastp) {
+      var pixi = Math.floor(p[0]) + settings.width * Math.floor(p[1])
+      if (vidPixelMap[pixi] == ns.vid || vidPixelMap[pixi] == nt.vid || vidPixelMap[pixi] == 0) {
+        color.opacity = 1
+      } else {
+        color.opacity = dPixelMap[pixi]
+      }
+      ctx.beginPath()
+      ctx.lineCap="round"
+      ctx.lineJoin="round"
+      ctx.strokeStyle = color.toString()
+      ctx.fillStyle = 'rgba(0, 0, 0, 0)';
+      ctx.lineWidth = settings.edge_thickness
+      ctx.moveTo(lastp[0], lastp[1])
+      ctx.lineTo(p[0], p[1])
+      ctx.stroke()
+      ctx.closePath()
+    }
+    lastp = p
+  })
+  
+})
 
 // Draw each node
 nodesBySize.reverse() // Because we draw from background to foreground
