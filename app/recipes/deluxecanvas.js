@@ -17,6 +17,7 @@ settings.zoom_point = {x:0.5, y:0.5}
 settings.node_margin = 5.0 // Nodes have a free space around them. This sets the size of this free space.
 settings.node_size = 0.4
 settings.node_stroke_width = 1.0 // Nodes white contour
+settings.node_halo_range = 15
 
 // Nodes labels
 settings.label_count = 20 // How much node labels you want to show (the biggest nodes)
@@ -31,6 +32,10 @@ settings.edge_color = 'rgba(100, 100, 100, 0.3)'
 
 // --- (end of settings)
 
+var x
+var y
+var i
+
 // Create the canvas
 document.querySelector('#playground').innerHTML = '<div style="width:'+settings.width+'; height:'+settings.height+';"><canvas id="cnvs" width="'+settings.width+'" height="'+settings.height+'"></canvas></div>'
 var canvas = document.querySelector('#cnvs')
@@ -38,6 +43,13 @@ var ctx = canvas.getContext("2d")
 
 // Change the coordinates of the network to fit the canvas space
 rescaleGraphToGraphicSpace()
+
+// Paint a white background
+ctx.beginPath()
+ctx.rect(0, 0, settings.width, settings.height)
+ctx.fillStyle="white"
+ctx.fill()
+ctx.closePath()
 
 // Set a default color to each node (in case they have no "color" attribute)
 g.nodes().forEach(function(nid){
@@ -69,12 +81,64 @@ nodesBySize.forEach(function(nid, i){
   n.showLabel = i < settings.label_count;
 })
 
-// Paint a white background
-ctx.beginPath()
-ctx.rect(0, 0, settings.width, settings.height)
-ctx.fillStyle="white"
-ctx.fill()
-ctx.closePath()
+// Get an index of nodes where ids are integers
+var nodesIndex = g.nodes().slice(0)
+nodesIndex.unshift(null) // We reserve 0 for "no closest"
+
+// Save this "voronoi id" as a node attribute (for node halos)
+nodesIndex.forEach(function(nid, vid){
+  if (vid > 0) {
+    var n = g.getNodeAttributes(nid)
+    n.vid = vid
+  }
+})
+
+// Init a pixel map of integers for voronoi ids
+var vidPixelMap = new Int32Array(settings.width * settings.height)
+for (i in vidPixelMap) {
+  vidPixelMap[i] = 0
+}
+
+// Init a pixel map of floats for distances
+var dPixelMap = new Float32Array(settings.width * settings.height)
+for (i in dPixelMap) {
+  dPixelMap[i] = Infinity
+}
+
+// Compute the voronoi using the pixel map
+g.nodes().forEach(function(nid){
+  var n = g.getNodeAttributes(nid)
+  var range = n.size * settings.node_size + settings.node_halo_range
+  for (x = Math.max(0, Math.floor(n.x - range) ); x <= Math.min(settings.width, Math.floor(n.x + range) ); x++ ){
+    for (y = Math.max(0, Math.floor(n.y - range) ); y <= Math.min(settings.height, Math.floor(n.y + range) ); y++ ){
+      var d = Math.sqrt(Math.pow(n.x - x, 2) + Math.pow(n.y - y, 2))
+      if (d < range) {
+        var dmod // A tweak of the voronoi: a modified distance in [0,1]
+        if (d <= n.size * settings.node_size) {
+          // "Inside" the node
+          dmod = 0
+        } else {
+          // In the halo range
+          dmod = (d - n.size * settings.node_size) / settings.node_halo_range
+        }
+        i = x + settings.width * y
+        var existingVid = vidPixelMap[i]
+        if (existingVid == 0) {
+          // 0 means there is no closest node
+          vidPixelMap[i] = n.vid
+          dPixelMap[i] = dmod
+        } else {
+          // There is already a closest node. Edit only if we are closer.
+          if (dmod < dPixelMap[i]) {
+            vidPixelMap[i] = n.vid
+            dPixelMap[i] = dmod
+          }
+        }
+      }
+    }
+  }
+})
+
 
 // Draw each edge
 g.edges().forEach(function(eid){
@@ -92,6 +156,31 @@ g.edges().forEach(function(eid){
   ctx.stroke()
   ctx.closePath()
 })
+
+// Convert distance map to a visually pleasant gradient
+var gradient = function(d){
+  return 0.5 - 0.5 * Math.cos(Math.PI - Math.pow(d, 2) * Math.PI)
+}
+for (i in dPixelMap) {
+  dPixelMap[i] = gradient(dPixelMap[i])
+}
+
+// Paint voronoi map
+var imgd = ctx.getImageData(0, 0, settings.width, settings.height)
+var pix = imgd.data
+var pixlen
+for ( i = 0, pixlen = pix.length; i < pixlen; i += 4 ) {
+  var vid = vidPixelMap[i/4]
+  var d = dPixelMap[i/4]
+  if (vid > 0) {
+    var color = d3.rgb(g.getNodeAttributes(nodesIndex[vid]).color || '#999')
+    pix[i  ] = Math.floor(pix[i  ] + d * (255 - pix[i  ]))
+    pix[i+1] = Math.floor(pix[i+1] + d * (255 - pix[i+1]))
+    pix[i+2] = Math.floor(pix[i+2] + d * (255 - pix[i+2]))
+    pix[i+3] = 255
+  }
+}
+ctx.putImageData( imgd, 0, 0 )
 
 // Draw each node
 nodesBySize.reverse() // Because we draw from background to foreground
