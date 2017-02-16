@@ -20,9 +20,9 @@ settings.node_stroke_width = 1.0 // Nodes white contour
 settings.node_halo_range = 15
 
 // Nodes labels
-settings.label_count = 20 // How much node labels you want to show (the biggest nodes)
+settings.label_count = 10 // How much node labels you want to show (the biggest nodes)
 settings.label_white_border_thickness = 3.0
-settings.label_font_min_size = 9
+settings.label_font_min_size = 12
 settings.label_font_max_size = 24
 settings.label_font_family = 'Open Sans Condensed, sans-serif'
 settings.label_font_weight = 300
@@ -153,22 +153,37 @@ g.edges().forEach(function(eid){
   var nt = g.getNodeAttributes(g.target(eid))
   var d = Math.sqrt(Math.pow(ns.x - nt.x, 2) + Math.pow(ns.y - nt.y, 2))
   var color = d3.color(ns.color || '#DDD')
+
   // Build path
   var path = []
   for (i=0; i<1; i+=1/d) {
     x = (1-i)*ns.x + i*nt.x
     y = (1-i)*ns.y + i*nt.y
-    path.push([x,y])
+
+    // Opacity
+    var o
+    var pixi = Math.floor(x) + settings.width * Math.floor(y)
+    if (vidPixelMap[pixi] == ns.vid || vidPixelMap[pixi] == nt.vid || vidPixelMap[pixi] == 0) {
+      o = 1
+    } else {
+      o = dPixelMap[pixi]
+    }
+    path.push([x,y,o])
   }
+  
+  // Smoothe path
+  if (path.length > 5) {
+    for (i=2; i<path.length-2; i++) {
+      path[i][2] = 0.15 * path[i-2][2] + 0.25 * path[i-1][2] + 0.2 * path[i][2] + 0.25 * path[i+1][2] + 0.15 * path[i+2][2]
+    }
+  }
+
+  // Draw path
   var lastp
+  var lastop
   path.forEach(function(p, pi){
     if (lastp) {
-      var pixi = Math.floor(p[0]) + settings.width * Math.floor(p[1])
-      if (vidPixelMap[pixi] == ns.vid || vidPixelMap[pixi] == nt.vid || vidPixelMap[pixi] == 0) {
-        color.opacity = 1
-      } else {
-        color.opacity = dPixelMap[pixi]
-      }
+      color.opacity = p[2]
       ctx.beginPath()
       ctx.lineCap="round"
       ctx.lineJoin="round"
@@ -181,6 +196,7 @@ g.edges().forEach(function(eid){
       ctx.closePath()
     }
     lastp = p
+    lastop = color.opacity
   })
   
 })
