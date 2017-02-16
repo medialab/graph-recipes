@@ -10,7 +10,8 @@ settings.offset = 20 // Margin
 
 // Voronoi
 settings.voronoi_use_node_size = true
-settings.voronoi_range = 10 // [0, Infinity] Limits cells' size
+settings.voronoi_range = 10 // Limits cells' size
+settings.voronoi_paint_distance = true
 
 // --- (end of settings)
 
@@ -18,6 +19,9 @@ var i
 var x
 var y
 var d
+
+// Limit voronoi range
+settings.voronoi_range = Math.min(settings.voronoi_range, Math.sqrt(Math.pow(settings.width, 2) + Math.pow(settings.height, 2)))
 
 // Create the canvas
 document.querySelector('#playground').innerHTML = '<div style="width:'+settings.width+'; height:'+settings.height+';"><canvas id="cnvs" width="'+settings.width+'" height="'+settings.height+'"></canvas></div>'
@@ -94,7 +98,11 @@ for ( i = 0, pixlen = pix.length; i < pixlen; i += 4 ) {
     pix[i  ] = color.r // red
     pix[i+1] = color.g // green
     pix[i+2] = color.b // blue
-    pix[i+3] = 255 // i+3 is alpha (the fourth element)
+    if (settings.voronoi_paint_distance) {
+      pix[i+3] = Math.floor(255 - 255 * dPixelMap[i/4]/settings.voronoi_range)
+    } else {
+      pix[i+3] = 255 // alpha
+    }
   }
 }
 
