@@ -75,10 +75,12 @@ document.querySelector('#playground').innerHTML = '<pre></pre>'
 var pre = document.querySelector('#playground pre')
 pre.textContent = ''
 
-pre.textContent += '# ' + d3.keys(nAttributes).length + ' NODE ATTRIBUTES'
+pre.textContent += '' + d3.keys(nAttributes).length + ' NODE ATTRIBUTES'
+pre.textContent += '\n================================'
 for (attr in nAttributes) {
 	// Node attribute
-	pre.textContent += '\n\n## ' + attr
+	pre.textContent += '\n\n\n' + attr
+	pre.textContent += '\n--------------------------------'
 	var attData = nAttributes[attr]
 
 	// Missing values
@@ -133,7 +135,7 @@ for (attr in nAttributes) {
 			d3.keys(attData.values)
 				.sort(function(a, b){ return attData.values[b] - attData.values[a] })
 				.map(function(v){
-					return ' - ' + v + ': ' + attData.values[v] + ' nodes'
+					return '- ' + v + ': ' + attData.values[v] + ' nodes'
 				})
 				.join('\n')
 	} else if (attData.valuesStats.differentValues - attData.valuesStats.valuesUnitary >= 1 && attData.valuesStats.differentValues - attData.valuesStats.valuesUnitary <= 10) {
@@ -145,7 +147,7 @@ for (attr in nAttributes) {
 					return attData.values[v] > 1
 				})
 				.map(function(v){
-					return ' - ' + v + ': ' + attData.values[v] + ' nodes'
+					return '- ' + v + ': ' + attData.values[v] + ' nodes'
 				})
 				.join('\n')
 	} else if (attData.valuesStats.differentValues - attData.valuesStats.valuesUnitary > 10) {
@@ -157,13 +159,10 @@ for (attr in nAttributes) {
 					return attData.values[v] > 1 && i < 10
 				})
 				.map(function(v){
-					return ' - ' + v + ': ' + attData.values[v] + ' nodes'
+					return '- ' + v + ': ' + attData.values[v] + ' nodes'
 				})
 				.join('\n')
 	}
-
-
-
 }
 
 
