@@ -19,7 +19,7 @@ settings.node_size = 0.4
 settings.node_stroke_width = 1.0 // Nodes white contour
 settings.node_halo_range = 15
 
-// Nodes labels
+// Node labels
 settings.label_count = 10 // How much node labels you want to show (the biggest nodes)
 settings.label_white_border_thickness = 3.0
 settings.label_font_min_size = 12
@@ -236,6 +236,7 @@ var label_nodeSizeExtent = d3.extent(
     return n.size
   })
 )
+if (label_nodeSizeExtent[0] == label_nodeSizeExtent[1]) {label_nodeSizeExtent[0] *= 0.9}
 
 // Draw labels
 nodesBySize.forEach(function(nid){

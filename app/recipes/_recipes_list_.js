@@ -22,22 +22,17 @@ angular.module('graphrecipes.recipes_list', [])
 		'file': 'attributes.js'
 	},
 	{
-		'name': 'Betweenness Centrality Spaghetti',
-		'desc': 'Add that metric to your node attributes',
-		'file': 'betweenness.js'
-	},
-	{
 		'name': 'Fuzzy Cluster Potatoes',
 		'desc': 'Your favorite network with cluster contours "à la heatmap" (PNG)',
 		'file': 'fuzzyclusters.js'
 	},
-	{
-		'name': 'Voronoï Mushrooms',
-		'desc': 'Colors according to which node is the closest (PNG)',
-		'file': 'voronoi.js'
-	},
-	{
-		'name': 'Pixel Image *Deluxe!*',
+  {
+		'name': 'Layout Speciality',
+		'desc': "Apply the chief's speciality ForceAtlas2 layout to your graph",
+		'file': 'forceatlas2.js'
+  },
+  {
+    'name': 'Pixel Image *Deluxe!*',
 		'desc': 'Paint a highly configurable pixel image that you can download (PNG).',
 		'file': 'deluxecanvas.js'
 	},
@@ -47,14 +42,24 @@ angular.module('graphrecipes.recipes_list', [])
 		'file': 'deluxesvg.js'
 	},
 	{
+		'name': 'Betweenness Centrality Spaghetti',
+		'desc': 'Add that metric to your node attributes',
+		'file': 'betweenness.js'
+	},
+	{
 		'name': 'Attributes Grand Degustation',
 		'desc': 'Everything you ever wanted to know about attributes',
 		'file': 'fulldiagnostic.js'
 	},
 	{
-		'name': 'Layout Speciality',
-		'desc': "Apply the chief's speciality ForceAtlas2 layout to your graph",
-		'file': 'forceatlas2.js'
+		'name': 'Voronoï Mushrooms',
+		'desc': 'Colors according to which node is the closest (PNG)',
+		'file': 'voronoi.js'
+	},
+	{	
+		'name': 'Cloud Soufflé',
+		'desc': 'Your network as light a cloud (PNG).',
+		'file': 'cloud.js'
 	},
 	{
 		'name': 'Heatmap Dessert',
