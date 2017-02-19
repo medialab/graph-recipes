@@ -28,7 +28,7 @@ angular.module('graphrecipes.recipes_list', [])
 	},
   {
 		'name': 'Layout Speciality',
-		'desc': "Apply the chief's speciality ForceAtlas2 layout to your graph",
+		'desc': 'Apply the chief\'s speciality ForceAtlas2 layout to your graph',
 		'file': 'forceatlas2.js'
   },
   {
