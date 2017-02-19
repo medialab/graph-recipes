@@ -17,8 +17,8 @@ angular.module('graphrecipes.recipes_list', [])
 		'file': 'simplesvg.js'
 	},
 	{
-		'name': 'Node Attributes Tapas',
-		'desc': 'Complete selection of node attributes',
+		'name': 'Attributes Tapas',
+		'desc': 'Discover our selection of attributes',
 		'file': 'attributes.js'
 	},
 	{
