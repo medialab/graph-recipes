@@ -26,8 +26,13 @@ angular.module('graphrecipes.recipes_list', [])
 		'desc': 'Your favorite network with cluster contours "à la heatmap" (PNG)',
 		'file': 'fuzzyclusters.js'
 	},
-	{	
-		'name': 'Pixel Image *Deluxe!*',
+  {
+		'name': 'Layout Speciality',
+		'desc': "Apply the chief's speciality ForceAtlas2 layout to your graph",
+		'file': 'forceatlas2.js'
+  },
+  {
+    'name': 'Pixel Image *Deluxe!*',
 		'desc': 'Paint a highly configurable pixel image that you can download (PNG).',
 		'file': 'deluxecanvas.js'
 	},
