@@ -14,6 +14,14 @@ require('angular-route');
 var d3 = require('d3');
 window.d3 = d3;
 
+// Requiring some graphology libraries we are going to make global for the user
+var randomLayout = require('graphology-layout/random');
+var forceAtlas2Layout = require('graphology-layout-forceatlas2');
+global.layout = {
+  random: randomLayout,
+  forceAtlas2: forceAtlas2Layout
+};
+
 // Requiring own modules
 require('./view_upload/upload.js');
 require('./view_board/board.js');

@@ -11,7 +11,9 @@
     "angular-route": "^1.6.1",
     "d3": "^4.2.2",
     "graphology": "^0.5.4",
-    "graphology-gexf": "^0.2.1"
+    "graphology-gexf": "^0.2.1",
+    "graphology-layout": "0.0.1",
+    "graphology-layout-forceatlas2": "0.0.1"
   },
   "devDependencies": {
     "css-loader": "^0.26.1",
