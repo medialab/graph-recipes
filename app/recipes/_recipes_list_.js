@@ -58,7 +58,7 @@ angular.module('graphrecipes.recipes_list', [])
 	},
 	{	
 		'name': 'Cloud Soufflé',
-		'desc': 'Your network as light a cloud (PNG)',
+		'desc': 'Your network as light as a cloud (PNG)',
 		'file': 'cloud.js'
 	},
 	{
