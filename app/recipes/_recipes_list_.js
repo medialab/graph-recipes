@@ -8,12 +8,12 @@ angular.module('graphrecipes.recipes_list', [])
 	},
 	{
 		'name': 'Pixel Image Starter',
-		'desc': 'Simple pixel image, on site or to download (PNG).',
+		'desc': 'Simple pixel image, on site or to download (PNG)',
 		'file': 'simplecanvas.js'
 	},
 	{
 		'name': 'Vector Image Starter',
-		'desc': 'Simple vector image, on site or to download (SVG).',
+		'desc': 'Simple vector image, on site or to download (SVG)',
 		'file': 'simplesvg.js'
 	},
 	{
@@ -33,12 +33,12 @@ angular.module('graphrecipes.recipes_list', [])
   },
   {
     'name': 'Pixel Image Spaghetti *Deluxe!*',
-		'desc': 'Paint a highly configurable pixel image that you can download (PNG).',
+		'desc': 'Paint a highly configurable pixel image that you can download (PNG)',
 		'file': 'deluxecanvas.js'
 	},
 	{
 		'name': 'Vector Image Spaghetti *Deluxe!*',
-		'desc': 'Paint a highly configurable vector image that you can download (SVG).',
+		'desc': 'Paint a highly configurable vector image that you can download (SVG)',
 		'file': 'deluxesvg.js'
 	},
 	{
@@ -58,7 +58,7 @@ angular.module('graphrecipes.recipes_list', [])
 	},
 	{	
 		'name': 'Cloud Soufflé',
-		'desc': 'Your network as light a cloud (PNG).',
+		'desc': 'Your network as light a cloud (PNG)',
 		'file': 'cloud.js'
 	},
 	{
