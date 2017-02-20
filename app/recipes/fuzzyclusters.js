@@ -2,7 +2,7 @@ var settings = {}
 
 // Feel free to edit following settings
 
-// WHICH ATTRIBUTES DESCRIBES CLUSTERS?
+// WHICH NODE ATTRIBUTE DESCRIBES CLUSTERS?
 settings.cluster_attribute = 'Language' // This only works for the demo network
 
 // Canvas size

@@ -47,6 +47,11 @@ angular.module('graphrecipes.recipes_list', [])
 		'file': 'fulldiagnostic.js'
 	},
 	{
+		'name': 'Partition Analysis Supplement',
+		'desc': 'Additional details on a categorical attribute',
+		'file': 'partition.js'
+	},
+	{
 		'name': 'Voronoï Mushrooms',
 		'desc': 'Colors according to which node is the closest (PNG)',
 		'file': 'voronoi.js'
