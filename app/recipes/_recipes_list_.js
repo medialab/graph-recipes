@@ -53,7 +53,7 @@ angular.module('graphrecipes.recipes_list', [])
 	},
 	{
 		'name': 'Betweenness Centrality Cake',
-		'desc': 'Add that metric to your node attributes',
+		'desc': 'Add that metric to your node and edge attributes',
 		'file': 'betweenness.js'
 	},
 	{	
