@@ -27,24 +27,19 @@ angular.module('graphrecipes.recipes_list', [])
 		'file': 'fuzzyclusters.js'
 	},
   {
-		'name': 'Layout Speciality',
+		'name': 'Layout Speciality Gravy',
 		'desc': 'Apply the chief\'s speciality ForceAtlas2 layout to your graph',
 		'file': 'forceatlas2.js'
   },
   {
-    'name': 'Pixel Image *Deluxe!*',
+    'name': 'Pixel Image Spaghetti *Deluxe!*',
 		'desc': 'Paint a highly configurable pixel image that you can download (PNG).',
 		'file': 'deluxecanvas.js'
 	},
 	{
-		'name': 'Vector Image *Deluxe!*',
+		'name': 'Vector Image Spaghetti *Deluxe!*',
 		'desc': 'Paint a highly configurable vector image that you can download (SVG).',
 		'file': 'deluxesvg.js'
-	},
-	{
-		'name': 'Betweenness Centrality Spaghetti',
-		'desc': 'Add that metric to your node attributes',
-		'file': 'betweenness.js'
 	},
 	{
 		'name': 'Attributes Grand Degustation',
@@ -55,6 +50,11 @@ angular.module('graphrecipes.recipes_list', [])
 		'name': 'Voronoï Mushrooms',
 		'desc': 'Colors according to which node is the closest (PNG)',
 		'file': 'voronoi.js'
+	},
+	{
+		'name': 'Betweenness Centrality Cake',
+		'desc': 'Add that metric to your node attributes',
+		'file': 'betweenness.js'
 	},
 	{	
 		'name': 'Cloud Soufflé',
