@@ -255,8 +255,11 @@ var legend = d3.select('#playground').append('div')
   .style('margin', '12px')
   .style('border', '1px solid #AAA')
   .style('padding', '12px')
-legend.append('h3').text('Legend')
-legend.append('h4').text('Color by ' + settings.cluster_attribute)
+legend.append('h3')
+  .text('Legend')
+  .style('margin-top', '0')
+legend.append('h4')
+  .text('Color by ' + settings.cluster_attribute)
 for (cl in classesIndex) {
   var color = classesIndex[cl]
   var div = legend.append('div')
