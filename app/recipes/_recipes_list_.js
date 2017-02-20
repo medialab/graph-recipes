@@ -23,7 +23,7 @@ angular.module('graphrecipes.recipes_list', [])
 	},
 	{
 		'name': 'Fuzzy Cluster Potatoes',
-		'desc': 'Your favorite network with cluster contours "à la heatmap" (PNG)',
+		'desc': 'Your favorite network with cluster contours "à la heatmap", with legend (PNG)',
 		'file': 'fuzzyclusters.js'
 	},
   {

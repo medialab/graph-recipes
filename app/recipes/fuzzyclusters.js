@@ -247,6 +247,33 @@ if (settings.save_at_the_end) {
   });
 }
 
+// Display legend
+var legend = d3.select('#playground').append('div')
+  .style('width', '500px')
+  .style('font-family', '"Raleway", sans-serif')
+  .style('background-color', '#FFF')
+  .style('margin', '12px')
+  .style('border', '1px solid #AAA')
+  .style('padding', '12px')
+legend.append('h3').text('Legend')
+legend.append('h4').text('Color by ' + settings.cluster_attribute)
+for (cl in classesIndex) {
+  var color = classesIndex[cl]
+  var div = legend.append('div')
+    .style('margin-bottom', '6px')
+  div.append('div')
+    .style('display', 'inline-flex')
+    .style('width', '18px')
+    .style('height', '18px')
+    .style('border-radius', '9px')
+    .style('background-color', color)
+  div.append('div')
+    .style('display', 'inline-flex')
+    .style('padding-left', '6px')
+    .style('vertical-align', 'top')
+    .text(cl)
+}
+
 // ---
 // Functions
 
