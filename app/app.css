@@ -7,6 +7,10 @@
   overflow-y: auto;
 }
 
+.network-info {
+  padding: 12px;
+}
+
 .content {
   overflow-y: auto;
   overflow-x: hidden;
@@ -111,7 +115,7 @@ h3.script-title {
 }
 .upload-text-main{
   font-family: 'Raleway', sans-serif;
-  font-size: 36px;
+  font-size: 28px;
 }
 .upload-area-container:hover   .upload-text-main,
 .upload-area-container.over    .upload-text-main,
@@ -123,7 +127,7 @@ h3.script-title {
 .upload-text-sub{
   font-family: 'Raleway', sans-serif;
   color: #AAA;
-  font-size: 18px;
+  font-size: 16px;
 }
 .upload-area-container:hover   .upload-text-sub,
 .upload-area-container.over    .upload-text-sub
