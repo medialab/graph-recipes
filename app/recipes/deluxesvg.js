@@ -42,6 +42,9 @@ var svg = svgContainer.append("svg")
 	.attr('width', settings.width)
 	.attr('height', settings.height)
 
+// Fix missing coordinates and/or colors
+addMissingVisualizationData()
+
 // Change the coordinates of the network to fit the SVG space
 rescaleGraphToGraphicSpace()
 
@@ -242,6 +245,7 @@ var label_nodeSizeExtent = d3.extent(
 		return n.size
 	})
 )
+if (label_nodeSizeExtent[0] == label_nodeSizeExtent[1]) {label_nodeSizeExtent[0] *= 0.9}
 
 // Draw labels
 nodesBySize.forEach(function(nid){
@@ -565,5 +569,45 @@ function rescaleGraphToGraphicSpace() {
       n.y = settings.height / 2 + (n.y - ybarycenter) * ratio
       n.size *= ratio
     })
+  }
+}
+
+function addMissingVisualizationData() {
+  var colorIssues = 0
+  var coordinateIssues = 0
+  g.nodes().forEach(function(nid){
+    var n = g.getNodeAttributes(nid)
+    if (!isNumeric(n.x) || !isNumeric(n.y)) {
+      var c = getRandomCoordinates()
+      n.x = c[0]
+      n.y = c[1]
+      coordinateIssues++
+    }
+    if (!isNumeric(n.size)) {
+      n.size = 1
+    }
+    if (n.color == undefined) {
+      n.color = '#665'
+      colorIssues++
+    }
+  })
+
+  if (coordinateIssues > 0) {
+    alert('Note: '+coordinateIssues+' nodes had coordinate issues. We carelessly fixed them.')
+  }
+
+  function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n)
+  }
+  
+  function getRandomCoordinates() {
+    var candidates
+    var d2 = Infinity
+    while (d2 > 1) {
+      candidates = [2 * Math.random() - 1, 2 * Math.random() - 1]
+      d2 = candidates[0] * candidates[0] + candidates[1] * candidates[1]
+    }
+    var heuristicRatio = 5 * Math.sqrt(g.order)
+    return candidates.map(function(d){return d * heuristicRatio})
   }
 }

@@ -28,6 +28,9 @@ var svg = svgContainer.append("svg")
 	.attr('width', settings.width)
 	.attr('height', settings.height)
 
+// Fix missing coordinates and/or colors
+addMissingVisualizationData()
+
 // Change the coordinates of the network to fit the SVG space
 rescaleGraphToGraphicSpace()
 
@@ -214,4 +217,44 @@ function rescaleGraphToGraphicSpace() {
     n.size *= ratio
   })
 
+}
+
+function addMissingVisualizationData() {
+  var colorIssues = 0
+  var coordinateIssues = 0
+  g.nodes().forEach(function(nid){
+    var n = g.getNodeAttributes(nid)
+    if (!isNumeric(n.x) || !isNumeric(n.y)) {
+      var c = getRandomCoordinates()
+      n.x = c[0]
+      n.y = c[1]
+      coordinateIssues++
+    }
+    if (!isNumeric(n.size)) {
+      n.size = 1
+    }
+    if (n.color == undefined) {
+      n.color = '#665'
+      colorIssues++
+    }
+  })
+
+  if (coordinateIssues > 0) {
+    alert('Note: '+coordinateIssues+' nodes had coordinate issues. We carelessly fixed them.')
+  }
+
+  function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n)
+  }
+  
+  function getRandomCoordinates() {
+    var candidates
+    var d2 = Infinity
+    while (d2 > 1) {
+      candidates = [2 * Math.random() - 1, 2 * Math.random() - 1]
+      d2 = candidates[0] * candidates[0] + candidates[1] * candidates[1]
+    }
+    var heuristicRatio = 5 * Math.sqrt(g.order)
+    return candidates.map(function(d){return d * heuristicRatio})
+  }
 }

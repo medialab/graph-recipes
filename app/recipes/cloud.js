@@ -41,6 +41,9 @@ document.querySelector('#playground').innerHTML = '<div style="width:'+settings.
 var canvas = document.querySelector('#cnvs')
 var ctx = canvas.getContext("2d")
 
+// Fix missing coordinates and/or colors
+addMissingVisualizationData()
+
 // Change the coordinates of the network to fit the canvas space
 rescaleGraphToGraphicSpace()
 
@@ -137,7 +140,6 @@ if (settings.display_labels) {
     if(n.showLabel){
       var color = d3.rgb(settings.node_color)
       var fontSize = Math.floor(settings.label_font_min_size + (n.size - label_nodeSizeExtent[0]) * (settings.label_font_max_size - settings.label_font_min_size) / (label_nodeSizeExtent[1] - label_nodeSizeExtent[0]))
-      console.log(n.size)
 
       // Then, draw the label only if wanted
       var labelCoordinates = {
@@ -409,5 +411,45 @@ function boxBlurT (scl, tcl, w, h, r) {
     for(var j=0  ; j<=r ; j++) { val += scl[ri] - fv     ;  tcl[ti] = Math.round(val*iarr);  ri+=w; ti+=w; }
     for(var j=r+1; j<h-r; j++) { val += scl[ri] - scl[li];  tcl[ti] = Math.round(val*iarr);  li+=w; ri+=w; ti+=w; }
     for(var j=h-r; j<h  ; j++) { val += lv      - scl[li];  tcl[ti] = Math.round(val*iarr);  li+=w; ti+=w; }
+  }
+}
+
+function addMissingVisualizationData() {
+  var colorIssues = 0
+  var coordinateIssues = 0
+  g.nodes().forEach(function(nid){
+    var n = g.getNodeAttributes(nid)
+    if (!isNumeric(n.x) || !isNumeric(n.y)) {
+      var c = getRandomCoordinates()
+      n.x = c[0]
+      n.y = c[1]
+      coordinateIssues++
+    }
+    if (!isNumeric(n.size)) {
+      n.size = 1
+    }
+    if (n.color == undefined) {
+      n.color = '#665'
+      colorIssues++
+    }
+  })
+
+  if (coordinateIssues > 0) {
+    alert('Note: '+coordinateIssues+' nodes had coordinate issues. We carelessly fixed them.')
+  }
+
+  function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n)
+  }
+  
+  function getRandomCoordinates() {
+    var candidates
+    var d2 = Infinity
+    while (d2 > 1) {
+      candidates = [2 * Math.random() - 1, 2 * Math.random() - 1]
+      d2 = candidates[0] * candidates[0] + candidates[1] * candidates[1]
+    }
+    var heuristicRatio = 5 * Math.sqrt(g.order)
+    return candidates.map(function(d){return d * heuristicRatio})
   }
 }
