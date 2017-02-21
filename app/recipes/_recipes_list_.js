@@ -27,8 +27,8 @@ angular.module('graphrecipes.recipes_list', [])
 		'file': 'fuzzyclusters.js'
 	},
   {
-		'name': 'Layout Speciality Gravy',
-		'desc': 'Apply the chief\'s speciality ForceAtlas2 layout to your graph',
+		'name': 'Layout Specialty Gravy',
+		'desc': 'Apply the chef\'s specialty ForceAtlas2 layout to your graph',
 		'file': 'forceatlas2.js'
   },
   {
