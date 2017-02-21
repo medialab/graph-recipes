@@ -37,8 +37,7 @@ function betweennessCentrality(g, normalized, directed, attributeName) {
     _rescale(betweenness, normalized)
 
     g.nodes().forEach(function(nid){
-      var n = g.getNodeAttributes(nid)
-      n[attributeName] = betweenness[nid]
+      g.setNodeAttribute(nid, attributeName, betweenness[nid])
     })
   }
 
@@ -65,8 +64,7 @@ function betweennessCentrality(g, normalized, directed, attributeName) {
 
     g.edges().forEach(function(eid){
       var id = g.source(eid)+'|'+g.target(eid)
-      var e = g.getEdgeAttributes(eid)
-      e[attributeName] = betweenness[id]
+      g.setEdgeAttribute(eid, attributeName, betweenness[id])
     })
   }
 
