@@ -51,20 +51,98 @@ attData.valueFlow = {}
 attData.values.forEach(function(v1){
 	attData.valueFlow[v1] = {}
 	attData.values.forEach(function(v2){
-		attData.valueFlow[v1][v2] = {count: 0}
+		attData.valueFlow[v1][v2] = {count: 0, expected: 0, nd:0}
 	})
 })
-g.edges().forEach(function(eid){
+g.edges().forEach(function(eid){ // Edges count
 	var nsid = g.source(eid)
 	var ntid = g.target(eid)
 	attData.valueFlow[g.getNodeAttribute(nsid, settings.attribute)][g.getNodeAttribute(ntid, settings.attribute)].count++
+})
+// For normalized density, we use the same version as the one used in Newmans' Modularity
+// Newman, M. E. J. (2006). Modularity and community structure in networks. Proceedings of the National Academy of …, 103(23), 8577–8582. http://doi.org/10.1073/pnas.0601602103
+// Here, for a directed network
+g.nodes().forEach(function(nsid){
+	g.nodes().forEach(function(ntid){
+		var expected = g.outDegree(nsid) * g.inDegree(ntid) / (2 * g.size)
+		attData.valueFlow[g.getNodeAttribute(nsid, settings.attribute)][g.getNodeAttribute(ntid, settings.attribute)].expected += expected
+	})
+})
+attData.values.forEach(function(v1){
+	attData.values.forEach(function(v2){
+		attData.valueFlow[v1][v2].nd = ( attData.valueFlow[v1][v2].count - attData.valueFlow[v1][v2].expected ) / (4 * g.size) 
+	})
+})
+
+// Global statistics
+attData.stats = {}
+
+// Modularity (based on previous computations)
+attData.stats.modularity = 0
+attData.values.forEach(function(v1){
+	attData.values.forEach(function(v2){
+		if (v1==v2) {
+			attData.stats.modularity += attData.valueFlow[v1][v2].nd
+		} else {
+			attData.stats.modularity -= attData.valueFlow[v1][v2].nd
+		}
+	})
 })
 
 console.log('Attribute data', attData)
 
 var div = d3.select('#playground').append('div')
+
+div.append('h3').text('Group to Group Edge Count')
+div.append('p')
+	.style('width', '600px')
+	.text(
+		'This matrix displays how many edges there are from a group to another (or possibly the same). '+
+		'The groups are defined by nodes having the same '+settings.attribute+'. '+
+		'The sum of all values is the size of the network, ie. its total number of edges. '+
+		'Note that bigger groups naturally get more links. '+
+		'Columns are ordered by group size.'
+	)
 drawFlowMatrix(div, attData)
-drawDensityMatrix(div, attData)
+
+div.append('h3').text('Group to Group Normalized Density')
+div.append('p')
+	.style('width', '600px')
+	.html(
+		'This matrix displays how many edges there are from a group to another (or the same) <i>versus</i> the expected number of edges. '+
+		'We call it normalized density by analogy with traditional edge density, which is the actual number of edges versus the potential number of edges. '+
+		'The version presented here uses Mark Newman\'s formula of modularity. '+
+		'Normalized density can therefore be interpreted as the contribution of each pair of groups to modularity. '+
+		'Values on the diagonal (green) contribute positively while others (red) contribute negatively. More details below.'
+	)
+drawNormalizedDensityMatrix(div, attData)
+div.append('p')
+	.style('width', '600px')
+	.html(
+		'The formula for this normalized density is this one:'
+	)
+div.append('p')
+	.style('width', '600px')
+	.html(
+		'<i>D = 1/(4*m) + Sum[Aij - ki*kj/(2*m)]</i>'
+	)
+div.append('p')
+	.style('width', '600px')
+	.html(
+		'Where <i>i</i> is a node from group 1 and <i>j</i> from group 2, <i>m</i> is the size of the network (edges count), '+
+		'<i>Aij = 1</i> if there is an edge from <i>i</i> to <i>j</i> and 0 else, <i>ki</i> is the outdegree of <i>i</i> and <i>kj</i> the indegree of <i>j</i>.'
+	)
+div.append('p')
+	.style('width', '600px')
+	.html(
+		'This formula is adapted from this paper: <i>Newman, M. E. J. (2006). Modularity and community structure in networks. Proceedings of the National Academy of …, 103(23), 8577–8582. <a href="http://doi.org/10.1073/pnas.0601602103" target="_blank">http://doi.org/10.1073/pnas.0601602103</a></i>'	
+	)
+div.append('p')
+	.style('width', '600px')
+	.html(
+		'The rationale for using this metric is that is less sensitive to group sizes (the very same idea behind modularity). Raw edge count emphasizes big groups. '+
+		'On the contrary, traditional density emphasizes small clusters. Normalized density works on any cluster size.'
+	)
 
 // ---
 // Functions
@@ -109,7 +187,7 @@ function drawFlowMatrix(container, attData) {
 	})
 
 	// Draw SVG
-	var maxR = 24
+	var maxR = 32
 	var margin = {top: 120 + maxR, right: 24 + maxR, bottom: 24 + maxR, left: 120 + maxR}
 	var width = 2 * maxR * (attData.values.length - 1)
 	var height = width // square space
@@ -236,7 +314,8 @@ function drawFlowMatrix(container, attData) {
     .attr("fill", 'rgba(0, 0, 0, 1.0)')
 }
 
-function drawDensityMatrix(container, attData) {
+function drawNormalizedDensityMatrix(container, attData) {
+
 	// Compute crossings
 	var crossings = []
 	var v1
@@ -246,7 +325,7 @@ function drawDensityMatrix(container, attData) {
 			crossings.push({
 				v1: v1,
 				v2: v2,
-				density: attData.valueFlow[v1][v2].count / (attData.valuesIndex[v1] * attData.valuesIndex[v2])
+				nd: attData.valueFlow[v1][v2].nd
 			})
 		}
 	}
@@ -261,7 +340,7 @@ function drawDensityMatrix(container, attData) {
 	})
 
 	// Draw SVG
-	var maxR = 24
+	var maxR = 32
 	var margin = {top: 120 + maxR, right: 24 + maxR, bottom: 24 + maxR, left: 120 + maxR}
 	var width = 2 * maxR * (attData.values.length - 1)
 	var height = width // square space
@@ -285,7 +364,7 @@ function drawDensityMatrix(container, attData) {
 
 	x.domain([0, attData.values.length - 1])
 	y.domain([0, attData.values.length - 1])
-	size.domain(d3.extent(crossings, function(d){return r(d.density)}))
+	size.domain([0, d3.max(crossings, function(d){return r(Math.max(0, d.nd))})])
 
 	var svg = container.append("svg")
 	    .attr("width", width + margin.left + margin.right)
@@ -374,15 +453,21 @@ function drawDensityMatrix(container, attData) {
 	  
 	dot.append("circle")
 	  .attr("class", "dot")
-	  .attr("r", function(d) { return size( r(d.density) ) })
+	  .attr("r", function(d) { return size( r(Math.max(0, d.nd)) ) })
 	  .attr("cx", function(d) { return x(valueRanking[d.v2]) })
 	  .attr("cy", function(d) { return y(valueRanking[d.v1]) })
-	  .style("fill", 'rgba(120, 120, 120, 0.3)')
+	  .style("fill", function(d){
+	  	if (d.v1 == d.v2) {
+	  		return 'rgba(70, 220, 70, 0.3)'
+	  	} else {
+	  		return 'rgba(220, 70, 70, 0.3)'	  		
+	  	}
+	  })
 
  	dot.append('text')
     .attr('x', function(d){ return x(valueRanking[d.v2]) })
     .attr('y', function(d){ return y(valueRanking[d.v1]) + 4 })
-    .text( function (d) { return formatDensityNumber(d.density) })
+    .text( function (d) { return formatDensityNumber(d.nd) })
     .style('text-anchor', 'middle')
     .attr("font-family", "sans-serif")
     .attr("font-size", "10px")
