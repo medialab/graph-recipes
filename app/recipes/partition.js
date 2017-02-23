@@ -660,12 +660,12 @@ function drawValueInternalExternal(container, attData, v) {
 	
 	var data = [
 		{
-			label: 'Internal',
+			label: 'INTERNAL',
 			nd: attData.valuesIndex[v].internalNDensity,
 			color: 'rgba(70, 220, 70, 0.3)'
 		},
 		{
-			label: 'External',
+			label: 'EXTERNAL',
 			nd: attData.valuesIndex[v].externalNDensity,
 			color: 'rgba(220, 70, 70, 0.3)'
 		}
@@ -738,12 +738,12 @@ function drawValueInboundOutbound(container, attData, v) {
 	
 	var data = [
 		{
-			label: 'Inbound',
+			label: 'INBOUND',
 			nd: attData.valuesIndex[v].inboundNDensity,
 			count: attData.valuesIndex[v].inboundLinks
 		},
 		{
-			label: 'Outbound',
+			label: 'OUTBOUND',
 			nd: attData.valuesIndex[v].outboundNDensity,
 			count: attData.valuesIndex[v].outboundLinks
 		}
@@ -901,7 +901,7 @@ function drawValueSkewnessDistribution(container, attData, v) {
 	    .style("stroke", 'rgba(0, 0, 0, 0.3)')
 
 	svg.append('text')
-			.text('→ INBOUND')
+			.text('INBOUND')
 			.attr('text-anchor', 'end')
 			.attr('x', xl(0))
 			.attr('y', - 6)
@@ -910,7 +910,7 @@ function drawValueSkewnessDistribution(container, attData, v) {
 	    .attr("fill", 'rgba(0, 0, 0, 0.5)')
 
 	svg.append('text')
-			.text('OUTBOUND →')
+			.text('OUTBOUND')
 			.attr('x', xr(0))
 			.attr('y', - 6)
 	    .attr("font-family", "sans-serif")
@@ -918,7 +918,7 @@ function drawValueSkewnessDistribution(container, attData, v) {
 	    .attr("fill", 'rgba(0, 0, 0, 0.5)')
 
 	svg.append('text')
-			.text(v)
+			.text('→ ' + v + ' →')
 			.attr('text-anchor', 'middle')
 			.attr('x', width/2)
 			.attr('y', - 24)
