@@ -32,7 +32,11 @@ if (types.string !== undefined) {
 attData.valuesIndex = {}
 g.nodes().forEach(function(nid){
 	var n = g.getNodeAttributes(nid)
-	attData.valuesIndex[n[settings.attribute]] = (attData.valuesIndex[n[settings.attribute]] || 0) + 1
+	if (attData.valuesIndex[n[settings.attribute]]) {
+		attData.valuesIndex[n[settings.attribute]].nodes++
+	} else {
+		attData.valuesIndex[n[settings.attribute]] = {nodes: 1}
+	}
 })
 attData.values = d3.keys(attData.valuesIndex)
 var valuesCounts = d3.values(attData.valuesIndex)
@@ -72,6 +76,36 @@ attData.values.forEach(function(v1){
 	attData.values.forEach(function(v2){
 		attData.valueFlow[v1][v2].nd = ( attData.valueFlow[v1][v2].count - attData.valueFlow[v1][v2].expected ) / (4 * g.size) 
 	})
+})
+
+// Value stats related to connectivity
+attData.values.forEach(function(v){
+	attData.valuesIndex[v].internalLinks = attData.valueFlow[v][v].count
+	attData.valuesIndex[v].internalNDensity = attData.valueFlow[v][v].nd
+
+	attData.valuesIndex[v].inboundLinks = d3.sum(attData.values
+			.filter(function(v2){ return v2 != v})
+			.map(function(v2){ return attData.valueFlow[v2][v].count })
+		)
+
+	attData.valuesIndex[v].inboundNDensity = d3.sum(attData.values
+			.filter(function(v2){ return v2 != v})
+			.map(function(v2){ return attData.valueFlow[v2][v].nd })
+		)
+
+	attData.valuesIndex[v].outboundLinks = d3.sum(attData.values
+			.filter(function(v2){ return v2 != v})
+			.map(function(v2){ return attData.valueFlow[v][v2].count })
+		)
+
+	attData.valuesIndex[v].outboundNDensity = d3.sum(attData.values
+			.filter(function(v2){ return v2 != v})
+			.map(function(v2){ return attData.valueFlow[v][v2].nd })
+		)
+
+	attData.valuesIndex[v].externalLinks = attData.valuesIndex[v].inboundLinks + attData.valuesIndex[v].outboundLinks
+	attData.valuesIndex[v].externalNDensity = attData.valuesIndex[v].inboundNDensity + attData.valuesIndex[v].outboundNDensity
+
 })
 
 // Global statistics
@@ -159,6 +193,45 @@ div.append('p')
 		'The rationale for using this metric is that is less sensitive to group sizes (the very same idea behind modularity). Raw edge count emphasizes big groups. '+
 		'On the contrary, traditional density emphasizes small clusters. Normalized density works on any cluster size.'
 	)
+div.append('p')
+	.style('width', '600px')
+	.html(
+		'<strong>Modularity = ' + attData.stats.modularity.toFixed(3) + '</strong> for the ' + settings.attribute + ' partitioning. '+
+		'Modularity is literally the sum of normalized densities inside a same group (green circles) '+
+		'minus the sum of normalized densities from one group to another (red circles). '+
+		'Big green circles indicate the most dense groups. Big red circles are remarkable amounts of links from one group to another (taking into account the size of groups).'
+	)
+
+// Section 2 : Properties of each group
+div.append('h1').text('Properties of each group')
+
+// Rank values by count
+var sortedValues = attData.values.slice(0).sort(function(v1, v2){
+	return attData.valuesIndex[v2].nodes - attData.valuesIndex[v1].nodes
+})
+sortedValues.forEach(function(v){
+	div.append('h2').text(settings.attribute + ' = ' + v)
+
+	// Internal versus External
+	div.append('h3').text('Normalized Density Profile')
+	div.append('p')
+		.style('width', '600px')
+		.text(
+			'Compare internal to external connectivity. Normalized density is used to eliminate group size bias.'
+		)
+	drawValueInternalExternal(div, attData, v)
+
+	// Inbound versus Outbound
+	div.append('h3').text('Connectivity Skewness')
+	div.append('p')
+		.style('width', '600px')
+		.text(
+			'Compare inbound links to outbound links (internal not included). ' +
+			'Being cited is usually considered more favorable than citing.'
+		)
+	drawValueInboundOutbound(div, attData, v)
+
+})
 
 // ---
 // Functions
@@ -182,7 +255,7 @@ function drawValuesDistribution(container, attData) {
 	
 	// Rank values by count
 	var sortedValues = attData.values.slice(0).sort(function(v1, v2){
-		return attData.valuesIndex[v1] - attData.valuesIndex[v2]
+		return attData.valuesIndex[v1].nodes - attData.valuesIndex[v2].nodes
 	})
 
 	var barHeight = 32
@@ -208,7 +281,7 @@ function drawValuesDistribution(container, attData) {
 	    .attr("transform", 
           "translate(" + margin.left + "," + margin.top + ")")
 
-  x.domain([0, d3.max(sortedValues, function(v) { return attData.valuesIndex[v] })])
+  x.domain([0, d3.max(sortedValues, function(v) { return attData.valuesIndex[v].nodes })])
   y.domain(sortedValues)
 
   svg.append("g")
@@ -237,25 +310,24 @@ function drawValuesDistribution(container, attData) {
 	    .style("fill", 'rgba(120, 120, 120, 0.5)')
 	    .attr("x", 0)
 	    .attr("y", function(v) { return y(v) })
-	    .attr("width", function(v) { return x(attData.valuesIndex[v]) })
+	    .attr("width", function(v) { return x(attData.valuesIndex[v].nodes) })
 	    .attr("height", y.bandwidth())
 
   bar.append('text')
-  		.attr('x', function(v) { return 6 + x(attData.valuesIndex[v]) })
+  		.attr('x', function(v) { return 6 + x(attData.valuesIndex[v].nodes) })
   		.attr('y', function(v) { return y(v) + 12 })
   		.attr('font-family', 'sans-serif')
 	    .attr('font-size', '10px')
 	    .attr('fill', 'rgba(0, 0, 0, 0.8)')
-	    .text(function(v){ return attData.valuesIndex[v] + ' nodes'})
+	    .text(function(v){ return attData.valuesIndex[v].nodes + ' nodes'})
 
   bar.append('text')
-  		.attr('x', function(v) { return 6 + x(attData.valuesIndex[v]) })
+  		.attr('x', function(v) { return 6 + x(attData.valuesIndex[v].nodes) })
   		.attr('y', function(v) { return y(v) + 24 })
   		.attr('font-family', 'sans-serif')
 	    .attr('font-size', '10px')
 	    .attr('fill', 'rgba(0, 0, 0, 0.8)')
-	    .text(function(v){ return Math.round(100 * attData.valuesIndex[v] / g.order) + '%'})
-
+	    .text(function(v){ return Math.round(100 * attData.valuesIndex[v].nodes / g.order) + '%'})
 }
 
 function drawFlowMatrix(container, attData) {
@@ -275,7 +347,7 @@ function drawFlowMatrix(container, attData) {
 
 	// Rank values by count
 	var sortedValues = attData.values.sort(function(v1, v2){
-		return attData.valuesIndex[v2] - attData.valuesIndex[v1]
+		return attData.valuesIndex[v2].nodes - attData.valuesIndex[v1].nodes
 	})
 	var valueRanking = {}
 	sortedValues.forEach(function(v, i){
@@ -428,7 +500,7 @@ function drawNormalizedDensityMatrix(container, attData) {
 
 	// Rank values by count
 	var sortedValues = attData.values.sort(function(v1, v2){
-		return attData.valuesIndex[v2] - attData.valuesIndex[v1]
+		return attData.valuesIndex[v2].nodes - attData.valuesIndex[v1].nodes
 	})
 	var valueRanking = {}
 	sortedValues.forEach(function(v, i){
@@ -570,6 +642,170 @@ function drawNormalizedDensityMatrix(container, attData) {
     .attr("fill", 'rgba(0, 0, 0, 1.0)')
 
 	function formatDensityNumber(d) {
-   	return (d * 100).toFixed(2) + '%'
+   	return d.toFixed(3)
   }
+}
+
+function drawValueInternalExternal(container, attData, v) {
+	
+	var data = [
+		{
+			label: 'Internal',
+			nd: attData.valuesIndex[v].internalNDensity,
+			color: 'rgba(70, 220, 70, 0.3)'
+		},
+		{
+			label: 'External',
+			nd: attData.valuesIndex[v].externalNDensity,
+			color: 'rgba(220, 70, 70, 0.3)'
+		}
+	]
+	
+	var barHeight = 32
+	var margin = {top: 24, right: 120, bottom: 24, left: 120}
+	var width = 600  - margin.left - margin.right
+	var height = barHeight * data.length
+
+	var x = d3.scaleLinear().range([0, width])
+
+	var y = d3.scaleBand().rangeRound([0, height]).padding(.05)
+
+	var xAxis = d3.axisBottom()
+	    .scale(x)
+
+	var yAxis = d3.axisLeft()
+	    .scale(y)
+
+	var svg = container.append("svg")
+	    .attr("width", width + margin.left + margin.right)
+	    .attr("height", height + margin.top + margin.bottom)
+	  .append("g")
+	    .attr("transform", 
+          "translate(" + margin.left + "," + margin.top + ")")
+
+  x.domain([0, d3.max(data, function(d) { return d.nd })])
+  y.domain(data.map(function(d){return d.label}))
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .selectAll("text")
+	    .attr("font-family", "sans-serif")
+	    .attr("font-size", "12px")
+	    .attr("fill", 'rgba(0, 0, 0, 0.5)')
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .selectAll("text")
+	    .attr("font-family", "sans-serif")
+	    .attr("font-size", "12px")
+	    .attr("fill", 'rgba(0, 0, 0, 0.5)')
+
+  var bar = svg.selectAll("bar")
+      .data(data)
+    .enter().append('g')
+    	.attr("class", "bar")
+
+  bar.append("rect")
+	    .style("fill", function(d){ return d.color })
+	    .attr("x", 0)
+	    .attr("y", function(d) { return y(d.label) })
+	    .attr("width", function(d) { return x(Math.max(0, d.nd)) })
+	    .attr("height", y.bandwidth())
+
+  bar.append('text')
+  		.attr('x', function(d) { return 6 + x(Math.max(0, d.nd)) })
+  		.attr('y', function(d) { return y(d.label) + 18 })
+  		.attr('font-family', 'sans-serif')
+	    .attr('font-size', '10px')
+	    .attr('fill', 'rgba(0, 0, 0, 0.8)')
+	    .text(function(d){ return d.nd.toFixed(3) + ' norm. density'})
+}
+
+function drawValueInboundOutbound(container, attData, v) {
+	
+	var data = [
+		{
+			label: 'Inbound',
+			nd: attData.valuesIndex[v].inboundNDensity,
+			count: attData.valuesIndex[v].inboundLinks
+		},
+		{
+			label: 'Outbound',
+			nd: attData.valuesIndex[v].outboundNDensity,
+			count: attData.valuesIndex[v].outboundLinks
+		}
+	]
+	
+	var barHeight = 32
+	var margin = {top: 24, right: 120, bottom: 24, left: 120}
+	var width = 600  - margin.left - margin.right
+	var height = barHeight * data.length
+
+	var x = d3.scaleLinear().range([0, width])
+
+	var y = d3.scaleBand().rangeRound([0, height]).padding(.05)
+
+	var xAxis = d3.axisBottom()
+	    .scale(x)
+
+	var yAxis = d3.axisLeft()
+	    .scale(y)
+
+	var svg = container.append("svg")
+	    .attr("width", width + margin.left + margin.right)
+	    .attr("height", height + margin.top + margin.bottom)
+	  .append("g")
+	    .attr("transform", 
+          "translate(" + margin.left + "," + margin.top + ")")
+
+  x.domain([0, Math.max(0.01, d3.max(data, function(d) { return d.nd }))])
+  y.domain(data.map(function(d){return d.label}))
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .selectAll("text")
+	    .attr("font-family", "sans-serif")
+	    .attr("font-size", "12px")
+	    .attr("fill", 'rgba(0, 0, 0, 0.5)')
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .selectAll("text")
+	    .attr("font-family", "sans-serif")
+	    .attr("font-size", "12px")
+	    .attr("fill", 'rgba(0, 0, 0, 0.5)')
+
+  var bar = svg.selectAll("bar")
+      .data(data)
+    .enter().append('g')
+    	.attr("class", "bar")
+
+  bar.append("rect")
+	    .style("fill", 'rgba(120, 120, 120, 0.5)')
+	    .attr("x", 0)
+	    .attr("y", function(d) { return y(d.label) })
+	    .attr("width", function(d) { return x(Math.max(0, d.nd)) })
+	    .attr("height", y.bandwidth())
+
+  bar.append('text')
+  		.attr('x', function(d) { return 6 + x(Math.max(0, d.nd)) })
+  		.attr('y', function(d) { return y(d.label) + 12 })
+  		.attr('font-family', 'sans-serif')
+	    .attr('font-size', '10px')
+	    .attr('fill', 'rgba(0, 0, 0, 0.8)')
+	    .text(function(d){ return d.count + ' links'})
+
+  bar.append('text')
+  		.attr('x', function(d) { return 6 + x(Math.max(0, d.nd)) })
+  		.attr('y', function(d) { return y(d.label) + 24 })
+  		.attr('font-family', 'sans-serif')
+	    .attr('font-size', '10px')
+	    .attr('fill', 'rgba(0, 0, 0, 0.8)')
+	    .text(function(d){ return d.nd.toFixed(3) + ' norm. density'})
 }
