@@ -233,6 +233,14 @@ sortedValues.forEach(function(v){
 		)
 	drawValueInboundOutbound(div, attData, v)
 
+	// Connectivity Skewness Distribution
+	div.append('h3').text('Connectivity Skewness Distribution')
+	div.append('p')
+		.style('width', '600px')
+		.text(
+			'Compare inbound to outbound normalized density to understand relations between groups.'
+		)
+	drawValueSkewnessDistribution(div, attData, v)
 })
 
 // ---
@@ -810,4 +818,184 @@ function drawValueInboundOutbound(container, attData, v) {
 	    .attr('font-size', '10px')
 	    .attr('fill', 'rgba(0, 0, 0, 0.8)')
 	    .text(function(d){ return d.nd.toFixed(3) + ' norm. density'})
+}
+
+function drawValueSkewnessDistribution(container, attData, v) {
+	
+	var sortedValues = attData.values.slice(0).sort(function(v1, v2){
+		return attData.valuesIndex[v2].nodes - attData.valuesIndex[v1].nodes
+	})
+
+	var data = sortedValues
+		.filter(function(v2){ return v2 != v })
+		.map(function(v2){
+			return {
+				label: v2,
+				ndToVal: attData.valueFlow[v2][v].nd,
+				linksToVal: attData.valueFlow[v2][v].count,
+				ndFromVal: attData.valueFlow[v][v2].nd,
+				linksFromVal: attData.valueFlow[v][v2].count
+			}
+		})
+	
+	var barHeight = 32
+	var centerSpace = 32
+	var margin = {top: 36, right: 120, bottom: 24, left: 120}
+	var width = 600  - margin.left - margin.right
+	var height = barHeight * data.length
+
+	var xl = d3.scaleLinear().range([width/2 - centerSpace/2, 0])
+	var xr = d3.scaleLinear().range([width/2 + centerSpace/2, width])
+
+	var y = d3.scaleBand().rangeRound([0, height]).padding(.05)
+
+	var xlAxis = d3.axisBottom()
+	    .scale(xl)
+	    .ticks(4)
+
+	var xrAxis = d3.axisBottom()
+	    .scale(xr)
+	    .ticks(4)
+
+	var svg = container.append("svg")
+	    .attr("width", width + margin.left + margin.right)
+	    .attr("height", height + margin.top + margin.bottom)
+	  .append("g")
+	    .attr("transform", 
+          "translate(" + margin.left + "," + margin.top + ")")
+
+  xl.domain([0, d3.max(data, function(d) { return Math.max(d.ndToVal, d.ndFromVal) })])
+  xr.domain([0, d3.max(data, function(d) { return Math.max(d.ndToVal, d.ndFromVal) })])
+  y.domain(data.map(function(d){return d.label}))
+
+  svg.append("g")
+      .attr("class", "xl axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xlAxis)
+    .selectAll("text")
+	    .attr("font-family", "sans-serif")
+	    .attr("font-size", "12px")
+	    .attr("fill", 'rgba(0, 0, 0, 0.5)')
+
+  svg.append("g")
+      .attr("class", "xr axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xrAxis)
+    .selectAll("text")
+	    .attr("font-family", "sans-serif")
+	    .attr("font-size", "12px")
+	    .attr("fill", 'rgba(0, 0, 0, 0.5)')
+
+  svg.append('line')
+	    .attr('x1', xl(0))
+	    .attr('y1', height )
+	    .attr('x2', xl(0))
+	    .attr('y2', 0)
+	    .style("stroke", 'rgba(0, 0, 0, 0.3)')
+
+  svg.append('line')
+	    .attr('x1', xr(0))
+	    .attr('y1', height )
+	    .attr('x2', xr(0))
+	    .attr('y2', 0)
+	    .style("stroke", 'rgba(0, 0, 0, 0.3)')
+
+	svg.append('text')
+			.text('→ INBOUND')
+			.attr('text-anchor', 'end')
+			.attr('x', xl(0))
+			.attr('y', - 6)
+	    .attr("font-family", "sans-serif")
+	    .attr("font-size", "12px")
+	    .attr("fill", 'rgba(0, 0, 0, 0.5)')
+
+	svg.append('text')
+			.text('OUTBOUND →')
+			.attr('x', xr(0))
+			.attr('y', - 6)
+	    .attr("font-family", "sans-serif")
+	    .attr("font-size", "12px")
+	    .attr("fill", 'rgba(0, 0, 0, 0.5)')
+
+	svg.append('text')
+			.text(v)
+			.attr('text-anchor', 'middle')
+			.attr('x', width/2)
+			.attr('y', - 24)
+	    .attr("font-family", "sans-serif")
+	    .attr("font-size", "12px")
+	    .attr("fill", 'rgba(0, 0, 0, 0.5)')
+
+  var bar = svg.selectAll("bar")
+      .data(data)
+    .enter().append('g')
+    	.attr("class", "bar")
+
+  // Left
+  bar.append("rect")
+	    .style("fill", 'rgba(120, 120, 120, 0.5)')
+	    .attr("x", function(d){ return xl(Math.max(0, d.ndToVal)) })
+	    .attr("y", function(d) { return y(d.label) })
+	    .attr("width", function(d) { return xl(0) - xl(Math.max(0, d.ndToVal)) })
+	    .attr("height", y.bandwidth())
+
+  bar.append('text')
+  		.attr('x', function(d) { return xl(Math.max(0, d.ndToVal)) - 6 })
+  		.attr('y', function(d) { return y(d.label) + 12 })
+	    .attr('text-anchor', 'end')
+  		.attr('font-family', 'sans-serif')
+	    .attr('font-size', '10px')
+	    .attr('fill', 'rgba(0, 0, 0, 0.8)')
+	    .text(function(d){ return d.linksToVal + ' links'})
+
+  bar.append('text')
+  		.attr('x', function(d) { return xl(Math.max(0, d.ndToVal)) - 6 })
+  		.attr('y', function(d) { return y(d.label) + 24 })
+	    .attr('text-anchor', 'end')
+  		.attr('font-family', 'sans-serif')
+	    .attr('font-size', '10px')
+	    .attr('fill', 'rgba(0, 0, 0, 0.8)')
+	    .text(function(d){ return d.ndToVal.toFixed(3) + ' nd.'})
+
+	bar.append('text')
+  		.attr('x', function(d) { return xl(Math.max(0, d.ndToVal)) - 60 })
+  		.attr('y', function(d) { return y(d.label) + 18 })
+	    .attr('text-anchor', 'end')
+  		.attr('font-family', 'sans-serif')
+	    .attr('font-size', '12px')
+	    .attr('fill', 'rgba(0, 0, 0, 0.5)')
+	    .text(function(d){ return d.label})
+
+	// Right
+  bar.append("rect")
+	    .style("fill", 'rgba(120, 120, 120, 0.5)')
+	    .attr("x", function(d){ return xr(0) })
+	    .attr("y", function(d) { return y(d.label) })
+	    .attr("width", function(d) { return xr(Math.max(0, d.ndFromVal)) - xr(0) })
+	    .attr("height", y.bandwidth())
+
+  bar.append('text')
+  		.attr('x', function(d) { return xr(Math.max(0, d.ndFromVal)) + 6 })
+  		.attr('y', function(d) { return y(d.label) + 12 })
+  		.attr('font-family', 'sans-serif')
+	    .attr('font-size', '10px')
+	    .attr('fill', 'rgba(0, 0, 0, 0.8)')
+	    .text(function(d){ return d.linksFromVal + ' links'})
+
+  bar.append('text')
+  		.attr('x', function(d) { return xr(Math.max(0, d.ndFromVal)) + 6 })
+  		.attr('y', function(d) { return y(d.label) + 24 })
+  		.attr('font-family', 'sans-serif')
+	    .attr('font-size', '10px')
+	    .attr('fill', 'rgba(0, 0, 0, 0.8)')
+	    .text(function(d){ return d.ndFromVal.toFixed(3) + ' nd.'})
+
+		bar.append('text')
+  		.attr('x', function(d) { return xr(Math.max(0, d.ndFromVal)) + 60 })
+  		.attr('y', function(d) { return y(d.label) + 18 })
+  		.attr('font-family', 'sans-serif')
+	    .attr('font-size', '12px')
+	    .attr('fill', 'rgba(0, 0, 0, 0.5)')
+	    .text(function(d){ return d.label})
+
 }
