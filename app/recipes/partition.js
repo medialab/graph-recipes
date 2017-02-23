@@ -217,7 +217,8 @@ sortedValues.forEach(function(v){
 	div.append('p')
 		.style('width', '600px')
 		.text(
-			'Compare internal to external connectivity. Normalized density is used to eliminate group size bias.'
+			'Compare internal to external connectivity. Normalized density is used to eliminate group size bias. '+
+			'Internal >> External means that the group is a "cluster" or "module".'
 		)
 	drawValueInternalExternal(div, attData, v)
 
@@ -226,7 +227,8 @@ sortedValues.forEach(function(v){
 	div.append('p')
 		.style('width', '600px')
 		.text(
-			'Compare inbound links to outbound links (internal not included). ' +
+			'Compare inbound links to outbound links. ' +
+			'Bars display normalized density. Internal links not counted. ' +
 			'Being cited is usually considered more favorable than citing.'
 		)
 	drawValueInboundOutbound(div, attData, v)
