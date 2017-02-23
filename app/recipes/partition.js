@@ -39,16 +39,16 @@ g.nodes().forEach(function(nid){
 	}
 })
 attData.values = d3.keys(attData.valuesIndex)
-var valuesCounts = d3.values(attData.valuesIndex)
-attData.valuesStats = {}
-attData.valuesStats.differentValues = valuesCounts.length
-attData.valuesStats.sizeOfSmallestValue = d3.min(valuesCounts)
-attData.valuesStats.sizeOfBiggestValue = d3.max(valuesCounts)
-attData.valuesStats.medianSize = d3.median(valuesCounts)
-attData.valuesStats.deviation = d3.deviation(valuesCounts)
-attData.valuesStats.valuesUnitary = valuesCounts.filter(function(d){return d==1}).length
-attData.valuesStats.valuesAbove1Percent = valuesCounts.filter(function(d){return d>=g.order*0.01}).length
-attData.valuesStats.valuesAbove10Percent = valuesCounts.filter(function(d){return d>=g.order*0.1}).length
+var valuesCounts = d3.values(attData.valuesIndex).map(function(d){return d.nodes})
+attData.distributionStats = {}
+attData.distributionStats.differentValues = valuesCounts.length
+attData.distributionStats.sizeOfSmallestValue = d3.min(valuesCounts)
+attData.distributionStats.sizeOfBiggestValue = d3.max(valuesCounts)
+attData.distributionStats.medianSize = d3.median(valuesCounts)
+attData.distributionStats.deviation = d3.deviation(valuesCounts)
+attData.distributionStats.valuesUnitary = valuesCounts.filter(function(d){return d==1}).length
+attData.distributionStats.valuesAbove1Percent = valuesCounts.filter(function(d){return d>=g.order*0.01}).length
+attData.distributionStats.valuesAbove10Percent = valuesCounts.filter(function(d){return d>=g.order*0.1}).length
 
 // Count edge flow
 attData.valueFlow = {}
