@@ -99,6 +99,12 @@ div.append('h1').text('General properties of '+settings.attribute)
 
 // Values distribution
 div.append('h3').text('Distribution of values')
+div.append('p')
+	.style('width', '600px')
+	.text(
+		'How many nodes for each ' + settings.attribute + '? '+
+		'The size of these groups is an important contextual information for the other metrics of this page.'
+	)
 drawValuesDistribution(div, attData)
 
 // Group to Group Edge Count
@@ -174,25 +180,26 @@ function getType(str){
 
 function drawValuesDistribution(container, attData) {
 	
+	// Rank values by count
+	var sortedValues = attData.values.slice(0).sort(function(v1, v2){
+		return attData.valuesIndex[v1] - attData.valuesIndex[v2]
+	})
+
 	var barHeight = 32
-	var margin = {top: 120, right: 24, bottom: 24, left: 120}
+	var margin = {top: 24, right: 120, bottom: 24, left: 120}
 	var width = 600  - margin.left - margin.right
 	var height = barHeight * attData.values.length
 
-	/*var margin = {top: 20, right: 20, bottom: 70, left: 40},
-	    width = 600 - margin.left - margin.right,
-	    height = 300 - margin.top - margin.bottom;*/
+	var x = d3.scaleLinear().range([0, width])
 
-	var x = d3.scaleBand().rangeRound([0, width], .05)
-
-	var y = d3.scaleLinear().range([height, 0])
+	var y = d3.scaleBand().rangeRound([height, 0]).padding(.05)
 
 	var xAxis = d3.axisBottom()
 	    .scale(x)
+	    .ticks(10)
 
 	var yAxis = d3.axisLeft()
 	    .scale(y)
-	    .ticks(10)
 
 	var svg = container.append("svg")
 	    .attr("width", width + margin.left + margin.right)
@@ -201,37 +208,53 @@ function drawValuesDistribution(container, attData) {
 	    .attr("transform", 
           "translate(" + margin.left + "," + margin.top + ")")
 
-  x.domain(attData.values)
-  y.domain([0, d3.max(attData.values, function(v) { return attData.valuesIndex[v] })])
+  x.domain([0, d3.max(sortedValues, function(v) { return attData.valuesIndex[v] })])
+  y.domain(sortedValues)
 
   svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
       .call(xAxis)
     .selectAll("text")
-      .style("text-anchor", "end")
-      .attr("dx", "-.8em")
-      .attr("dy", "-.55em")
-      .attr("transform", "rotate(-90)" );
+	    .attr("font-family", "sans-serif")
+	    .attr("font-size", "12px")
+	    .attr("fill", 'rgba(0, 0, 0, 0.5)')
 
   svg.append("g")
       .attr("class", "y axis")
       .call(yAxis)
-    .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("Value ($)");
+    .selectAll("text")
+	    .attr("font-family", "sans-serif")
+	    .attr("font-size", "12px")
+	    .attr("fill", 'rgba(0, 0, 0, 0.5)')
 
-  svg.selectAll("bar")
-      .data(attData.values)
-    .enter().append("rect")
-      .style("fill", "steelblue")
-      .attr("x", function(v) { return x(v) })
-      .attr("width", x.bandwidth())
-      .attr("y", function(v) { return y(attData.valuesIndex[v]); })
-      .attr("height", function(v) { return height - y(attData.valuesIndex[v]); });
+  var bar = svg.selectAll("bar")
+      .data(sortedValues)
+    .enter().append('g')
+    	.attr("class", "bar")
+
+  bar.append("rect")
+	    .style("fill", 'rgba(120, 120, 120, 0.5)')
+	    .attr("x", 0)
+	    .attr("y", function(v) { return y(v) })
+	    .attr("width", function(v) { return x(attData.valuesIndex[v]) })
+	    .attr("height", y.bandwidth())
+
+  bar.append('text')
+  		.attr('x', function(v) { return 6 + x(attData.valuesIndex[v]) })
+  		.attr('y', function(v) { return y(v) + 12 })
+  		.attr('font-family', 'sans-serif')
+	    .attr('font-size', '10px')
+	    .attr('fill', 'rgba(0, 0, 0, 0.8)')
+	    .text(function(v){ return attData.valuesIndex[v] + ' nodes'})
+
+  bar.append('text')
+  		.attr('x', function(v) { return 6 + x(attData.valuesIndex[v]) })
+  		.attr('y', function(v) { return y(v) + 24 })
+  		.attr('font-family', 'sans-serif')
+	    .attr('font-size', '10px')
+	    .attr('fill', 'rgba(0, 0, 0, 0.8)')
+	    .text(function(v){ return Math.round(100 * attData.valuesIndex[v] / g.order) + '%'})
 
 }
 
