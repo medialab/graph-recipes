@@ -91,8 +91,17 @@ attData.values.forEach(function(v1){
 
 console.log('Attribute data', attData)
 
+// Build HTML report
 var div = d3.select('#playground').append('div')
 
+// Section 1 : General properties
+div.append('h1').text('General properties of '+settings.attribute)
+
+// Values distribution
+div.append('h3').text('Distribution of values')
+drawValuesDistribution(div, attData)
+
+// Group to Group Edge Count
 div.append('h3').text('Group to Group Edge Count')
 div.append('p')
 	.style('width', '600px')
@@ -105,6 +114,7 @@ div.append('p')
 	)
 drawFlowMatrix(div, attData)
 
+// Group to Group Normalized Density
 div.append('h3').text('Group to Group Normalized Density')
 div.append('p')
 	.style('width', '600px')
@@ -160,6 +170,69 @@ function getType(str){
   }
   else if (isfloat.test(str) || commaFloat.test(str) || dotFloat.test(str)) return "float";
   else return "string";
+}
+
+function drawValuesDistribution(container, attData) {
+	
+	var barHeight = 32
+	var margin = {top: 120, right: 24, bottom: 24, left: 120}
+	var width = 600  - margin.left - margin.right
+	var height = barHeight * attData.values.length
+
+	/*var margin = {top: 20, right: 20, bottom: 70, left: 40},
+	    width = 600 - margin.left - margin.right,
+	    height = 300 - margin.top - margin.bottom;*/
+
+	var x = d3.scaleBand().rangeRound([0, width], .05)
+
+	var y = d3.scaleLinear().range([height, 0])
+
+	var xAxis = d3.axisBottom()
+	    .scale(x)
+
+	var yAxis = d3.axisLeft()
+	    .scale(y)
+	    .ticks(10)
+
+	var svg = container.append("svg")
+	    .attr("width", width + margin.left + margin.right)
+	    .attr("height", height + margin.top + margin.bottom)
+	  .append("g")
+	    .attr("transform", 
+          "translate(" + margin.left + "," + margin.top + ")")
+
+  x.domain(attData.values)
+  y.domain([0, d3.max(attData.values, function(v) { return attData.valuesIndex[v] })])
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", "-.55em")
+      .attr("transform", "rotate(-90)" );
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Value ($)");
+
+  svg.selectAll("bar")
+      .data(attData.values)
+    .enter().append("rect")
+      .style("fill", "steelblue")
+      .attr("x", function(v) { return x(v) })
+      .attr("width", x.bandwidth())
+      .attr("y", function(v) { return y(attData.valuesIndex[v]); })
+      .attr("height", function(v) { return height - y(attData.valuesIndex[v]); });
+
 }
 
 function drawFlowMatrix(container, attData) {
