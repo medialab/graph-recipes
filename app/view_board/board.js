@@ -31,6 +31,9 @@ angular.module('graphrecipes.view_board', ['ngRoute'])
     if (window.g) {
       $scope.nodesCount = g.order
       $scope.edgesCount = g.size
+
+      $scope.description = g.multi ? 'Multi ' : 'Simple '
+      $scope.description += g.type + ' graph'
     } else {
       $timeout(function(){
         $location.url('/upload')

@@ -6,8 +6,10 @@
         <div class="network-info">
           <span style="font-size: 1.6em">{{filename}}</span>
           <br>
-          {{nodesCount}} nodes, 
+          {{nodesCount}} nodes,
           {{edgesCount}} edges
+          <br>
+          <em>{{description}}</em>
         </div>
         <div layout="column">
           <md-button
@@ -48,7 +50,7 @@
     <div layout="column" layout-fill class="fancy-text" ng-if="status=='list'">
       <div layout-padding class="menu-container">
         <h1 class="main-title">Recipes</h1>
-        
+
         <div layout="column" ng-repeat="r in recipes" class="menu-item" ng-click="pickRecipe(r)">
           <h3>{{r.name}}</h3>
           <p>{{r.desc}}</p>
