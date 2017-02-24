@@ -238,7 +238,7 @@ sortedValues.forEach(function(v){
 	div.append('p')
 		.style('width', '600px')
 		.text(
-			'Compare inbound to outbound normalized density to understand relations between groups.'
+			'Compare inbound to outbound normalized densities group by group. Hint at the structure of power balance.'
 		)
 	drawValueSkewnessDistribution(div, attData, v)
 })
@@ -300,7 +300,7 @@ function drawValuesDistribution(container, attData) {
       .call(xAxis)
     .selectAll("text")
 	    .attr("font-family", "sans-serif")
-	    .attr("font-size", "12px")
+	    .attr("font-size", "9px")
 	    .attr("fill", 'rgba(0, 0, 0, 0.5)')
 
   svg.append("g")
@@ -702,7 +702,7 @@ function drawValueInternalExternal(container, attData, v) {
       .call(xAxis)
     .selectAll("text")
 	    .attr("font-family", "sans-serif")
-	    .attr("font-size", "12px")
+	    .attr("font-size", "9px")
 	    .attr("fill", 'rgba(0, 0, 0, 0.5)')
 
   svg.append("g")
@@ -780,7 +780,7 @@ function drawValueInboundOutbound(container, attData, v) {
       .call(xAxis)
     .selectAll("text")
 	    .attr("font-family", "sans-serif")
-	    .attr("font-size", "12px")
+	    .attr("font-size", "9px")
 	    .attr("fill", 'rgba(0, 0, 0, 0.5)')
 
   svg.append("g")
@@ -851,11 +851,11 @@ function drawValueSkewnessDistribution(container, attData, v) {
 
 	var xlAxis = d3.axisBottom()
 	    .scale(xl)
-	    .ticks(4)
+	    .ticks(3)
 
 	var xrAxis = d3.axisBottom()
 	    .scale(xr)
-	    .ticks(4)
+	    .ticks(3)
 
 	var svg = container.append("svg")
 	    .attr("width", width + margin.left + margin.right)
@@ -874,7 +874,7 @@ function drawValueSkewnessDistribution(container, attData, v) {
       .call(xlAxis)
     .selectAll("text")
 	    .attr("font-family", "sans-serif")
-	    .attr("font-size", "12px")
+	    .attr("font-size", "9px")
 	    .attr("fill", 'rgba(0, 0, 0, 0.5)')
 
   svg.append("g")
@@ -883,7 +883,7 @@ function drawValueSkewnessDistribution(container, attData, v) {
       .call(xrAxis)
     .selectAll("text")
 	    .attr("font-family", "sans-serif")
-	    .attr("font-size", "12px")
+	    .attr("font-size", "9px")
 	    .attr("fill", 'rgba(0, 0, 0, 0.5)')
 
   svg.append('line')
@@ -997,5 +997,4 @@ function drawValueSkewnessDistribution(container, attData, v) {
 	    .attr('font-size', '12px')
 	    .attr('fill', 'rgba(0, 0, 0, 0.5)')
 	    .text(function(d){ return d.label})
-
 }
