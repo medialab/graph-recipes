@@ -6,6 +6,8 @@ var settings = {}
 // WHICH NODE ATTRIBUTE TO ANALYZE?
 settings.attribute = 'Language' // This only works for the demo network
 
+settings.save_at_the_end = false
+
 // --- (end of settings)
 
 // Look at the types of values
@@ -134,7 +136,7 @@ div.append('h1').text('General properties of '+settings.attribute)
 // Values distribution
 div.append('h3').text('Distribution of values')
 div.append('p')
-	.style('width', '600px')
+	.style('width', '800px')
 	.text(
 		'How many nodes for each ' + settings.attribute + '? '+
 		'The size of these groups is an important contextual information for the other metrics of this page.'
@@ -144,7 +146,7 @@ drawValuesDistribution(div, attData)
 // Group to Group Edge Count
 div.append('h3').text('Group to Group Edge Count')
 div.append('p')
-	.style('width', '600px')
+	.style('width', '800px')
 	.text(
 		'This matrix displays how many edges there are from a group to another (or possibly the same). '+
 		'The groups are defined by nodes having the same '+settings.attribute+'. '+
@@ -157,7 +159,7 @@ drawFlowMatrix(div, attData)
 // Group to Group Normalized Density
 div.append('h3').text('Group to Group Normalized Density')
 div.append('p')
-	.style('width', '600px')
+	.style('width', '800px')
 	.html(
 		'This matrix displays how many edges there are from a group to another (or the same) <i>versus</i> the expected number of edges. '+
 		'We call it normalized density by analogy with traditional edge density, which is the actual number of edges versus the potential number of edges. '+
@@ -167,34 +169,34 @@ div.append('p')
 	)
 drawNormalizedDensityMatrix(div, attData)
 div.append('p')
-	.style('width', '600px')
+	.style('width', '800px')
 	.html(
 		'The formula for this normalized density is this one:'
 	)
 div.append('p')
-	.style('width', '600px')
+	.style('width', '800px')
 	.html(
 		'<i>D = 1/(4*m) + Sum[Aij - ki*kj/(2*m)]</i>'
 	)
 div.append('p')
-	.style('width', '600px')
+	.style('width', '800px')
 	.html(
 		'Where <i>i</i> is a node from group 1 and <i>j</i> from group 2, <i>m</i> is the size of the network (edges count), '+
 		'<i>Aij = 1</i> if there is an edge from <i>i</i> to <i>j</i> and 0 else, <i>ki</i> is the outdegree of <i>i</i> and <i>kj</i> the indegree of <i>j</i>.'
 	)
 div.append('p')
-	.style('width', '600px')
+	.style('width', '800px')
 	.html(
 		'This formula is adapted from this paper: <i>Newman, M. E. J. (2006). Modularity and community structure in networks. Proceedings of the National Academy of …, 103(23), 8577–8582. <a href="http://doi.org/10.1073/pnas.0601602103" target="_blank">http://doi.org/10.1073/pnas.0601602103</a></i>'	
 	)
 div.append('p')
-	.style('width', '600px')
+	.style('width', '800px')
 	.html(
 		'The rationale for using this metric is that is less sensitive to group sizes (the very same idea behind modularity). Raw edge count emphasizes big groups. '+
 		'On the contrary, traditional density emphasizes small clusters. Normalized density works on any cluster size.'
 	)
 div.append('p')
-	.style('width', '600px')
+	.style('width', '800px')
 	.html(
 		'<strong>Modularity = ' + attData.stats.modularity.toFixed(3) + '</strong> for the ' + settings.attribute + ' partitioning. '+
 		'Modularity is literally the sum of normalized densities inside a same group (green circles) '+
@@ -215,7 +217,7 @@ sortedValues.forEach(function(v){
 	// Internal versus External
 	div.append('h3').text('Normalized Density Profile')
 	div.append('p')
-		.style('width', '600px')
+		.style('width', '800px')
 		.text(
 			'Compare internal to external connectivity. Normalized density is used to eliminate group size bias. '+
 			'Internal >> External means that the group is a "cluster" or "module".'
@@ -225,7 +227,7 @@ sortedValues.forEach(function(v){
 	// Inbound versus Outbound
 	div.append('h3').text('Connectivity Skewness')
 	div.append('p')
-		.style('width', '600px')
+		.style('width', '800px')
 		.text(
 			'Compare inbound links to outbound links. ' +
 			'Bars display normalized density. Internal links not counted. ' +
@@ -236,13 +238,20 @@ sortedValues.forEach(function(v){
 	// Connectivity Skewness Distribution
 	div.append('h3').text('Connectivity Skewness Distribution')
 	div.append('p')
-		.style('width', '600px')
+		.style('width', '800px')
 		.text(
-			'Compare inbound to outbound normalized densities group by group. Hint at the structure of power balance.'
+			'Compare inbound to outbound normalized densities group by group. Hints at the structure of power balance.'
 		)
 	drawValueSkewnessDistribution(div, attData, v)
 })
 
+
+// Save if needed
+if (settings.save_at_the_end) {
+	var html = d3.select('#playground').html()
+	var blob = new Blob([html], {type: "text/html;charset=utf-8"})
+	saveAs(blob, settings.attribute + ' in ' + store.get('graphname') + ".html")
+}
 // ---
 // Functions
 
@@ -269,8 +278,8 @@ function drawValuesDistribution(container, attData) {
 	})
 
 	var barHeight = 32
-	var margin = {top: 24, right: 120, bottom: 24, left: 120}
-	var width = 600  - margin.left - margin.right
+	var margin = {top: 24, right: 180, bottom: 24, left: 180}
+	var width = 800  - margin.left - margin.right
 	var height = barHeight * attData.values.length
 
 	var x = d3.scaleLinear().range([0, width])
@@ -366,7 +375,7 @@ function drawFlowMatrix(container, attData) {
 
 	// Draw SVG
 	var maxR = 32
-	var margin = {top: 120 + maxR, right: 24 + maxR, bottom: 24 + maxR, left: 120 + maxR}
+	var margin = {top: 120 + maxR, right: 24 + maxR, bottom: 24 + maxR, left: 180 + maxR}
 	var width = 2 * maxR * (attData.values.length - 1)
 	var height = width // square space
 
@@ -519,7 +528,7 @@ function drawNormalizedDensityMatrix(container, attData) {
 
 	// Draw SVG
 	var maxR = 32
-	var margin = {top: 120 + maxR, right: 24 + maxR, bottom: 24 + maxR, left: 120 + maxR}
+	var margin = {top: 120 + maxR, right: 24 + maxR, bottom: 24 + maxR, left: 180 + maxR}
 	var width = 2 * maxR * (attData.values.length - 1)
 	var height = width // square space
 
@@ -672,8 +681,8 @@ function drawValueInternalExternal(container, attData, v) {
 	]
 	
 	var barHeight = 32
-	var margin = {top: 24, right: 120, bottom: 24, left: 120}
-	var width = 600  - margin.left - margin.right
+	var margin = {top: 24, right: 180, bottom: 24, left: 180}
+	var width = 800  - margin.left - margin.right
 	var height = barHeight * data.length
 
 	var x = d3.scaleLinear().range([0, width])
@@ -750,8 +759,8 @@ function drawValueInboundOutbound(container, attData, v) {
 	]
 	
 	var barHeight = 32
-	var margin = {top: 24, right: 120, bottom: 24, left: 120}
-	var width = 600  - margin.left - margin.right
+	var margin = {top: 24, right: 180, bottom: 24, left: 180}
+	var width = 800  - margin.left - margin.right
 	var height = barHeight * data.length
 
 	var x = d3.scaleLinear().range([0, width])
@@ -840,8 +849,8 @@ function drawValueSkewnessDistribution(container, attData, v) {
 	
 	var barHeight = 32
 	var centerSpace = 32
-	var margin = {top: 36, right: 120, bottom: 24, left: 120}
-	var width = 600  - margin.left - margin.right
+	var margin = {top: 36, right: 180, bottom: 24, left: 180}
+	var width = 800  - margin.left - margin.right
 	var height = barHeight * data.length
 
 	var xl = d3.scaleLinear().range([width/2 - centerSpace/2, 0])
