@@ -13,6 +13,8 @@ require('angular-route');
 // Making some modules global for the custom scripts to consume
 var d3 = require('d3');
 window.d3 = d3;
+var numeric = require('numeric');
+window.numeric = numeric;
 
 // Requiring some graphology libraries we are going to make global for the user
 var randomLayout = require('graphology-layout/random');

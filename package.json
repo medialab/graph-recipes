@@ -13,7 +13,8 @@
     "graphology": "^0.7.0",
     "graphology-gexf": "^0.3.0",
     "graphology-layout": "0.0.1",
-    "graphology-layout-forceatlas2": "0.0.1"
+    "graphology-layout-forceatlas2": "0.0.1",
+    "numeric": "^1.2.6"
   },
   "devDependencies": {
     "css-loader": "^0.26.1",
