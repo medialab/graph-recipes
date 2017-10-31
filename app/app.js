@@ -214,6 +214,14 @@ config(['$routeProvider', function($routeProvider) {
                 })
               break;
 
+            case 'waiting':
+              showSprite('background')
+              showSprite('closeddoor')
+              showSprite('openovendoor')
+              showSprite('cooksleeping')
+              showSprite('clienthead3')
+              break;
+
             case 'choose-recipe':
               showSprite('background')
               showSprite('foodstacktop')

@@ -81,8 +81,8 @@ angular.module('graphrecipes.view_board', ['ngRoute'])
         // Stop after a while
         $timeout(function(){
           if ($scope.lcdStatus == 'service')
-            $scope.lcdStatus = 'choose-recipe'
-        }, 4000)
+            $scope.lcdStatus = 'waiting'
+        }, 10000)
       } catch(e) {
         $scope.lcdStatus = 'error'
         console.error('[Script error]', e)
