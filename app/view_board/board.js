@@ -73,9 +73,24 @@ angular.module('graphrecipes.view_board', ['ngRoute'])
     $timeout(function(){
       document.querySelector('#playground').innerHTML = ''
       var code = window.editor.getValue()
-      eval(';(function(){'+code+'})();')
-      $scope.lcdStatus = 'service'
-      $scope.status = 'end'
+      try {
+        eval(';(function(){'+code+'})();')
+        $scope.lcdStatus = 'service'
+        $scope.status = 'end'
+
+        // Stop after a while
+        $timeout(function(){
+          if ($scope.lcdStatus == 'service')
+            $scope.lcdStatus = 'choose-recipe'
+        }, 4000)
+      } catch(e) {
+        $scope.lcdStatus = 'error'
+        console.error('[Script error]', e)
+        $timeout(function(){
+          alert('Merde :(\nThere is an issue with this script:\n\n' + e)
+          $scope.backToRecipe()
+        })
+      }
     }, 4000)
   }
 

@@ -206,6 +206,14 @@ config(['$routeProvider', function($routeProvider) {
               // Nothing to do, everything off by default
               break;
 
+            case 'error':
+              sprites
+                .filter(function(){return Math.random()>0.5})
+                .forEach(function(sprite){
+                  showSprite(sprite)
+                })
+              break;
+
             case 'choose-recipe':
               showSprite('background')
               showSprite('foodstacktop')
