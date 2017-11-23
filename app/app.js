@@ -19,10 +19,15 @@ window.numeric = numeric;
 // Requiring some graphology libraries we are going to make global for the user
 var randomLayout = require('graphology-layout/random');
 var forceAtlas2Layout = require('graphology-layout-forceatlas2');
-global.layout = {
+window.layout = {
   random: randomLayout,
   forceAtlas2: forceAtlas2Layout
 };
+
+window.ForceAtlas2Layout = require('graphology-layout-forceatlas2/worker');
+
+// Requiring sigma
+window.Sigma = require('sigma/endpoint');
 
 // Requiring own modules
 require('./view_upload/upload.js');

@@ -29,8 +29,10 @@ angular.module('graphrecipes.view_board', ['ngRoute'])
   $scope.refreshGraph = function () {
     window.g = $scope.originalGraph
     if (window.g) {
-      $scope.nodesCount = g.order
-      $scope.edgesCount = g.size
+      var format = d3.format(',')
+
+      $scope.nodesCount = format(g.order)
+      $scope.edgesCount = format(g.size)
 
       $scope.description = g.multi ? 'Multi ' : 'Simple '
       $scope.description += g.type + ' graph'

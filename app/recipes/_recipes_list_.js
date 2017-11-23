@@ -26,6 +26,11 @@ angular.module('graphrecipes.recipes_list', [])
 		'desc': 'Your favorite network with cluster contours "à la heatmap", with legend (PNG)',
 		'file': 'fuzzyclusters.js'
 	},
+	{
+		'name': 'Sigma Meatballs',
+		'desc': 'Delicious dynamic visualization of your favorite graphs.',
+		'file': 'sigma.js'
+	},
   {
 		'name': 'Layout Specialty Gravy',
 		'desc': 'Apply the chef\'s specialty ForceAtlas2 layout to your graph',
@@ -61,7 +66,7 @@ angular.module('graphrecipes.recipes_list', [])
 		'desc': 'Add that metric to your node and edge attributes',
 		'file': 'betweenness.js'
 	},
-	{	
+	{
 		'name': 'Cloud Soufflé',
 		'desc': 'Your network as light as a cloud (PNG)',
 		'file': 'cloud.js'

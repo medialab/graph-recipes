@@ -35,7 +35,7 @@ if (settings.downloadCSV) {
 	saveAs(
 		new Blob([d3.csvFormat(nodeAttributesTable)], {'type':'text/csvcharset=utf-8'}),
 		"Node Attributes of " + store.get('graphname') + ".csv"
-	)	
+	)
 }
 
 // Get a list of edges attributes
