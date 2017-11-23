@@ -19,8 +19,12 @@ var COLORS = {
   q: '#60a862'
 };
 
+// NOTE: use `true` if you don't want to "pollute" your graph with
+// visual attributes.
+var CLONE = false;
+
 // Cloning & decorating
-var graph = g.copy();
+var graph = CLONE ? g.copy() : g;
 
 graph.nodes().forEach(function(node) {
 
