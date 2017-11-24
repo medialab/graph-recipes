@@ -85,6 +85,7 @@ container.style.position = 'absolute';
 
 var renderer = new Sigma.WebGLRenderer(container);
 var sigma = new Sigma(graph, renderer);
+var camera = renderer.getCamera();
 
 // Layout
 var layout = new ForceAtlas2Layout(graph, {settings: FA2_SETTINGS});
@@ -100,10 +101,14 @@ buttons.id = 'buttons';
 buttons.style.position = 'absolute';
 buttons.style.left = '0px';
 buttons.style.top = '0px';
-buttons.innerHTML = '<button id="layout-button">Start Layout</button>';
+buttons.innerHTML = [
+  '<button id="layout-button">Start Layout</button>',
+  '<button id="rescale-button">Rescale</button>'
+].join('');
 
 playground.appendChild(buttons);
 
+// Layout interaction
 var layoutButton = document.getElementById('layout-button');
 
 layoutButton.onclick = function() {
@@ -115,4 +120,11 @@ layoutButton.onclick = function() {
     layout.start();
     layoutButton.innerText = 'Stop Layout';
   }
+};
+
+// Camera interaction
+var rescaleButton = document.getElementById('rescale-button');
+
+rescaleButton.onclick = function() {
+  camera.animatedReset();
 };
