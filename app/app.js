@@ -26,6 +26,8 @@ window.layout = {
 
 window.ForceAtlas2Layout = require('graphology-layout-forceatlas2/worker');
 
+window.louvain = require('graphology-communities-louvain');
+
 // Requiring sigma
 window.Sigma = require('sigma/endpoint');
 

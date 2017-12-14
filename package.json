@@ -11,6 +11,7 @@
     "angular-route": "^1.6.1",
     "d3": "^4.2.2",
     "graphology": "^0.11.0",
+    "graphology-communities-louvain": "^0.1.1",
     "graphology-gexf": "^0.3.0",
     "graphology-layout": "0.0.1",
     "graphology-layout-forceatlas2": "^0.1.1",
