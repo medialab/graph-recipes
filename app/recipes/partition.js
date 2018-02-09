@@ -257,6 +257,7 @@ if (settings.save_at_the_end) {
 
 function getType(str){
 	// Adapted from http://stackoverflow.com/questions/16775547/javascript-guess-data-type-from-string
+	if(str === undefined) str = 'undefined';
   if (typeof str !== 'string') str = str.toString();
   var nan = isNaN(Number(str));
   var isfloat = /^\d*(\.|,)\d*$/;
