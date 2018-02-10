@@ -176,7 +176,7 @@ div.append('p')
 div.append('p')
 	.style('width', '800px')
 	.html(
-		'<i>D = 1/(4*m) + Sum[Aij - ki*kj/(2*m)]</i>'
+		'<i>D = 1/(4*m) * Sum[Aij - ki*kj/(2*m)]</i>'
 	)
 div.append('p')
 	.style('width', '800px')
