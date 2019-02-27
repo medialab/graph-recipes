@@ -17,19 +17,26 @@ var numeric = require('numeric');
 window.numeric = numeric;
 
 // Requiring some graphology libraries we are going to make global for the user
-var randomLayout = require('graphology-layout/random');
-var forceAtlas2Layout = require('graphology-layout-forceatlas2');
+var graphology = require('graphology');
+
+graphology.library = require('graphology-library/browser');
+window.graphology = graphology;
+window.Graph = graphology;
+
+var randomLayout = graphology.library.layout.random;
+
+var forceAtlas2Layout = graphology.library.layoutForceAtlas2;
 window.layout = {
   random: randomLayout,
   forceAtlas2: forceAtlas2Layout
 };
 
-window.ForceAtlas2Layout = require('graphology-layout-forceatlas2/worker');
+window.ForceAtlas2Layout = graphology.library.FA2Layout;
 
-window.louvain = require('graphology-communities-louvain');
+window.louvain = graphology.library.communitiesLouvain;
 
 // Requiring sigma
-window.Sigma = require('sigma/endpoint');
+window.SigmaWebGLRenderer = require('sigma/renderers/webgl').default;
 
 // Requiring own modules
 require('./view_upload/upload.js');

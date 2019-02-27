@@ -1,8 +1,5 @@
 'use strict';
 
-var graphology = require('graphology');
-var gexf = require('graphology-gexf/browser');
-
 angular.module('graphrecipes.view_upload', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {
@@ -17,6 +14,7 @@ angular.module('graphrecipes.view_upload', ['ngRoute'])
   $scope.dropClass
   $scope.loadingMessage = ''
 
+  var gexf = graphology.library.gexf;
 
   // File loading interactions
   $scope.loadFile = function(){

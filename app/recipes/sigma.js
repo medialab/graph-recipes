@@ -83,8 +83,7 @@ container.style.width = '100%';
 container.style.height = '100%';
 container.style.position = 'absolute';
 
-var renderer = new Sigma.WebGLRenderer(container);
-var sigma = new Sigma(graph, renderer);
+var renderer = new SigmaWebGLRenderer(graph, container);
 var camera = renderer.getCamera();
 
 // Layout

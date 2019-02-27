@@ -1,6 +1,5 @@
 'use strict';
 
-var gexf = require('graphology-gexf');
 var isNumeric = require('../utils.js').isNumeric;
 
 angular.module('graphrecipes.view_board', ['ngRoute'])
@@ -14,6 +13,8 @@ angular.module('graphrecipes.view_board', ['ngRoute'])
 
 .controller('BoardCtrl', ['$scope', '$timeout',  'store', '$location', 'recipesList', '$http'
   ,function(               $scope ,  $timeout ,   store ,  $location,   recipesList ,  $http) {
+
+  var gexf = graphology.library.gexf;
 
   // Scope variables
   $scope.filename
