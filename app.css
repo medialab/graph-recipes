@@ -1,0 +1,183 @@
+#sidecol {
+  width: 300px;
+}
+
+.command-zone {
+  font-family: 'Raleway', sans-serif;
+  overflow-y: auto;
+}
+
+.network-info {
+  padding: 12px;
+}
+
+.content {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.fancy-text {
+  font-family: 'Raleway', sans-serif;
+  font-size: 1.2em;
+  color: #534b45;
+  background-color: #EDE9E2;
+}
+
+.fancy-text .main-title {
+  font-family: 'Lobster', cursive;
+  font-weight: 400;
+  font-size: 2.6em;
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+h1 .subtitle {
+  font-family: 'Raleway', cursive;
+  font-weight: 300;
+  font-size: 0.6em;
+  display: block;
+}
+
+/* Links */
+a {
+  transition: color .4s;
+  color: #53aaea;
+  text-decoration: none;
+}
+
+a:link,
+a:visited { color: #53aaea; }
+a:hover   { color: #7FDBFF; }
+a:active  {
+  transition: color .3s;
+  color: #007BE6;
+}
+
+/* Menu items */
+.menu-container {
+  overflow-y: auto;
+}
+.menu-item {
+  cursor: pointer;
+}
+.menu-item:hover {
+  background-color: #dbedf0;
+}
+.menu-item h3 {
+  font-family: 'Lobster', cursive;
+  font-weight: 400;
+  font-size: 1.4em;
+  margin: 0;
+}
+.menu-item p {
+  margin: 0;
+}
+
+h3.script-title {
+  font-family: 'Lobster', cursive;
+  font-weight: 400;
+  font-size: 1.4em;
+  margin: 0;
+  padding: 0;
+}
+
+/* Uploader */
+.upload-background {
+  background-color: #7595af;
+}
+.upload-area-container{
+  user-select: none;
+  outline: none;
+  cursor: pointer;
+}
+.upload-area-container .upload-area{
+  background-color: #FFFFFF;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  border-radius: 2px;
+  box-shadow: 0px 2px 5px 0 rgba(0, 0, 0, 0.3);
+
+  -webkit-transition: background-color .2s; 
+          transition: background-color .2s;
+}
+.upload-area-container:hover .upload-area, .upload-area-container.over .upload-area{
+  background-color: #53aaea;
+}
+.upload-area-container.loading .upload-area{
+  background-color: #46b8da;
+}
+.upload-area-container.success .upload-area{
+  background-color: #5cb85c;
+}
+.upload-area-container.error .upload-area{
+  background-color: #FF0000;
+}
+.upload-text-main{
+  font-family: 'Raleway', sans-serif;
+  font-size: 28px;
+}
+.upload-area-container:hover   .upload-text-main,
+.upload-area-container.over    .upload-text-main,
+.upload-area-container.loading .upload-text-main,
+.upload-area-container.success .upload-text-main
+{
+  color: #FFF;
+}
+.upload-text-sub{
+  font-family: 'Raleway', sans-serif;
+  color: #AAA;
+  font-size: 16px;
+}
+.upload-area-container:hover   .upload-text-sub,
+.upload-area-container.over    .upload-text-sub
+{
+  color: #FFF;
+}
+.upload-area-container.loading .upload-text-sub,
+.upload-area-container.success .upload-text-sub
+{
+  display: none;
+}
+
+.upload-info {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  bottom: 12px;
+  right: 12px;
+  color: #A28D8D;
+}
+
+.upload-info img {
+  opacity: 0.5;
+}
+
+.upload-info h1 {
+  font-size: 3.2em;
+  font-weight: 200;
+  margin-top: 0px;
+  margin-bottom: 3px;
+}
+
+/* JS editor */
+#js-editor-container {
+  overflow: hidden;
+}
+.shortcut-info {
+  font-size: 0.8em;
+  opacity: 0.6;
+}
+.exec-button-row {
+  padding-bottom: 6px;
+}
+
+/* Playground */
+#playground {
+  background-color: #FFF;
+  overflow: auto;
+}
+#dummy-font-div {
+  /* Load the fonts we plan to use in the canvas */
+  font-family: 'Open Sans Condensed', sans-serif;
+}

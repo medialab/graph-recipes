@@ -1,0 +1,10 @@
+{
+  "name": "Graph Recipes",
+  "authors": ["Mathieu Jacomy"],
+  "url": "http://tools.medialab.sciences-po.fr/graph-recipes/",
+  "source": "https://github.com/medialab/graph-recipes",
+  "licence": "LGPL/CECILL-C",
+  "visual": "http://tools.medialab.sciences-po.fr/graph-recipes/assets/visual.png",
+  "description": "Graph Recipes is an environment to apply JS scripts to your network. Compute metrics, produce images, and tinker with Graphology.",
+  "doc": "https://github.com/medialab/graph-recipes/wiki"
+}

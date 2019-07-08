@@ -1,0 +1,52 @@
+<div layout="row" layout-fill>
+  <div layout="column" id="sidecol">
+    <div lcd  style="width:300px; height:370px; overflow:hidden;" anim-status="'off'"></div>
+    <div layout="column" layout-padding flex class="upload-background">
+      <div
+        class="upload-area-container"
+        id="uploader"
+        ng-paste="handlePaste()"
+        ng-click="loadFile()"
+        ng-class="dropClass"
+        layout-fill
+        layout
+      >
+        <div class="upload-area" layout="column" layout-align="center center">
+          <div class="upload-text-main">
+            {{loadingMessage=='' ? 'LOAD GRAPH' : loadingMessage}}
+          </div>
+          <div class="upload-text-sub">
+            CLICK or DRAG A FILE
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- This hidden input is used for loading the files via the dropdown of the nav tabs -->
+    <input id="hidden-file-input" type="file" name="hidden-file-input" style="display: none;" onchange="angular.element(this).scope().setFile(this)"/>
+  </div>
+  
+  <div layout="column" layout-padding flex class="fancy-text content">
+    <h1 class="main-title">
+      Graph Recipes
+      <br>
+      <span class="subtitle">...based on <a href="https://graphology.github.io/">Graphology</a></span>
+    </h1>
+    <p>
+      Safely load your networks, they do not leave your computer.
+      <br><br>
+      Pick and edit a recipe, or copy-paste it from anywhere.
+      <br><br>
+      Enjoy the outcome: processed network, image, or anything javascript can produce.
+      <br><br>
+      <a href ng-click="loadExample('sample rio+20.gexf')">Try this sample network</a> to take a look!
+      <br><br><br>
+      Also, some <a href="https://github.com/medialab/graph-recipes/wiki">documentation</a>.
+    </p>
+    <p>
+      + <a href="http://tools.medialab.sciences-po.fr/">more tools</a>
+      <br>
+      <a href="http://www.medialab.sciences-po.fr/"><img src="medialab.png"></a>
+    </p>
+  </div>
+</div>
