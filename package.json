@@ -10,6 +10,7 @@
     "angular-material": "^1.1.3",
     "angular-route": "^1.6.1",
     "d3": "^4.13.0",
+    "gh-pages": "^2.0.1",
     "graphology": "^0.11.4",
     "graphology-library": "^0.2.0",
     "numeric": "^1.2.6",
@@ -23,6 +24,7 @@
   },
   "scripts": {
     "build": "webpack --colors --progress",
+    "deploy": "npm run build && gh-pages -d ./app",
     "dev": "webpack-dev-server --port 3000 -d --colors --progress --watch",
     "postinstall": "npm run build",
     "watch": "webpack -d --colors --progress --watch"
