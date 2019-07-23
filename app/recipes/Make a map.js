@@ -9,7 +9,7 @@
 var settings = {}
 
 // Auto-download the image once it is done
-settings.save_at_the_end = true
+settings.save_at_the_end = false
 
 // Image size and resolution
 settings.width =  6000 // in pixels
