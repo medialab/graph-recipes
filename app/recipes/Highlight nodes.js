@@ -1893,10 +1893,16 @@ function log(txt) {
   logTime = Date.now()
 }
 function report(txt) {
-  var mem = window.performance.memory.usedJSHeapSize
-  mem = Math.floor(mem/1024/1024)
-  var time = Date.now() - logTime
-  time /= 1000
-  console.log(txt+"  MEM: "+mem+" Mb  TIME: "+time+" s")
+  if (window.performance && window.performance.memory) {
+    var mem = window.performance.memory.usedJSHeapSize
+    mem = Math.floor(mem/1024/1024)
+    txt += " MEM: "+mem+" Mb"
+  }
+  if (logTime) {
+    var time = Date.now() - logTime
+    time /= 1000
+    txt += " TIME: "+time+" s"
+  }
+  console.log(txt)
   logTime = Date.now()
 }
