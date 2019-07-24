@@ -176,8 +176,8 @@ settings.highlighted_nodes = [
 ]
 
 // Advanced settings
-settings.adjust_voronoi_range = 1.0 // Factor // Larger node halo + slightly bigger clusters
-settings.max_voronoi_size = 250 // Above that size, we approximate the voronoi
+settings.adjust_voronoi_range = 25 // Factor // Larger node halo + slightly bigger clusters
+settings.max_voronoi_size = 1000 // Above that size, we approximate the voronoi
 
 /// (END OF SETTINGS)
 
@@ -491,7 +491,7 @@ function precomputeVoronoi() {
     options.width = settings.width
     options.height = settings.height
   }
-  options.voronoi_range = settings.adjust_voronoi_range * 5 * options.width * options.height / Math.min(options.width,options.height) / g.order / settings.zoom_window_size
+  options.voronoi_range = settings.adjust_voronoi_range * options.width * options.height / Math.min(options.width,options.height) / g.order / settings.zoom_window_size
   options.voronoi_use_node_size = false
 
   // Get an index of nodes where ids are integers
@@ -1068,30 +1068,91 @@ function drawEdgesLayer(ctx, voronoiData) {
   var options = {}
   options.display_voronoi = false // for monitoring purpose
   options.display_edges = true // disable for monitoring purpose
+  options.max_edge_count = Infinity // for monitoring only
   options.edge_thickness = settings.edge_thickness*Math.min(settings.width, settings.height) / 1000
   options.edge_alpha = settings.edge_alpha
   options.edge_color = "#FFF"
   options.node_halo = settings.edge_high_quality
-  options.halo_intensity = 0.8 // 0: no halo; 1=other edges invisible at the center
-
-  var i, x, y
 
   var gradient = function(d){
     return 0.5 + 0.5 * Math.cos(Math.PI - Math.pow(d, 2) * Math.PI)
+  }
+
+  var dPixelMap_u, vidPixelMap_u
+  if (options.display_voronoi || options.node_halo) {
+    // Unpack voronoi
+    var ratio = Math.max(1, settings.width/settings.max_voronoi_size)
+
+    if (g.order < 255) {
+      vidPixelMap_u = new Uint8Array(settings.width * settings.height)
+    } else if (g.order < 65535) {
+      vidPixelMap_u = new Uint16Array(settings.width * settings.height)
+    } else {
+      vidPixelMap_u = new Uint32Array(settings.width * settings.height)
+    }
+    dPixelMap_u = new Uint8Array(settings.width * settings.height)
+
+    var xu, yu, xp, xp1, xp2, dx, yp, yp1, yp2, dy, ip_top_left, ip_top_right, ip_bottom_left, ip_bottom_right
+    for (var i=0; i<vidPixelMap_u.length; i++) {
+      // unpacked coordinates
+      xu = i%settings.width
+      yu = (i-xu)/settings.width
+      // packed coordinates
+      xp = xu/ratio
+      xp1 = Math.max(0, Math.min(voronoiData.width-1, Math.floor(xp)))
+      xp2 = Math.max(0, Math.min(voronoiData.width-1, Math.ceil(xp)))
+      dx = (xp-xp1)/(xp2-xp1) || 0
+      yp = yu/ratio
+      yp1 = Math.max(0, Math.min(voronoiData.height-1, Math.floor(yp)))
+      yp2 = Math.max(0, Math.min(voronoiData.height-1, Math.ceil(yp)))
+      dy = (yp-yp1)/(yp2-yp1) || 0
+      // coordinates of the 4 pixels necessary to rescale
+      ip_top_left = xp1 + voronoiData.width * yp1
+      ip_top_right = xp2 + voronoiData.width * yp1
+      ip_bottom_left = xp1 + voronoiData.width * yp2
+      ip_bottom_right = xp2 + voronoiData.width * yp2
+      // Rescaling (gradual blending between the 4 pixels)
+      dPixelMap_u[i] =
+          (1-dx) * (
+            (1-dy) * voronoiData.dPixelMap[ip_top_left]
+            +  dy  * voronoiData.dPixelMap[ip_bottom_left]
+          )
+        + dx * (
+            (1-dy) * voronoiData.dPixelMap[ip_top_right]
+            +  dy  * voronoiData.dPixelMap[ip_bottom_right]
+          )
+      // For vid we use only one (it's not a number but an id)
+      if (dx<0.5) {
+        if (dy<0.5) {
+          vidPixelMap_u[i] = voronoiData.vidPixelMap[ip_top_left]
+        } else {
+          vidPixelMap_u[i] = voronoiData.vidPixelMap[ip_bottom_left]
+        }
+      } else {
+        if (dy<0.5) {
+          vidPixelMap_u[i] = voronoiData.vidPixelMap[ip_top_right]
+        } else {
+          vidPixelMap_u[i] = voronoiData.vidPixelMap[ip_bottom_right]
+        }
+      }
+    }
+
   }
 
   // Clear canvas
   ctx.clearRect(0, 0, settings.width, settings.height)
 
   if (options.display_voronoi) {
-    var size = 1
+    console.log("...Draw voronoi (for monitoring)...")
+    var size = 1 // <- edit me (tradeoff memory / quality)
+    var x, y
     for (x=0; x<settings.width; x+=size) {
       for (y=0; y<settings.height; y+=size) {
         var pixi = Math.floor(x) + settings.width * Math.floor(y)
-        var d = voronoiData.dPixelMap[pixi]/255
+        var d = dPixelMap_u[pixi]/255
         var c = d3.color("#000")
         if (d < Infinity) {
-          c.opacity = gradient(voronoiData.dPixelMap[pixi]/255)
+          c.opacity = gradient(dPixelMap_u[pixi]/255)
         }
         ctx.fillStyle = c.toString()
         ctx.fillRect(x, y, size, size)
@@ -1101,63 +1162,92 @@ function drawEdgesLayer(ctx, voronoiData) {
 
   // Draw each edge
   if (options.display_edges) {
-    g.edges().forEach(function(eid){
+    ctx.lineCap="round"
+    ctx.lineJoin="round"
+    ctx.fillStyle = 'rgba(0, 0, 0, 0)';
+    ctx.lineWidth = options.edge_thickness
+    g.edges()
+      .filter(function(eid, i_){ return i_ < options.max_edge_count })
+      .forEach(function(eid, i_){
+      if ((i_+1)%10000 == 0) {
+        console.log("..."+(i_+1)/1000+"K edges drawn...")
+      }
       var ns = g.getNodeAttributes(g.source(eid))
       var nt = g.getNodeAttributes(g.target(eid))
       var color = d3.color(options.edge_color)
-      var path = []
+      var path, i, x, y, o, pixi, pi=0
 
       if (options.node_halo) {
         var d = Math.sqrt(Math.pow(ns.x - nt.x, 2) + Math.pow(ns.y - nt.y, 2))
 
         // Build path
-        for (i=0; i<1; i+=1/d) {
+        var iPixStep = Math.max(1.5, 0.7*options.edge_thickness)
+        var l = Math.ceil(d/iPixStep)
+        path = new Uint16Array(3*l)
+        for (i=0; i<1; i+=iPixStep/d) {
           x = (1-i)*ns.x + i*nt.x
           y = (1-i)*ns.y + i*nt.y
 
           // Opacity
-          var o
-          var pixi = Math.floor(x) + settings.width * Math.floor(y)
-          if (voronoiData.vidPixelMap[pixi] == ns.vid || voronoiData.vidPixelMap[pixi] == nt.vid || voronoiData.vidPixelMap[pixi] == 0) {
+          pixi = Math.floor(x) + settings.width * Math.floor(y)
+          if (vidPixelMap_u[pixi] == ns.vid || vidPixelMap_u[pixi] == nt.vid) {
             o = 1
           } else {
-            o = (1-options.halo_intensity) + options.halo_intensity * gradient(voronoiData.dPixelMap[pixi]/255)
+            o = gradient(dPixelMap_u[pixi]/255)
           }
-          path.push([x,y,o])
+          path[pi  ] = x
+          path[pi+1] = y
+          path[pi+2] = Math.round(o*255)
+          pi +=3
         }
-        
+        path[3*(l-1)  ] = nt.x
+        path[3*(l-1)+1] = nt.y
+        path[3*(l-1)+2] = 255
+
         // Smoothe path
         if (path.length > 5) {
           for (i=2; i<path.length-2; i++) {
-            path[i][2] = 0.15 * path[i-2][2] + 0.25 * path[i-1][2] + 0.2 * path[i][2] + 0.25 * path[i+1][2] + 0.15 * path[i+2][2]
+            path[i*3+2] = 0.15 * path[(i-2)*3+2] + 0.25 * path[(i-1)*3+2] + 0.2 * path[i*3+2] + 0.25 * path[(i+1)*3+2] + 0.15 * path[(i+2)*3+2]
           }
         }
       } else {
-        path.push([ns.x, ns.y, 1])
-        path.push([nt.x, nt.y, 1])
+        path = new Uint16Array(6)
+        path[0] = ns.x
+        path[1] = ns.y
+        path[2] = 255
+        path[3] = nt.x
+        path[4] = nt.y
+        path[5] = 255
       }
-    
-
+      
       // Draw path
-      var lastp
-      var lastop
-      path.forEach(function(p, pi){
-        if (lastp) {
-          color.opacity = p[2]
-          ctx.beginPath()
-          ctx.lineCap="round"
-          ctx.lineJoin="round"
-          ctx.strokeStyle = color.toString()
-          ctx.fillStyle = 'rgba(0, 0, 0, 0)';
-          ctx.lineWidth = options.edge_thickness
-          ctx.moveTo(lastp[0], lastp[1])
-          ctx.lineTo(p[0], p[1])
-          ctx.stroke()
-          ctx.closePath()
-        }
-        lastp = p
-        lastop = color.opacity
-      })
+      var x, y, o, lastx, lasty, lasto
+      ctx.moveTo(path[0], path[1])
+      lastx = path[0]
+      lasty = path[1]
+      lasto = path[2]
+      for (i=3; i<path.length; i+=3) {
+        x = path[i]
+        y = path[i+1]
+        o = path[i+2]/255
+
+        color.opacity = o
+        ctx.beginPath()
+        ctx.strokeStyle = color.toString()
+        ctx.lineTo(x, y)
+        ctx.stroke()
+        ctx.closePath()
+
+        lastx = x
+        lasty = y
+        lasto = o
+      }
+      color.opacity = (lasto+o)/2
+      ctx.beginPath()
+      ctx.strokeStyle = color.toString()
+      ctx.lineTo(x, y)
+      ctx.stroke()
+      ctx.closePath()
     })
   }
 
@@ -1189,7 +1279,7 @@ function drawNodesLayer(ctx, nodesBySize) {
       color = settings.node_clusters.default_color || "#8B8B8B"
     }
 
-    var radius = Math.max(settings.node_size * n.size, 2)
+    var radius = Math.max(settings.node_size * n.size, 0.7)
 
     ctx.lineCap="round"
     ctx.lineJoin="round"
@@ -1465,6 +1555,9 @@ function drawClusterLabelsLayer(ctx, modalities, centroidsByModality) {
     if ( !isNaN(centroid[0]) && !isNaN(centroid[1]) ) {
 
       var label = modality
+      if (settings.node_clusters[modality] && settings.node_clusters[modality].label) {
+        label = settings.node_clusters[modality].label
+      }
       var x = centroid[0]
       var y = centroid[1]
       
