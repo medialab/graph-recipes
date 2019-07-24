@@ -21,7 +21,7 @@ settings.height = 6000 // in pixels
 // because you must find the right point by trial and error.
 // By default, a slight unzoom gives a welcome space on the borders
 settings.zoom_enabled = true
-settings.zoom_window_size = 1.2 // range from 0 to 1 (dezooms if >1)
+settings.zoom_window_size = 1.1 // range from 0 to 1 (dezooms if >1)
 settings.zoom_point = {x:0.5, y:0.5} // range from 0 to 1
 
 // Layers:
@@ -1073,7 +1073,10 @@ function drawEdgesLayer(ctx, voronoiData) {
 
   // Draw each edge
   if (options.display_edges) {
-    g.edges().forEach(function(eid){
+    g.edges().forEach(function(eid, i){
+      if ((i+1)%10000 == 0) {
+        console.log("..."+(i+1)/1000+"K edges drawn...")
+      }
       var ns = g.getNodeAttributes(g.source(eid))
       var nt = g.getNodeAttributes(g.target(eid))
       var color = d3.color(options.edge_color)

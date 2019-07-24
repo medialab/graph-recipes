@@ -25,7 +25,7 @@ settings.reframe_on_highlight = true
 // because you must find the right point by trial and error.
 // By default, a slight unzoom gives a welcome space on the borders
 settings.zoom_enabled = true
-settings.zoom_window_size = 1.2 // range from 0 to 1 (dezooms if >1)
+settings.zoom_window_size = 1.1 // range from 0 to 1 (dezooms if >1)
 settings.zoom_point = {x:0.5, y:0.5} // range from 0 to 1
 
 // Layers:
