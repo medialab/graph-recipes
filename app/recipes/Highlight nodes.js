@@ -1222,32 +1222,25 @@ function drawEdgesLayer(ctx, voronoiData) {
       
       // Draw path
       var x, y, o, lastx, lasty, lasto
-      ctx.moveTo(path[0], path[1])
-      lastx = path[0]
-      lasty = path[1]
-      lasto = path[2]
-      for (i=3; i<path.length; i+=3) {
+      for (i=0; i<path.length; i+=3) {
         x = path[i]
         y = path[i+1]
         o = path[i+2]/255
 
-        color.opacity = o
-        ctx.beginPath()
-        ctx.strokeStyle = color.toString()
-        ctx.lineTo(x, y)
-        ctx.stroke()
-        ctx.closePath()
+        if (lastx) {
+          color.opacity = (lasto+o)/2
+          ctx.beginPath()
+          ctx.strokeStyle = color.toString()
+          ctx.moveTo(lastx, lasty)
+          ctx.lineTo(x, y)
+          ctx.stroke()
+          ctx.closePath()
+        }
 
         lastx = x
         lasty = y
         lasto = o
       }
-      color.opacity = (lasto+o)/2
-      ctx.beginPath()
-      ctx.strokeStyle = color.toString()
-      ctx.lineTo(x, y)
-      ctx.stroke()
-      ctx.closePath()
     })
   }
 

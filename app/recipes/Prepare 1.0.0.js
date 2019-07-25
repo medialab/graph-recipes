@@ -1,5 +1,4 @@
-// PREPARE - v1.0
-// Backscatter Network Export
+// PREPARE
 //
 //  Provides info about all node attributes and their modalities,
 //  and outputs editable color palette settings,
@@ -409,7 +408,7 @@ for (attr in nAttributes) {
 }
 
 h1 = document.createElement("h1")
-h1.textContent = '' + d3.keys(nAttributes).length + ' EDGE ATTRIBUTES'
+h1.textContent = '' + d3.keys(eAttributes).length + ' EDGE ATTRIBUTES'
 h1.style.margin = "100px 0 0 0"
 playground.append(h1)
 
