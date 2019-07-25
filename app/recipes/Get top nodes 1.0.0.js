@@ -1,13 +1,13 @@
-// GET TOP NODES - v1.0
-// Backscatter Network Export
+// GET TOP NODES
 //
 //  This script generates a list of nodes
-//  Necessary to other scripts
+//  Necessary to the script HIGHLIGHT NODES
+//  EDIT THIS DIRECTLY - settings are not separated
 
-var nodes = g.nodes().slice(0) // We copy the list of nodes
+var myNodes = g.nodes().slice(0) // Copy the list of nodes
 
 // Sort the list of nodes
-nodes.sort(function(nid_1, nid_2){
+myNodes.sort(function(nid_1, nid_2){
   // nid 1 and 2 are node identifiers, just text strings.
   // They correspond to two nodes we need to compare for sorting.
   // We need to get the nodes as objects with their attributes.
@@ -20,7 +20,7 @@ nodes.sort(function(nid_1, nid_2){
   var offset
 
   // Sort by an attribute
-  var attribute_id = "global_occurrences" // Edit this attribute id!
+  var attribute_id = "global_occurrences" // <-- Edit this attribute id!
   offset = n2[attribute_id] - n1[attribute_id]
 
   /*
@@ -33,7 +33,7 @@ nodes.sort(function(nid_1, nid_2){
 })
 
 // Filter the results
-nodes = nodes.filter(function(nid, i){
+myNodes = myNodes.filter(function(nid, i){
   // nid is the node identifier. It is just a text string.
   // i is the rank in the list
 
@@ -42,13 +42,18 @@ nodes = nodes.filter(function(nid, i){
   var keep
 
   // We only keep the first 10 nodes
-  keep = i < 10
+  keep = i < 10 // <-- Edit this range if you want!
 
   return keep
 })
 
 // Write the output
-document.querySelector('#playground').innerHTML = '<pre></pre>'
-var pre = document.querySelector('#playground pre')
-pre.textContent = "settings.highlighted_nodes = " + JSON.stringify(nodes, null, 2)
+var ta = document.createElement("textarea")
+ta.cols = "30"
+ta.rows = "10"
+ta.style.minHeight = "150px"
+ta.style.fontFamily = "monospace"
+ta.style.margin = "0"
+ta.textContent = "settings.highlighted_nodes = " + JSON.stringify(myNodes, null, 2)
+document.querySelector('#playground').append(ta)
 

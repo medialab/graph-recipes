@@ -1,4 +1,4 @@
-// MINI MAP - v0.1
+// NODES HIGHLIGHT - v0.1
 // Backscatter Network Export
 //
 //  This script generates a network map as a raster image (in pixels)
@@ -12,8 +12,8 @@ var settings = {}
 settings.save_at_the_end = false
 
 // Image size and resolution
-settings.width =  500 // in pixels
-settings.height = 500 // in pixels
+settings.width =  1000 // in pixels
+settings.height = 1000 // in pixels
 
 // Zoom:
 // You can zoon on a given point of the network
@@ -28,21 +28,24 @@ settings.zoom_point = {x:0.5, y:0.5} // range from 0 to 1
 // Decide which layers are drawn.
 // The settings for each layer are below.
 settings.draw_background = true
-settings.draw_network_shape_fill = false
-settings.draw_network_shape_contour = true
-settings.draw_muted_edges = false
-settings.draw_highlighted_edges = false
-settings.draw_muted_nodes = true
-settings.draw_highlighted_nodes_light = true
-settings.draw_highlighted_nodes = true
-settings.draw_node_labels = false
+settings.draw_network_shape_fill = true
+settings.draw_network_shape_contour = false
+settings.draw_cluster_fills = false
+settings.draw_cluster_contours = false
+settings.draw_cluster_labels = false
+settings.draw_edges = true
+settings.draw_nodes = true
+settings.draw_nodes_highlight = true
+settings.draw_node_labels = true
+
+// Layer order variations:
+settings.cluster_fill_above_nodes = false
 
 // Layer: Background
 // Original Backscatter palette: "#D9D8DA"
 // Lighter for more contrast, a little warm: "#e0dcd9"
-// An even lighter background for the minimap: "#f3f0f0"
 settings.background_circle = true
-settings.background_color = "#f3f0f0"
+settings.background_color = "#e0dcd9"
 
 // Layer: Network shape
 //        (a potato for the whole network)
@@ -57,19 +60,43 @@ settings.network_shape_contour_thickness = 3 // Min: 1
 settings.network_shape_contour_alpha = 1 // Opacity // Range from 0 to 1
 settings.network_shape_contour_color = "#cdc7c3"
 
+// Layer: Clusters
+//        (a potato per modality of tqrget attribute)
+// ...generic structure
+settings.cluster_all_modalities = false // By default, we only use modalities specified in "node_clusters"
+settings.cluster_spreading = 0.5 // Range: 0.01 to 0.99 // Balanced: 0.5 // Acts on size
+settings.cluster_smoothness = 5 // Range: 0 to 10 or more // Makes rounder clusters
+// ...cluster fills
+settings.cluster_fill_alpha = 1.0 // Opacity // Range from 0 to 1
+settings.cluster_fill_color_by_modality = true // if false, use default color below
+settings.cluster_fill_color_default = "#8B8B8B"
+// ...cluster contours
+settings.cluster_contour_thickness = 3 // Range: 0 to 10 or more
+settings.cluster_contour_alpha = 1 // Opacity // Range from 0 to 1
+settings.cluster_contour_color_by_modality = true // if false, use default color below
+settings.cluster_contour_color_default = "#8B8B8B"
+// ...cluster labels
+settings.cluster_label_font_size = 20 // in pt based on 1MP 72dpi
+settings.cluster_label_font_weight = 300
+settings.cluster_label_outline_thickness = 4 // in px based on 1MP 72dpi
+
 // Layer: Edges
 settings.edge_thickness = 0.3 // in px based on 1MP
-settings.edge_highlighted_alpha = 0.5 // Opacity for main edges // Range from 0 to 1
-settings.edge_muted_alpha = 0.15 // Opacity for other edges // Range from 0 to 1
+settings.edge_alpha = 0.5 // Opacity // Range from 0 to 1
 settings.edge_high_quality = false // Halo around nodes // Time-consuming
 
 // Layer: Nodes
-settings.node_size = 0.8 // Factor to adjust the nodes drawing size
+settings.node_size = 1 // Factor to adjust the nodes drawing size
+
+// Layer: Nodes highlight
+settings.node_highlight_color = "#263238"
+settings.node_highlight_stroke = 3 // in px based on 1MP 72dpi
+settings.node_highlight_edges = true // Also highlight mutual edges
 
 // Layer: Node labels
-settings.label_font_min_size = 10 // in pt based on 1MP 72dpi
-settings.label_font_max_size = 18  // in pt based on 1MP 72dpi
-settings.label_border_thickness = 3
+settings.label_font_size = 20 // in pt based on 1MP 72dpi
+settings.label_font_weight = 500
+settings.label_border_thickness = 6
 
 // Main clusters and color code:
 // Clusters are defined by the modalities of a given attribute.
@@ -79,23 +106,78 @@ settings.label_border_thickness = 3
 settings.node_clusters = {
   "attribute_id": "attr_8",
   "modalities": {
+    "Digital industries": {
+      "label": "Digital industries",
+      "count": 595,
+      "color": "#6fc5a4"
+    },
+    "Arts and Crafts": {
+      "label": "Arts and Crafts",
+      "count": 298,
+      "color": "#f26b6e"
+    },
+    "Film & TV": {
+      "label": "Film & TV",
+      "count": 221,
+      "color": "#b9a2ce"
+    },
+    "Advertising, marketing and public relations": {
+      "label": "Advertising, marketing and public relations",
+      "count": 192,
+      "color": "#e8a74b"
+    },
     "Architecture;Andet": {
-      "label": "Architecture",
+      "label": "Architecture;Andet",
       "count": 182,
       "color": "#658ec9"
+    },
+    "Fashion and textiles": {
+      "label": "Fashion and textiles",
+      "count": 160,
+      "color": "#ce6028"
     },
     "Design": {
       "label": "Design",
       "count": 159,
       "color": "#f2a5a6"
+    },
+    "Music": {
+      "label": "Music",
+      "count": 145,
+      "color": "#4aa05b"
+    },
+    "Advertising, marketing and public relations | Architecture;Andet | Arts and Crafts | Design | Digital industries | Fashion and textiles | Film & TV | Music": {
+      "label": "Advertising, marketing and public relations | Architecture;Andet | Arts and Crafts | Design | Digital industries | Fashion and textiles | Film & TV | Music",
+      "count": 58,
+      "color": "#b65887"
+    },
+    "Arts and Crafts | Music": {
+      "label": "Arts and Crafts | Music",
+      "count": 36,
+      "color": "#7169af"
     }
   },
   "default_color": "#9d9b99"
 }
 
+// List of node identifiers to highlight.
+// You can generate it with a script.
+settings.highlighted_nodes = [
+  "skillsclen_b76fc4fc73f8aef0dd73508884996698",
+  "skillsclen_948d1f30a0fada44d35950f6c3882c1a",
+  "skillsclen_56b7bb6871857f290078cf83132bec40",
+  "skillsclen_af770060e56bfab1432aa5c4c2f7a5db",
+  "skillsclen_02cc8dc4d04d5ef6707cf76dbd9c43d3",
+  "skillsclen_d10af457daa1deed54e2c36b5f295e7e",
+  "skillsclen_c0089e6579593f104f5cce8f8ca3ed0a",
+  "skillsclen_c769c2bd15500dd906102d9be97fdceb",
+  "skillsclen_9ed083b1436e5f40ef984b28255eef18",
+  "skillsclen_fc7020775a7cdf161ab5267985c54601"
+]
+
 // Advanced settings
 settings.adjust_voronoi_range = 25 // Factor // Larger node halo + slightly bigger clusters
-settings.max_voronoi_size = 1000 // Above that size, we approximate the voronoi
+settings.max_voronoi_size = 250 // Above that size, we approximate the voronoi
 
 /// (END OF SETTINGS)
 
@@ -128,12 +210,15 @@ build()
 function build(){
   // Precompute stuff:
   //  Depending on the settings, some things must be precomputed
-  var nodesBySize, modalities, voronoiData, networkShapeImprint, centroidsByModality
+  var nodesBySize, modalities, voronoiData, networkShapeImprint, clusterImprints, centroidsByModality
   if (settings.draw_nodes || settings.draw_node_labels) {
     nodesBySize = precomputeNodesBySize()
   }
   if ( settings.draw_network_shape_fill
     || settings.draw_network_shape_contour
+    || settings.draw_cluster_fills
+    || settings.draw_cluster_contours
+    || settings.draw_cluster_labels
     || (settings.draw_edges && settings.edge_high_quality)
   ) {
       voronoiData = precomputeVoronoi()
@@ -142,6 +227,20 @@ function build(){
     || settings.draw_network_shape_contour
   ) {
     networkShapeImprint = precomputeNetworkShapeImprint(voronoiData)
+  }
+  if ( settings.draw_cluster_fills
+    || settings.draw_cluster_contours
+    || settings.draw_cluster_labels
+  ) {
+    if (settings.cluster_all_modalities) {
+      modalities = precomputeModalities()
+    } else {
+      modalities = d3.keys(settings.node_clusters.modalities)
+    }
+    clusterImprints = precomputeClusterImprints(modalities, voronoiData, settings.node_clusters.attribute_id)
+  }
+  if (settings.draw_cluster_labels) {
+    centroidsByModality = precomputeCentroids(ctx, modalities, clusterImprints)
   }
 
   // We draw the image layer by layer.
@@ -171,38 +270,38 @@ function build(){
     )
   }
 
-  // Draw muted edges
-  if (settings.draw_muted_edges) {
+  // Draw cluster fills (under nodes)
+  if (settings.draw_cluster_fills && !settings.cluster_fill_above_nodes) {
     layeredImage = drawLayerOnTop(layeredImage,
-      drawMEdgesLayer(ctx, voronoiData)
+      drawClustersFillLayer(ctx, clusterImprints, modalities)
     )
   }
 
-  // Draw highlighted edges
-  if (settings.draw_highlighted_edges) {
+  // Draw edges
+  if (settings.draw_edges) {
     layeredImage = drawLayerOnTop(layeredImage,
-      drawHEdgesLayer(ctx, voronoiData)
+      drawEdgesLayer(ctx, voronoiData)
     )
   }
 
-  // Draw muted nodes
-  if (settings.draw_muted_nodes) {
+  // Draw nodes
+  if (settings.draw_nodes) {
     layeredImage = drawLayerOnTop(layeredImage,
-      drawMNodesLayer(ctx, nodesBySize)
+      drawNodesLayer(ctx, nodesBySize)
     )
   }
 
-  // Draw highlighted nodes light
-  if (settings.draw_highlighted_nodes_light) {
+  // Draw cluster contours
+  if (settings.draw_cluster_contours) {
     layeredImage = drawLayerOnTop(layeredImage,
-      drawHNodesLightLayer(ctx, nodesBySize)
+      drawClustersContourLayer(ctx, clusterImprints, modalities)
     )
   }
 
-  // Draw highlighted nodes
-  if (settings.draw_highlighted_nodes) {
+  // Draw node highlights
+  if (settings.draw_nodes_highlight) {
     layeredImage = drawLayerOnTop(layeredImage,
-      drawHNodesLayer(ctx, nodesBySize)
+      drawNodesHighlightLayer(ctx)
     )
   }
 
@@ -210,6 +309,20 @@ function build(){
   if (settings.draw_node_labels) {
     layeredImage = drawLayerOnTop(layeredImage,
       drawNodeLabelsLayer(ctx, nodesBySize)
+    )
+  }  
+
+  // Draw cluster fills (above nodes)
+  if (settings.draw_cluster_fills && settings.cluster_fill_above_nodes) {
+    layeredImage = drawLayerOnTop(layeredImage,
+      drawClustersFillLayer(ctx, clusterImprints, modalities)
+    )
+  }
+
+  // Draw cluster labels
+  if (settings.draw_cluster_labels) {
+    layeredImage = drawLayerOnTop(layeredImage,
+      drawClusterLabelsLayer(ctx, modalities, centroidsByModality)
     )
   }
 
@@ -547,6 +660,133 @@ function precomputeNetworkShapeImprint(voronoiData) {
   return imgd
 }
 
+function precomputeClusterImprints(modalities, voronoiData, attId) {
+  var options = {
+    // Steps
+    step_blur: true,
+    step_contrast: true,
+    step_contrast_adjust_spread: true,
+    
+    voronoi_paint_distance: true,
+    blur_radius: 0.01 * settings.cluster_smoothness * Math.min(voronoiData.width, voronoiData.height) / settings.zoom_window_size,
+    contrast_steepness: Infinity, // More = more abrupt contour. ex: 0.03 for a slight gradient
+    contrast_threshold: 0.15, // At which alpha level it "finds" the cluster (must remain low)
+    contrast_postprocessing_threshold: 1-settings.cluster_spreading, // Idem on a secondary pass
+    contrast_postprocessing_blur_radius: 0.03 * Math.min(voronoiData.width, voronoiData.height) / settings.zoom_window_size,
+  }
+
+  var imprintsByModality = {}
+  modalities.forEach(function(modality, i){
+    log("Precompute cluster shape for "+modality+"...")
+
+    // New Canvas
+    var newCanvas = document.createElement('canvas')
+    newCanvas.width = voronoiData.width
+    newCanvas.height = voronoiData.height
+    var ctx = newCanvas.getContext("2d")
+
+    // Paint the voronoi "imprint" of the cluster
+
+    var imgd = ctx.getImageData(0, 0, voronoiData.width, voronoiData.height)
+    var pix = imgd.data
+    var i, pixlen
+    for ( i = 0, pixlen = pix.length; i < pixlen; i += 4 ) {
+      var vid = voronoiData.vidPixelMap[i/4]
+      if (vid > 0 && g.getNodeAttribute(voronoiData.nodesIndex[vid], attId) == modality) {
+        pix[i  ] = 0 // red
+        pix[i+1] = 0 // green
+        pix[i+2] = 0 // blue
+        if (options.voronoi_paint_distance) {
+          pix[i+3] = Math.floor(255 - voronoiData.dPixelMap[i/4])
+        } else {
+          pix[i+3] = 255 // alpha
+        }
+      }
+    }
+
+    // Pre-treatment: Make the imprint of the voronoï more natural
+    // Add a slight blur (but keep the original)
+    imgd = mergeLayers([
+      imgd,
+      blur(imgd, 0.005 * Math.min(voronoiData.width, voronoiData.height) / settings.zoom_window_size)
+    ])
+
+    // Convolute: slight blur for antialiasing
+    imgd = convolute(imgd,
+    [  0, .1,  0,
+      .1, .6, .1,
+       0, .1,  0 ]
+    )
+
+    // Blur
+    if (options.step_blur) {
+      // Blur
+      imgd = blur(imgd, options.blur_radius)
+
+      // Normalize alpha at 10% (helps with edge cases where alpha becomes very low)
+      imgd = normalizeAlpha(imgd, 0, 255, 0.1)
+    }
+
+    // Threshold the "cloud"
+    if (options.step_contrast) {
+      imgd = alphacontrast(imgd, 0, options.contrast_threshold, options.contrast_steepness)
+    }
+
+    // Postprocessing: blur then re-threshold
+    if (options.step_contrast_adjust_spread) {
+      // Blur
+      imgd = blur(imgd, options.contrast_postprocessing_blur_radius)
+
+      // Normalize alpha at 50% (helps with edge cases where alpha becomes very low)
+      imgd = normalizeAlpha(imgd, 0, 255, 0.5)
+
+      // Threshold
+      imgd = alphacontrast(imgd, 0, options.contrast_postprocessing_threshold, options.contrast_steepness)
+    }
+    report("...done.")
+    imprintsByModality[modality] = imgd
+  })
+  return imprintsByModality
+}
+
+function precomputeCentroids(ctx, modalities, clusterImprints) {
+  var centroidsByModality = {}
+  modalities.forEach(function(modality, i){
+    log("Precompute cluster centroid for "+modality+"...")
+
+    var imgd_src = clusterImprints[modality]
+    var backup_centroid = findCentroid(imgd_src, modality)
+
+    // Clone image data
+    var imgd = ctx.createImageData(imgd_src.width, imgd_src.height);
+    imgd.data.set(imgd_src.data)
+
+    var pix = imgd.data
+    var i, pixlen, pix2
+
+    // Remove each other cluster imprint from this imprint
+    var m2, imgd2
+    for (m2 in clusterImprints) {
+      if (m2 != modality) {
+        imgd2 = clusterImprints[m2]
+        pix2 = imgd2.data
+        for ( i = 0, pixlen = pix.length; i < pixlen; i += 4 ) {
+          pix[i+3] = Math.max(0, pix[i+3] - pix2[i+3])
+        }
+      }
+    }
+
+    var centroid = findCentroid(imgd, modality)
+    if (centroid[0]) {
+      centroidsByModality[modality] = centroid
+    } else {
+      centroidsByModality[modality] = backup_centroid
+    }
+    report("...done.")
+  })
+  return centroidsByModality
+}
+
 function getEmptyLayer(ctx) {
   // Clear canvas
   ctx.clearRect(0, 0, settings.width, settings.height)
@@ -692,43 +932,145 @@ function drawNetworkShapeContourLayer(ctx, networkShapeImprint) {
   return imgd
 }
 
-function drawHEdgesLayer(ctx, voronoiData) {
-  log("Draw highlighted edges...")
-  var edges = g.edges()
-    .filter(function(eid){
-      var ns = g.getNodeAttributes(g.source(eid))
-      var nt = g.getNodeAttributes(g.target(eid))
-      var smod = settings.node_clusters.modalities[ns[settings.node_clusters.attribute_id]]
-      var tmod = settings.node_clusters.modalities[nt[settings.node_clusters.attribute_id]]
-      return smod && tmod
-    })
-  var result = drawEdgesLayer(ctx, voronoiData, edges, true)
-  report("...done.")
-  return result
+function drawClustersFillLayer(ctx, clusterImprints, modalities) {
+  return mergeLayers(modalities.map(function(modality, i){
+    log("Draw cluster fill for "+modality+"...")
+
+    // Clear canvas
+    ctx.clearRect(0, 0, settings.width, settings.height)
+
+    // Draw and rescale the imprint if necessary
+    var imgd
+    var ratio = settings.width/settings.max_voronoi_size
+    if (ratio>1) {
+      var canvas2=document.createElement("canvas")
+      canvas2.width=settings.width
+      canvas2.height=settings.height
+      var ctx2=canvas2.getContext("2d")
+      ctx2.putImageData(clusterImprints[modality], 0, 0)
+      ctx.scale(ratio, ratio)
+      ctx.drawImage(ctx2.canvas,0,0)
+      imgd = ctx.getImageData(0, 0, settings.width, settings.height)
+      ctx.setTransform(1, 0, 0, 1, 0, 0)
+      imgd = processRescaledImprint(imgd)
+    } else {
+      imgd = clusterImprints[modality]
+    }
+
+    var color
+    if (settings.cluster_fill_color_by_modality) {
+      color = settings.node_clusters.default_color || settings.cluster_fill_color_default || "#444"
+      if (settings.node_clusters.modalities[modality]) {
+        color = settings.node_clusters.modalities[modality].color
+      }
+    } else {
+      color = settings.cluster_fill_color_default
+    }
+    var pix = imgd.data
+    var rgb = d3.color(color)
+    var i, pixlen
+    for ( i = 0, pixlen = pix.length; i < pixlen; i += 4 ) {
+      pix[i  ] = rgb.r // red
+      pix[i+1] = rgb.g // green
+      pix[i+2] = rgb.b // blue
+      pix[i+3] = Math.floor(settings.cluster_fill_alpha * pix[i+3]) // alpha
+    }
+
+    // Convolute: slight blur (for antialiasing)
+    imgd = convolute(imgd,
+    [  0, .1,  0,
+      .1, .6, .1,
+       0, .1,  0 ]
+    )
+
+    report("...done.")
+    return imgd
+  }))
 }
 
-function drawMEdgesLayer(ctx, voronoiData) {
-  log("Draw muted edges...")
-  var edges = g.edges()
-    .filter(function(eid){
-      var ns = g.getNodeAttributes(g.source(eid))
-      var nt = g.getNodeAttributes(g.target(eid))
-      var smod = settings.node_clusters.modalities[ns[settings.node_clusters.attribute_id]]
-      var tmod = settings.node_clusters.modalities[nt[settings.node_clusters.attribute_id]]
-      return !(smod && tmod)
-    })
-  var result = drawEdgesLayer(ctx, voronoiData, edges, false)
-  report("...done.")
-  return result
+function drawClustersContourLayer(ctx, clusterImprints, modalities) {
+  return mergeLayers(modalities.map(function(modality, i){
+    log("Draw cluster contour for "+modality+"...")
+
+    // Clear canvas
+    ctx.clearRect(0, 0, settings.width, settings.height);
+    
+    // Draw and rescale the imprint if necessary
+    var imgd
+    var ratio = settings.width/settings.max_voronoi_size
+    if (ratio>1) {
+      var canvas2=document.createElement("canvas")
+      canvas2.width=settings.width
+      canvas2.height=settings.height
+      var ctx2=canvas2.getContext("2d")
+      ctx2.putImageData(clusterImprints[modality], 0, 0)
+      ctx.scale(ratio, ratio)
+      ctx.drawImage(ctx2.canvas,0,0)
+      imgd = ctx.getImageData(0, 0, settings.width, settings.height)
+      ctx.setTransform(1, 0, 0, 1, 0, 0)
+      imgd = processRescaledImprint(imgd)
+    } else {
+      imgd = clusterImprints[modality]
+    }
+
+    var color
+    if (settings.cluster_contour_color_by_modality) {
+      color = settings.node_clusters.default_color || settings.cluster_contour_color_default || "#444"
+      if (settings.node_clusters.modalities[modality]) {
+        color = settings.node_clusters.modalities[modality].color
+      }
+    } else {
+      color = settings.cluster_contour_color_default
+    }
+
+    // Draw the contour from the filling by convolution
+    // Convolute: slight blur (for antialiasing)
+    imgd = convolute(imgd,
+    [  0, .1,  0,
+      .1, .6, .1,
+       0, .1,  0 ]
+    )
+
+    // Convolute: contour
+    imgd = convolute(imgd,
+    [  0, -1,  0,
+      -1,  4, -1,
+       0, -1,  0 ]
+    )
+
+    // Trick for thickness
+    for ( var i=1; i<settings.cluster_contour_thickness*Math.min(settings.width, settings.height) / 1000 / settings.zoom_window_size; i++) {
+      // Convolute: blur+thicken
+      imgd = convolute(imgd,
+      [ .1, .3, .1,
+        .3, .8, .3, 
+        .1, .3, .1 ]
+      )
+    }
+
+    var pix = imgd.data
+    var rgb = d3.color(color)
+    var i, pixlen
+    for ( i = 0, pixlen = pix.length; i < pixlen; i += 4 ) {
+      pix[i  ] = rgb.r // red
+      pix[i+1] = rgb.g // green
+      pix[i+2] = rgb.b // blue
+      pix[i+3] = Math.floor(settings.cluster_contour_alpha * pix[i+3]) // alpha
+    }
+
+    report("...done.")
+    return imgd
+  }))
 }
 
-function drawEdgesLayer(ctx, voronoiData, edges, highlighted) {
+function drawEdgesLayer(ctx, voronoiData) {
+  log("Draw edges...")
   var options = {}
   options.display_voronoi = false // for monitoring purpose
   options.display_edges = true // disable for monitoring purpose
   options.max_edge_count = Infinity // for monitoring only
   options.edge_thickness = settings.edge_thickness*Math.min(settings.width, settings.height) / 1000
-  options.edge_alpha = highlighted ? settings.edge_highlighted_alpha : settings.edge_muted_alpha
+  options.edge_alpha = settings.edge_alpha
   options.edge_color = "#FFF"
   options.node_halo = settings.edge_high_quality
 
@@ -902,85 +1244,16 @@ function drawEdgesLayer(ctx, voronoiData, edges, highlighted) {
     })
   }
 
+  report("...done.")
   return multiplyAlpha(
     ctx.getImageData(0, 0, settings.width, settings.height),
     options.edge_alpha
   )
 }
 
-function drawHNodesLightLayer(ctx, nodesBySize) {
-  log("Draw highlighted nodes light...")
-  var options = {}
-  options.blur_radius = 5 * Math.min(settings.width, settings.height) / 1000
-  options.offset = 8 * Math.min(settings.width, settings.height) / 1000
-  var nodes = g.nodes()
-    .filter(function(nid){
-      var n = g.getNodeAttributes(nid)
-      var mod = settings.node_clusters.modalities[n[settings.node_clusters.attribute_id]]
-      return !!mod
-    })
+function drawNodesLayer(ctx, nodesBySize) {
+  log("Draw nodes...")
 
-  // Clear canvas
-  ctx.clearRect(0, 0, settings.width, settings.height)
-
-  // Note: to avoid a black halo effect due to
-  // blurring on opacity 0 (which is black)
-  // we paint all with an invisible layer of
-  // background color
-  var invisibleBackgroundColor = d3.color(settings.background_color)
-  invisibleBackgroundColor.opacity = 0.01
-
-  paintAll(ctx, settings.width, settings.height, invisibleBackgroundColor)
-
-  nodes.forEach(function(nid){
-    var n = g.getNodeAttributes(nid)
-    var radius = 2 * Math.max(settings.node_size * n.size, 0.7) + options.offset
-
-    ctx.lineCap="round"
-    ctx.lineJoin="round"
-
-    ctx.beginPath()
-    ctx.arc(n.x, n.y, radius, 0, 2 * Math.PI, false)
-    ctx.lineWidth = 0
-    ctx.fillStyle = settings.background_color
-    ctx.shadowColor = 'transparent'
-    ctx.fill()
-  })
-
-  var imgd = ctx.getImageData(0, 0, settings.width, settings.height)
-  imgd = blur(imgd, options.blur_radius)
-  report("...done.")
-
-  return imgd
-}
-
-function drawHNodesLayer(ctx, nodesBySize) {
-  log("Draw highlighted nodes...")
-  var nodes = g.nodes()
-    .filter(function(nid){
-      var n = g.getNodeAttributes(nid)
-      var mod = settings.node_clusters.modalities[n[settings.node_clusters.attribute_id]]
-      return !!mod
-    })
-  var result = drawNodesLayer(ctx, nodes, true)
-  report("...done.")
-  return result
-}
-
-function drawMNodesLayer(ctx, nodesBySize) {
-  log("Draw muted nodes...")
-  var nodes = g.nodes()
-    .filter(function(nid){
-      var n = g.getNodeAttributes(nid)
-      var mod = settings.node_clusters.modalities[n[settings.node_clusters.attribute_id]]
-      return !mod
-    })
-  var result = drawNodesLayer(ctx, nodes, false)
-  report("...done.")
-  return result
-}
-
-function drawNodesLayer(ctx, nodesBySize, highlighted) {
   var options = {}
   options.node_stroke = true
   options.node_stroke_width = 0.5 * Math.min(settings.width, settings.height)/1000
@@ -993,19 +1266,25 @@ function drawNodesLayer(ctx, nodesBySize, highlighted) {
 
     var modality = settings.node_clusters.modalities[n[settings.node_clusters.attribute_id]]
     var color
-    if (highlighted) {
+    if (modality) {
       color = modality.color
     } else {
-      color = "#ccc5c0"
+      color = settings.node_clusters.default_color || "#8B8B8B"
     }
 
-    var radius = Math.max(settings.node_size * n.size, 2)
-    if (highlighted) {
-      radius *= 2
-    }
+    var radius = Math.max(settings.node_size * n.size, 0.7)
 
     ctx.lineCap="round"
     ctx.lineJoin="round"
+
+    if (options.node_stroke) {
+      ctx.beginPath()
+      ctx.arc(n.x, n.y, radius + options.node_stroke_width, 0, 2 * Math.PI, false)
+      ctx.lineWidth = 0
+      ctx.fillStyle = "rgba(255, 255, 255, 0.66)"
+      ctx.shadowColor = 'transparent'
+      ctx.fill()
+    }
 
     ctx.beginPath()
     ctx.arc(n.x, n.y, radius, 0, 2 * Math.PI, false)
@@ -1015,6 +1294,87 @@ function drawNodesLayer(ctx, nodesBySize, highlighted) {
     ctx.fill()
   })
 
+  report("...done.")
+  return ctx.getImageData(0, 0, settings.width, settings.height)
+}
+
+function drawNodesHighlightLayer(ctx) {
+  log("Draw nodes highlight...")
+
+  var options = {}
+  options.stroke_width = settings.node_highlight_stroke * Math.min(settings.width, settings.height)/1000
+  options.offset = settings.node_highlight_stroke * Math.min(settings.width, settings.height)/1000
+  options.stroke_color = settings.node_highlight_color
+  options.highlight_edges = settings.node_highlight_edges
+
+  // Clear canvas
+  ctx.clearRect(0, 0, settings.width, settings.height)
+
+  // Build nodes highlight index
+  var nodeFilterIndex = {}
+  settings.highlighted_nodes.forEach(function(nid){
+    nodeFilterIndex[nid] = true
+  })
+
+  // Edges
+  if (options.highlight_edges) {
+    g.edges().forEach(function(eid){
+      var nsid = g.source(eid)
+      var ntid = g.target(eid)
+      if (nodeFilterIndex[nsid] && nodeFilterIndex[ntid]) {
+        var ns = g.getNodeAttributes(nsid)
+        var nt = g.getNodeAttributes(ntid)
+        ctx.beginPath()
+        ctx.lineCap="round"
+        ctx.lineJoin="round"
+        ctx.strokeStyle = options.stroke_color
+        ctx.fillStyle = 'rgba(0, 0, 0, 0)';
+        ctx.lineWidth = options.stroke_width
+        ctx.moveTo(ns.x, ns.y)
+        ctx.lineTo(nt.x, nt.y)
+        ctx.stroke()
+        ctx.closePath()
+      }
+    })
+  }
+
+  // Draw outer
+  settings.highlighted_nodes.forEach(function(nid){
+    var n = g.getNodeAttributes(nid)
+
+    var radius = Math.max(settings.node_size * n.size, 2) + options.offset + options.stroke_width
+
+    ctx.lineCap="round"
+    ctx.lineJoin="round"
+
+    ctx.beginPath()
+    ctx.arc(n.x, n.y, radius, 0, 2 * Math.PI, false)
+    ctx.lineWidth = 0
+    ctx.fillStyle = options.stroke_color
+    ctx.shadowColor = 'transparent'
+    ctx.fill()
+  })
+
+  // Draw inner
+  ctx.globalCompositeOperation = "destination-out";
+  settings.highlighted_nodes.forEach(function(nid){
+    var n = g.getNodeAttributes(nid)
+
+    var radius = Math.max(settings.node_size * n.size, 2) + options.offset
+
+    ctx.lineCap="round"
+    ctx.lineJoin="round"
+
+    ctx.beginPath()
+    ctx.arc(n.x, n.y, radius, 0, 2 * Math.PI, false)
+    ctx.lineWidth = 0
+    ctx.fillStyle = "#FFF"
+    ctx.shadowColor = 'transparent'
+    ctx.fill()
+  })
+  ctx.globalCompositeOperation = "source-over";
+
+  report("...done.")
   return ctx.getImageData(0, 0, settings.width, settings.height)
 }
 
@@ -1023,57 +1383,35 @@ function drawNodeLabelsLayer(ctx, nodesBySize_) {
   var options = {}
   options.draw_labels = true
   options.label_count = Infinity
-  options.colored_labels = true
-  options.sized_labels = true
+  options.label_color = settings.node_highlight_color
   options.label_spacing_factor = 1.5 // 1=normal; 2=box twice as wide/high etc.
   options.font_family = 'IBM Plex Sans Condensed, sans-serif'
-  options.font_min_size = settings.label_font_min_size * Math.min(settings.width, settings.height)/1000
-  options.font_max_size = settings.label_font_max_size * Math.min(settings.width, settings.height)/1000
+  options.font_size = settings.label_font_size * Math.min(settings.width, settings.height)/1000
+  options.font_weight = settings.label_font_weight
   options.border_thickness = settings.label_border_thickness * Math.min(settings.width, settings.height)/1000
   options.border_optical_adjustment = 2
   options.border_color = settings.background_color
-  options.pixmap_size = 1 + Math.floor(0.3 * options.font_min_size)
+  options.pixmap_size = 1 + Math.floor(0.3 * options.font_size)
+  options.offset = 2 * settings.node_highlight_stroke * Math.min(settings.width, settings.height)/1000
   var i, x, y
-
-  // Deal with font weights
-  //  Relative thicknesses for: IBM Plex Sans Condensed
-  //  Thin/100: 3.5
-  //  Extra-Light/200: 6
-  //  Light/300: 9
-  //  Regular/400: 12.5
-  //  Medium/500: 17.5
-  //  Semi-bold/600: 20
-  //  Bold/700: 23.5
-  var weights =     [ /*100, */200, 300,  400,  500, 600,  700 ]
-  var thicknesses = [ /*3.5,   */6,   9, 12.5, 17.5,  20, 23.5 ]
-    .map(function(d){
-      return Math.pow(d, options.border_optical_adjustment)
-    })
-  var thicknessToWeight = d3.scaleLinear()
-    .domain(thicknesses)
-    .range(weights)
-  // Intuitively: font_size*thickness = constant
-  var font_const = options.font_max_size*thicknesses[0]
-  // We restrain the size to the proper steps of the scale
-  var normalizeFontSize = function(size) {
-    var continuousWeight = thicknessToWeight(font_const/size)
-    var properWeight = 100*Math.round(continuousWeight/100)
-    var properThickness = thicknessToWeight.invert(properWeight)
-    var properSize = font_const/properThickness
-    return [properSize, properWeight]
-  } 
 
   // Clear canvas
   ctx.clearRect(0, 0, settings.width, settings.height)
 
   // Reverse nodes by size order
   var nodesBySize = nodesBySize_.splice(0)
-    .filter(function(nid){
-      var n = g.getNodeAttributes(nid)
-      var mod = settings.node_clusters.modalities[n[settings.node_clusters.attribute_id]]
-      return !!mod
-    })
   nodesBySize.reverse()
+
+  // Build nodes highlight index
+  var nodeFilterIndex = {}
+  settings.highlighted_nodes.forEach(function(nid){
+    nodeFilterIndex[nid] = true
+  })
+
+  // Filter nodes by size
+  nodesBySize = nodesBySize.filter(function(nid){
+    return !!nodeFilterIndex[nid]
+  })
 
   // Draw each label
   if (options.draw_labels) {
@@ -1103,39 +1441,20 @@ function drawNodeLabelsLayer(ctx, nodesBySize_) {
         var nx = n.x
         var ny = n.y
 
-        var modality = settings.node_clusters.modalities[n[settings.node_clusters.attribute_id]]
-        var ncol
-        if (modality) {
-          ncol = d3.color(modality.color)
-        } else {
-          ncol = d3.color(settings.node_clusters.default_color || "#8B8B8B")
-        }
-
         var radius = Math.max(settings.node_size * n.size, 2)
 
-        // Precompute the label
-        var color = options.colored_labels ? tuneColorForLabel(ncol) : d3.color('#666')
-        var fontSize = options.sized_labels
-          ? Math.floor(options.font_min_size + (n.size - label_nodeSizeExtent[0]) * (options.font_max_size - options.font_min_size) / (label_nodeSizeExtent[1] - label_nodeSizeExtent[0]))
-          : Math.floor(0.6 * options.font_min_size + 0.4 * options.font_max_size)
-
-        var sw = normalizeFontSize(fontSize)
-        fontSize = sw[0]
-        var fontWeight = sw[1]
-
-        // Then, draw the label only if wanted
         var labelCoordinates = {
-          x: nx + 0.6 * options.border_thickness + 1.05 * radius,
-          y: ny + 0.25 * fontSize
+          x: nx + 0.6 * options.border_thickness + 1.05 * radius + options.offset,
+          y: ny + 0.25 * options.font_size
         }
 
         var label = n.label.replace(/^https*:\/\/(www\.)*/gi, '')
 
-        ctx.font = fontWeight + " " + fontSize + "px " + options.font_family
+        ctx.font = options.font_weight + " " + options.font_size + "px " + options.font_family
         ctx.lineWidth = options.border_thickness
 
         // Bounding box
-        var bbox = getBBox(ctx, fontSize, labelCoordinates, label, options.label_spacing_factor)
+        var bbox = getBBox(ctx, options.font_size, labelCoordinates, label, options.label_spacing_factor)
 
         // Test bounding box collision
         var collision = false
@@ -1179,7 +1498,7 @@ function drawNodeLabelsLayer(ctx, nodesBySize_) {
           , labelCoordinates.y
           )
           ctx.lineWidth = 0
-          ctx.fillStyle = color.toString()
+          ctx.fillStyle = options.label_color
           ctx.fillText(
             label
           , labelCoordinates.x
@@ -1192,6 +1511,92 @@ function drawNodeLabelsLayer(ctx, nodesBySize_) {
 
     })
   }
+  report("...done.")
+  return ctx.getImageData(0, 0, settings.width, settings.height)
+}
+
+function drawClusterLabelsLayer(ctx, modalities, centroidsByModality) {
+  log("Draw cluster labels...")
+
+  var options = {}
+  options.draw_text_anchor = false // for monitoring purpose
+  options.draw_label = true // idem
+  options.font_size = settings.cluster_label_font_size * Math.min(settings.width, settings.height) / 1000
+  options.font_weight = 300
+  options.font_family = "'IBM Plex Sans Condensed', sans-serif"
+  options.border_thickness = 2*settings.cluster_label_outline_thickness * Math.min(settings.width, settings.height) / 1000
+  options.border_color = function(c){return c.toString()}
+  options.label_color = function(c){return "#FFF"}
+
+  // Clear canvas
+  ctx.clearRect(0, 0, settings.width, settings.height)
+
+  var ratio = settings.width/settings.max_voronoi_size
+
+  modalities.forEach(function(modality, i){
+    var color = settings.node_clusters.default_color || "#444"
+    if (settings.node_clusters.modalities[modality]) {
+      color = settings.node_clusters.modalities[modality].color
+    }
+
+    var centroid = centroidsByModality[modality]
+    if (ratio>1) {
+      centroid = centroid.map(function(d){
+        return d*ratio
+      })
+    }
+    if ( !isNaN(centroid[0]) && !isNaN(centroid[1]) ) {
+
+      var label = modality
+      if (settings.node_clusters[modality] && settings.node_clusters[modality].label) {
+        label = settings.node_clusters[modality].label
+      }
+      var x = centroid[0]
+      var y = centroid[1]
+      
+      if (options.draw_label) {
+        ctx.font = options.font_weight + " italic " + options.font_size+"px "+options.font_family
+        ctx.lineCap="round"
+        ctx.lineJoin="round"
+        ctx.lineWidth = options.border_thickness
+        ctx.fillStyle = options.border_color(color)
+        ctx.strokeStyle = options.border_color(color)
+        ctx.textAlign = "center"
+        ctx.fillText(
+          label
+        , x
+        , y + 0.4*options.font_size
+        )
+        ctx.strokeText(
+          label
+        , x
+        , y + 0.4*options.font_size
+        )
+        ctx.lineWidth = 0
+        ctx.fillStyle = options.label_color(color)
+        ctx.fillText(
+          label
+        , x
+        , y + 0.4*options.font_size
+        )
+      }
+
+      if (options.draw_text_anchor) {
+        ctx.beginPath()
+        ctx.arc(x, y, 10, 0, 2 * Math.PI, false)
+        ctx.lineWidth = 0
+        ctx.fillStyle = "#000"
+        ctx.shadowColor = 'transparent'
+        ctx.fill()
+        ctx.beginPath()
+        ctx.arc(x, y, 4, 0, 2 * Math.PI, false)
+        ctx.lineWidth = 0
+        ctx.fillStyle = options.border_color(color)
+        ctx.shadowColor = 'transparent'
+        ctx.fill()
+      }
+    }
+  })
   report("...done.")
   return ctx.getImageData(0, 0, settings.width, settings.height)
 }

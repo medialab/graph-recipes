@@ -2,48 +2,48 @@
 angular.module('graphrecipes.recipes_list', [])
 .constant('recipesList', [
 	{
-		'name': 'PREPARE',
+		'name': 'Prepare',
 		'desc': 'Explore attributes, and get the JSON of clusters and colors',
 		'file': 'Prepare 1.0.0.js'
 	},
 	{
-		'name': 'MAKE A MAP',
+		'name': 'Make a Map',
 		'desc': 'Simple rendering of nodes and edges (1 megapixel).',
 		'file': 'Make a map 1.0.0.js'
 	},
 	{
-		'name': 'MAKE A MAP (settings: clusters)',
+		'name': 'Make a Map (settings: clusters)',
 		'desc': 'Rendering of nodes and clusters (1 megapixels)',
 		'file': 'Make a map 1.0.0 - Clusters.js'
 	},
 	{
-		'name': 'MAKE A MAP (settings: high resolution)',
+		'name': 'Make a Map (settings: high resolution)',
 		'desc': 'Produces a high quality, 64 megapixel rendering of nodes and edges.',
 		'file': 'Make a map 1.0.0 - HR.js'
 	},
 	{
-		'name': 'HIGHLIGHT MODALITY',
+		'name': 'Highlight Modality',
 		'desc': 'Highlights one or more modalities, and mutes or hides the rest.',
 		'file': 'Highlight a modality 1.0.0.js'
 	},
 	{
-		'name': 'Orientation mini map',
-		'desc': 'TO DO',
-		'file': 'Orientation mini map.js'
+		'name': 'Orientation Mini-map',
+		'desc': 'A mini-map with highlighted modalities. For integration within maps.',
+		'file': 'Orientation mini map 1.0.0.js'
 	},
 	{
-		'name': 'Get top nodes',
-		'desc': 'TO DO',
-		'file': 'Get top nodes.js'
+		'name': 'Get Top Nodes',
+		'desc': 'Generate a list of nodes to highlight. Edit this code to fit your needs.',
+		'file': 'Get top nodes 1.0.0.js'
 	},
 	{
-		'name': 'Highlight nodes',
-		'desc': 'TO DO',
-		'file': 'Highlight nodes.js'
+		'name': 'Highlight Nodes',
+		'desc': 'Highlights a list of nodes with thick black lines.',
+		'file': 'Highlight nodes 1.0.0.js'
 	},
   {
-		'name': 'Empty script',
-		'desc': 'Copy-paste your script here',
+		'name': '(empty script)',
+		'desc': 'Copy-paste your own script here.',
 		'file': 'empty.js'
   }
 ])
