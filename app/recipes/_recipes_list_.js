@@ -7,24 +7,24 @@ angular.module('graphrecipes.recipes_list', [])
 		'file': 'Prepare 1.0.0.js'
 	},
 	{
-		'name': 'MAKE A MAP (settings: low resolution)',
-		'desc': 'Simple rendering of nodes and edges',
+		'name': 'MAKE A MAP',
+		'desc': 'Simple rendering of nodes and edges (1 megapixel).',
 		'file': 'Make a map 1.0.0.js'
 	},
 	{
 		'name': 'MAKE A MAP (settings: clusters)',
-		'desc': 'Rendering of clusters',
+		'desc': 'Rendering of nodes and clusters (1 megapixels)',
 		'file': 'Make a map 1.0.0 - Clusters.js'
 	},
 	{
 		'name': 'MAKE A MAP (settings: high resolution)',
-		'desc': 'These settings produce a high quality, 64 megapixel rendering.',
+		'desc': 'Produces a high quality, 64 megapixel rendering of nodes and edges.',
 		'file': 'Make a map 1.0.0 - HR.js'
 	},
 	{
-		'name': 'Highlight a modality',
-		'desc': 'TO DO',
-		'file': 'Highlight a modality.js'
+		'name': 'HIGHLIGHT MODALITY',
+		'desc': 'Highlights one or more modalities, and mutes or hides the rest.',
+		'file': 'Highlight a modality 1.0.0.js'
 	},
 	{
 		'name': 'Orientation mini map',
