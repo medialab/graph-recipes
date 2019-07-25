@@ -1,19 +1,20 @@
 // PREPARE - v1.0
 // Backscatter Network Export
 //
-//  This script provides info about all node attributes
-//  and their modalities, and outputs editable color
-//  palette settings, useful in other scripts
+//  Provides info about all node attributes and their modalities,
+//  and outputs editable color palette settings,
+//  to be used in other scripts.
 
 
 /// EDIT SETTINGS BELOW
 
 var settings = {}
 
-// Default palette (Backscatter color code)
+// Backscatter palette
+// You will be able to modify colors afterwards
 // Note: the order matters:
 //       - from biggest to smallest cluster
-//       - the last color is default for small/other clusters
+//       - the last color is the default for small/other clusters
 
 settings.default_palette = [
   "#6fc5a4", // Light green
@@ -30,7 +31,22 @@ settings.default_palette = [
 ]
 
 /*
-// Mathieu's tuning of the original palette¨:
+// Backscatter original palette from the specification
+settings.default_palette = [
+  "#8CDEC0", // Light green
+  "#FF5A60", // Red
+  "#B6BCFE", // Light blue
+  "#FDDD82", // Yellow
+  "#5D65D4", // Dark blue
+  "#FF8B5C", // Orange
+  "#FFB0B4", // Pink
+  "#49BA95", // Green
+  "#9065AE", // Purple
+  "#848CD2", // Blue
+  "#8B8B8B"  // Grey
+]
+
+// Mathieu's tuning of the original palette:
 // - A narrower lightness range, better on a semiotic level
 // - Less similar hues
 settings.default_palette = [
@@ -45,21 +61,6 @@ settings.default_palette = [
   "#b65887", // Purple
   "#7169af", // Dark indigo
   "#9d9b99"  // Grey
-]
-
-// Backscatter palette from the spec doc
-settings.default_palette = [
-  "#8CDEC0", // Light green
-  "#FF5A60", // Red
-  "#B6BCFE", // Light blue
-  "#FDDD82", // Yellow
-  "#5D65D4", // Dark blue
-  "#FF8B5C", // Orange
-  "#FFB0B4", // Pink
-  "#49BA95", // Green
-  "#9065AE", // Purple
-  "#848CD2", // Blue
-  "#8B8B8B"  // Grey
 ]
 */
 
@@ -198,21 +199,33 @@ for (attr in eAttributes) {
 console.log('Edge attributes', eAttributes)
 
 // Write the compte-rendu
-document.querySelector('#playground').innerHTML = '<pre></pre>'
-var pre = document.querySelector('#playground pre')
-pre.textContent = ''
+var playground = document.querySelector('#playground')
 
-pre.textContent += '' + d3.keys(nAttributes).length + ' NODE ATTRIBUTES'
-pre.textContent += '\n================================'
+var h1 = document.createElement("h1")
+h1.textContent = '' + d3.keys(nAttributes).length + ' NODE ATTRIBUTES'
+h1.style.margin = "0"
+playground.append(h1)
+
+var pre, h5
 for (attr in nAttributes) {
+  var h3 = document.createElement("h3")
+  h3.textContent = attr
+  h3.style.margin = "40px 0 0 0"
+  playground.append(h3)
+
+  pre = document.createElement("pre")
+  pre.style.margin = "0"
+  playground.append(pre)
+
   // Node attribute
-  pre.textContent += '\n\n\n' + attr
-  pre.textContent += '\n--------------------------------'
+  pre.textContent += 'Attribute ID: ' + attr
   var attData = nAttributes[attr]
 
   // Missing values
   if (attData.nodesCount != g.order) {
-    pre.textContent += '\nOnly ' + attData.nodesCount + '/' + g.order + ' nodes have this attribute.'
+    pre.textContent += '\nOnly ' + attData.nodesCount + '/' + g.order + ' nodes have this attribute. ('
+      + Math.round(100*attData.nodesCount/g.order) + '%, '
+      + (g.order-attData.nodesCount) + ' missing values)'
   }
 
   // Type
@@ -238,18 +251,26 @@ for (attr in nAttributes) {
   }
 
   // Values summary
-  pre.textContent += '\n\n### Values summary'
+  h5 = document.createElement("h5")
+  h5.textContent = 'Values summary'
+  h5.style.margin = "0"
+  playground.append(h5)
+  
+  pre = document.createElement("pre")
+  pre.style.margin = "0"
+  playground.append(pre)
+  
   if (attData.valuesStats.differentValues == 1) {
-    pre.textContent += '\nAll nodes have the same ' + attr + '. '
+    pre.textContent += 'All nodes have the same ' + attr + '. '
   } else if (attData.valuesStats.differentValues == g.order) {
-    pre.textContent += '\nEvery single node has a different ' + attr + '. '
+    pre.textContent += 'Every single node has a different ' + attr + '. '
   } else if (attData.valuesStats.differentValues > 0.9 * g.order) {
-    pre.textContent += '\nNodes take ' + attData.valuesStats.differentValues + ' different values for this attribute. '
+    pre.textContent += 'Nodes take ' + attData.valuesStats.differentValues + ' different values for this attribute. '
     pre.textContent += '\nIn other terms, almost every node (' + percent(attData.valuesStats.differentValues/g.order) + ') has a different ' + attr + '. '
     pre.textContent += '\nThe biggest group of nodes with the shame value has ' + attData.valuesStats.sizeOfBiggestValue + ' nodes. '
     pre.textContent += '\n' + attData.valuesStats.valuesUnitary + ' nodes have a specific (non shared) value. '
   } else {
-    pre.textContent += '\nNodes take ' + attData.valuesStats.differentValues + ' different values for this attribute. '
+    pre.textContent += 'Nodes take ' + attData.valuesStats.differentValues + ' different values for this attribute. '
     pre.textContent += '\nThe biggest group with the same value has ' + attData.valuesStats.sizeOfBiggestValue + ' nodes (' + percent(attData.valuesStats.sizeOfBiggestValue/g.order) + '). '
     pre.textContent += '\nThe smallest group has ' + attData.valuesStats.sizeOfSmallestValue + ' nodes. '
     pre.textContent += '\n' + attData.valuesStats.valuesUnitary + ' nodes have a specific (non shared) value. '
@@ -257,18 +278,32 @@ for (attr in nAttributes) {
 
   // Values
   if (attData.valuesStats.differentValues <= 10) {
-    pre.textContent += '\n\n### Values'
-    pre.textContent += '\n' +
-      d3.keys(attData.values)
+    h5 = document.createElement("h5")
+    h5.textContent = 'Values'
+    h5.style.margin = "0"
+    playground.append(h5)
+    
+    pre = document.createElement("pre")
+    pre.style.margin = "0"
+    playground.append(pre)
+
+    pre.textContent += d3.keys(attData.values)
         .sort(function(a, b){ return attData.values[b] - attData.values[a] })
         .map(function(v){
           return '- ' + v + ': ' + attData.values[v] + ' nodes'
         })
         .join('\n')
   } else if (attData.valuesStats.differentValues - attData.valuesStats.valuesUnitary >= 1 && attData.valuesStats.differentValues - attData.valuesStats.valuesUnitary <= 10) {
-    pre.textContent += '\n\n### Values taken by more than one node'
-    pre.textContent += '\n' +
-      d3.keys(attData.values)
+    h5 = document.createElement("h5")
+    h5.textContent = 'Values taken by more than one node'
+    h5.style.margin = "0"
+    playground.append(h5)
+    
+    pre = document.createElement("pre")
+    pre.style.margin = "0"
+    playground.append(pre)
+
+    pre.textContent += d3.keys(attData.values)
         .sort(function(a, b){ return attData.values[b] - attData.values[a] })
         .filter(function(v, i){
           return attData.values[v] > 1
@@ -278,9 +313,16 @@ for (attr in nAttributes) {
         })
         .join('\n')
   } else if (attData.valuesStats.differentValues - attData.valuesStats.valuesUnitary > 10) {
-    pre.textContent += '\n\n### Values taken by the most nodes (top 10)'
-    pre.textContent += '\n' +
-      d3.keys(attData.values)
+    h5 = document.createElement("h5")
+    h5.textContent = 'Values taken by the most nodes (top 10)'
+    h5.style.margin = "0"
+    playground.append(h5)
+    
+    pre = document.createElement("pre")
+    pre.style.margin = "0"
+    playground.append(pre)
+
+    pre.textContent += d3.keys(attData.values)
         .sort(function(a, b){ return attData.values[b] - attData.values[a] })
         .filter(function(v, i){
           return attData.values[v] > 1 && i < 10
@@ -292,8 +334,20 @@ for (attr in nAttributes) {
   }
 
   // Color settings bundle
-  pre.textContent += '\n\n### Color settings bundle (COPY-PASTABLE JSON)'
-  pre.textContent += '\n\nsettings.node_clusters = '
+  h5 = document.createElement("h5")
+  h5.textContent = 'Color settings bundle (COPY-PASTABLE JSON)'
+  h5.style.margin = "0"
+  playground.append(h5)
+  
+  var ta = document.createElement("textarea")
+  ta.cols = "30"
+  ta.rows = "10"
+  ta.style.minHeight = "150px"
+  ta.style.fontFamily = "monospace"
+  ta.style.margin = "0"
+  playground.append(ta)
+
+  ta.textContent += 'settings.node_clusters = '
   if (attData.valuesStats.differentValues < settings.default_palette.length) {
     var obj = {}
     obj.attribute_id = attr
@@ -308,7 +362,7 @@ for (attr in nAttributes) {
         }
       })
     obj.default_color = settings.default_palette[settings.default_palette.length-1]
-    pre.textContent += JSON.stringify(obj, null, 2)
+    ta.textContent += JSON.stringify(obj, null, 2)
   } else if (attData.valuesStats.differentValues - attData.valuesStats.valuesUnitary >= 1 && attData.valuesStats.differentValues - attData.valuesStats.valuesUnitary < settings.default_palette.length) {
     var obj = {}
     obj.attribute_id = attr
@@ -326,7 +380,7 @@ for (attr in nAttributes) {
         }
       })
     obj.default_color = settings.default_palette[settings.default_palette.length-1]
-    pre.textContent += JSON.stringify(obj, null, 2)
+    ta.textContent += JSON.stringify(obj, null, 2)
   } else if (attData.valuesStats.differentValues - attData.valuesStats.valuesUnitary >= settings.default_palette.length) {
     var obj = {}
     obj.attribute_id = attr
@@ -344,21 +398,41 @@ for (attr in nAttributes) {
         }
       })
     obj.default_color = settings.default_palette[settings.default_palette.length-1]
-    pre.textContent += JSON.stringify(obj, null, 2)
+    ta.textContent += JSON.stringify(obj, null, 2)
+  } else {
+    var obj = {}
+    obj.attribute_id = attr
+    obj.modalities = {}
+    obj.default_color = settings.default_palette[settings.default_palette.length-1]
+    ta.textContent += JSON.stringify(obj, null, 2)
   }
 }
 
-pre.textContent += '\n\n\n\n' + d3.keys(eAttributes).length + ' EDGE ATTRIBUTES'
-pre.textContent += '\n================================'
+h1 = document.createElement("h1")
+h1.textContent = '' + d3.keys(nAttributes).length + ' EDGE ATTRIBUTES'
+h1.style.margin = "100px 0 0 0"
+playground.append(h1)
+
+var pre, h5
 for (attr in eAttributes) {
+  var h3 = document.createElement("h3")
+  h3.textContent = attr
+  h3.style.margin = "40px 0 0 0"
+  playground.append(h3)
+
+  pre = document.createElement("pre")
+  pre.style.margin = "0"
+  playground.append(pre)
+
   // Edge attribute
-  pre.textContent += '\n\n\n' + attr
-  pre.textContent += '\n--------------------------------'
+  pre.textContent += 'Attribute ID: ' + attr
   var attData = eAttributes[attr]
 
   // Missing values
   if (attData.edgesCount != g.size) {
-    pre.textContent += '\nOnly ' + attData.edgesCount + '/' + g.size + ' edges have this attribute.'
+    pre.textContent += '\nOnly ' + attData.edgesCount + '/' + g.size + ' edges have this attribute. ('
+      + Math.round(100*attData.edgesCount/g.size) + '%, '
+      + (g.size-attData.edgesCount) + ' missing values)'
   }
 
   // Type
@@ -384,18 +458,26 @@ for (attr in eAttributes) {
   }
 
   // Values summary
-  pre.textContent += '\n\n### Values summary'
+  h5 = document.createElement("h5")
+  h5.textContent = 'Values summary'
+  h5.style.margin = "0"
+  playground.append(h5)
+  
+  pre = document.createElement("pre")
+  pre.style.margin = "0"
+  playground.append(pre)
+  
   if (attData.valuesStats.differentValues == 1) {
-    pre.textContent += '\nAll edges have the same ' + attr + '. '
+    pre.textContent += 'All edges have the same ' + attr + '. '
   } else if (attData.valuesStats.differentValues == g.size) {
-    pre.textContent += '\nEvery single edge has a different ' + attr + '. '
+    pre.textContent += 'Every single edge has a different ' + attr + '. '
   } else if (attData.valuesStats.differentValues > 0.9 * g.size) {
-    pre.textContent += '\nEdges take ' + attData.valuesStats.differentValues + ' different values for this attribute. '
+    pre.textContent += 'Edges take ' + attData.valuesStats.differentValues + ' different values for this attribute. '
     pre.textContent += '\nIn other terms, almost every edge (' + percent(attData.valuesStats.differentValues/g.size) + ') has a different ' + attr + '. '
     pre.textContent += '\nThe biggest group of edges with the shame value has ' + attData.valuesStats.sizeOfBiggestValue + ' edges. '
     pre.textContent += '\n' + attData.valuesStats.valuesUnitary + ' edges have a specific (non shared) value. '
   } else {
-    pre.textContent += '\nEdges take ' + attData.valuesStats.differentValues + ' different values for this attribute. '
+    pre.textContent += 'Edges take ' + attData.valuesStats.differentValues + ' different values for this attribute. '
     pre.textContent += '\nThe biggest group with the same value has ' + attData.valuesStats.sizeOfBiggestValue + ' edges (' + percent(attData.valuesStats.sizeOfBiggestValue/g.size) + '). '
     pre.textContent += '\nThe smallest group has ' + attData.valuesStats.sizeOfSmallestValue + ' edges. '
     pre.textContent += '\n' + attData.valuesStats.valuesUnitary + ' edges have a specific (non shared) value. '
@@ -403,18 +485,32 @@ for (attr in eAttributes) {
 
   // Values
   if (attData.valuesStats.differentValues <= 10) {
-    pre.textContent += '\n\n### Values'
-    pre.textContent += '\n' +
-      d3.keys(attData.values)
+    h5 = document.createElement("h5")
+    h5.textContent = 'Values'
+    h5.style.margin = "0"
+    playground.append(h5)
+    
+    pre = document.createElement("pre")
+    pre.style.margin = "0"
+    playground.append(pre)
+
+    pre.textContent += d3.keys(attData.values)
         .sort(function(a, b){ return attData.values[b] - attData.values[a] })
         .map(function(v){
           return '- ' + v + ': ' + attData.values[v] + ' edges'
         })
         .join('\n')
   } else if (attData.valuesStats.differentValues - attData.valuesStats.valuesUnitary >= 1 && attData.valuesStats.differentValues - attData.valuesStats.valuesUnitary <= 10) {
-    pre.textContent += '\n\n### Values taken by more than one edge'
-    pre.textContent += '\n' +
-      d3.keys(attData.values)
+    h5 = document.createElement("h5")
+    h5.textContent = 'Values taken by more than one edge'
+    h5.style.margin = "0"
+    playground.append(h5)
+    
+    pre = document.createElement("pre")
+    pre.style.margin = "0"
+    playground.append(pre)
+    
+    pre.textContent += d3.keys(attData.values)
         .sort(function(a, b){ return attData.values[b] - attData.values[a] })
         .filter(function(v, i){
           return attData.values[v] > 1
@@ -424,9 +520,16 @@ for (attr in eAttributes) {
         })
         .join('\n')
   } else if (attData.valuesStats.differentValues - attData.valuesStats.valuesUnitary > 10) {
-    pre.textContent += '\n\n### Values taken by the most edges (top 10)'
-    pre.textContent += '\n' +
-      d3.keys(attData.values)
+    h5 = document.createElement("h5")
+    h5.textContent = 'Values taken by the most edges (top 10)'
+    h5.style.margin = "0"
+    playground.append(h5)
+    
+    pre = document.createElement("pre")
+    pre.style.margin = "0"
+    playground.append(pre)
+
+    pre.textContent += d3.keys(attData.values)
         .sort(function(a, b){ return attData.values[b] - attData.values[a] })
         .filter(function(v, i){
           return attData.values[v] > 1 && i < 10
