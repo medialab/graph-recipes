@@ -9,6 +9,10 @@
 
 var settings = {}
 
+// Modalities the less represented will be omitted
+// Note: "Infinity" is a valid number here
+settings.maximum_modalities = 10
+
 // Backscatter palette
 // You will be able to modify colors afterwards
 // Note: the order matters:
@@ -347,7 +351,7 @@ for (attr in nAttributes) {
   playground.append(ta)
 
   ta.textContent += 'settings.node_clusters = '
-  if (attData.valuesStats.differentValues < settings.default_palette.length) {
+  if (attData.valuesStats.differentValues < settings.maximum_modalities) {
     var obj = {}
     obj.attribute_id = attr
     obj.modalities = {}
@@ -357,12 +361,12 @@ for (attr in nAttributes) {
         obj.modalities[v] = {
           label: v,
           count: attData.values[v],
-          color: settings.default_palette[i]
+          color: settings.default_palette[i] || settings.default_palette[settings.default_palette.length-1]
         }
       })
     obj.default_color = settings.default_palette[settings.default_palette.length-1]
     ta.textContent += JSON.stringify(obj, null, 2)
-  } else if (attData.valuesStats.differentValues - attData.valuesStats.valuesUnitary >= 1 && attData.valuesStats.differentValues - attData.valuesStats.valuesUnitary < settings.default_palette.length) {
+  } else if (attData.valuesStats.differentValues - attData.valuesStats.valuesUnitary >= 1 && attData.valuesStats.differentValues - attData.valuesStats.valuesUnitary <= settings.maximum_modalities) {
     var obj = {}
     obj.attribute_id = attr
     obj.modalities = {}
@@ -375,25 +379,25 @@ for (attr in nAttributes) {
         obj.modalities[v] = {
           label: v,
           count: attData.values[v],
-          color: settings.default_palette[i]
+          color: settings.default_palette[i] || settings.default_palette[settings.default_palette.length-1]
         }
       })
     obj.default_color = settings.default_palette[settings.default_palette.length-1]
     ta.textContent += JSON.stringify(obj, null, 2)
-  } else if (attData.valuesStats.differentValues - attData.valuesStats.valuesUnitary >= settings.default_palette.length) {
+  } else if (attData.valuesStats.differentValues - attData.valuesStats.valuesUnitary > settings.maximum_modalities) {
     var obj = {}
     obj.attribute_id = attr
     obj.modalities = {}
     d3.keys(attData.values)
       .sort(function(a, b){ return attData.values[b] - attData.values[a] })
       .filter(function(v, i){
-        return attData.values[v] > 1 && i < settings.default_palette.length-1
+        return attData.values[v] > 1 && i < settings.maximum_modalities
       })
       .forEach(function(v,i){
         obj.modalities[v] = {
           label: v,
           count: attData.values[v],
-          color: settings.default_palette[i]
+          color: settings.default_palette[i] || settings.default_palette[settings.default_palette.length-1]
         }
       })
     obj.default_color = settings.default_palette[settings.default_palette.length-1]
