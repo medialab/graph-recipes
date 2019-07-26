@@ -15,18 +15,34 @@
 
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-  <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,700|Lobster|Open+Sans+Condensed:300|IBM+Plex+Sans+Condensed:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i&display=swap&subset=latin-ext" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i|Lobster|Open+Sans+Condensed:300|IBM+Plex+Sans+Condensed:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i&display=swap&subset=latin-ext" rel="stylesheet">
 
   <script>
-    var styles = ["normal", "italic"]
-    var variants = ["normal"]
-    var sizes = ["1px", "2px", "4px", "8px", "16px", "32px", "64px"]
-    var weights = ["100", "200", "300", "400", "500", "600", "700"]
+    var styles, variants, sizes, weights
+    // Load IBM Plex Sans Condensed
+    styles = ["normal", "italic"]
+    variants = ["normal"]
+    sizes = ["1px", "2px", "4px", "8px", "16px", "32px", "64px"]
+    weights = ["100", "200", "300", "400", "500", "600", "700"]
     styles.forEach(style => {
       variants.forEach(variant => {
         weights.forEach(weight => {
           sizes.forEach(size => {
             document.fonts.load(style+" "+variant+" "+weight+" "+size+" 'IBM Plex Sans Condensed'");
+          })
+        })
+      })
+    })
+    // Load Raleway
+    styles = ["normal", "italic"]
+    variants = ["normal"]
+    sizes = ["1px", "2px", "4px", "8px", "16px", "32px", "64px"]
+    weights = ["100", "200", "300", "400", "500", "600", "700", "800", "900"]
+    styles.forEach(style => {
+      variants.forEach(variant => {
+        weights.forEach(weight => {
+          sizes.forEach(size => {
+            document.fonts.load(style+" "+variant+" "+weight+" "+size+" 'Raleway'");
           })
         })
       })
