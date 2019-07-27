@@ -50,6 +50,17 @@ angular.module('graphrecipes.view_upload', ['ngRoute'])
 
           try {
             g = gexf.parse(graphology.Graph, target.result);
+            
+            // flip y, because on the web the convention
+            // is that the origin is top-left
+            // (y grow top-down)
+            g.nodes().forEach(function(nid){
+              var n = g.getNodeAttributes(nid)
+              if (n.y) {
+                n.y = -n.y
+              }
+            })
+
           } catch(e) {
             parsingFail()
           }
