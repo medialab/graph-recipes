@@ -1031,8 +1031,8 @@ function drawNodeLabelsLayer(ctx, nodesBySize_) {
   options.font_family = 'IBM Plex Sans Condensed, sans-serif'
   options.font_min_size = settings.label_font_min_size * Math.min(settings.width, settings.height)/1000
   options.font_max_size = settings.label_font_max_size * Math.min(settings.width, settings.height)/1000
+  options.font_thickness_optical_correction = 0.7
   options.border_thickness = settings.label_border_thickness * Math.min(settings.width, settings.height)/1000
-  options.border_optical_adjustment = 2
   options.border_color = settings.background_color
   options.pixmap_size = 1 + Math.floor(0.3 * options.font_min_size)
   var i, x, y
@@ -1048,22 +1048,31 @@ function drawNodeLabelsLayer(ctx, nodesBySize_) {
   //  Bold/700: 23.5
   var weights =     [ /*100, */200, 300,  400,  500, 600,  700 ]
   var thicknesses = [ /*3.5,   */6,   9, 12.5, 17.5,  20, 23.5 ]
-    .map(function(d){
-      return Math.pow(d, options.border_optical_adjustment)
-    })
   var thicknessToWeight = d3.scaleLinear()
     .domain(thicknesses)
     .range(weights)
-  // Intuitively: font_size*thickness = constant
-  var font_const = options.font_max_size*thicknesses[0]
+
   // We restrain the size to the proper steps of the scale
   var normalizeFontSize = function(size) {
-    var continuousWeight = thicknessToWeight(font_const/size)
-    var properWeight = 100*Math.round(continuousWeight/100)
-    var properThickness = thicknessToWeight.invert(properWeight)
-    var properSize = font_const/properThickness
-    return [properSize, properWeight]
-  } 
+    // Theoretical apparent thickness (in pixels);
+    // found by reference to the biggest size
+    var theoreticalApparentThickness = options.font_max_size * thicknesses[0]
+    // But the apparent thickness is more natural if smaller sizes are
+    // slightly thinner
+    var sizeRatio = size / options.font_max_size
+    var theoreticalApparentThickness_corrected = theoreticalApparentThickness * (sizeRatio + (1-sizeRatio) * options.font_thickness_optical_correction)
+    // The font thickness depends on the size
+    var theoreticalFontThickness = theoreticalApparentThickness_corrected / size
+    // We can find the weight from the thickness
+    var theoreticalWeight = thicknessToWeight(theoreticalFontThickness)
+    // We need to round to actual weights
+    var actualWeight = Math.max(weights[0], Math.min(weights[weights.length-1], 100*Math.round(theoreticalWeight/100)))
+
+    // We can also restrain the size to the actual weight
+    var restrainedSize = theoreticalApparentThickness_corrected / thicknessToWeight.invert(actualWeight)
+
+    return [restrainedSize, actualWeight]
+  }
 
   // Clear canvas
   ctx.clearRect(0, 0, settings.width, settings.height)

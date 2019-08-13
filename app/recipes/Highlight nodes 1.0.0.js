@@ -1389,7 +1389,6 @@ function drawNodeLabelsLayer(ctx, nodesBySize_) {
   options.font_size = settings.label_font_size * Math.min(settings.width, settings.height)/1000
   options.font_weight = settings.label_font_weight
   options.border_thickness = settings.label_border_thickness * Math.min(settings.width, settings.height)/1000
-  options.border_optical_adjustment = 2
   options.border_color = settings.background_color
   options.pixmap_size = 1 + Math.floor(0.3 * options.font_size)
   options.offset = 2 * settings.node_highlight_stroke * Math.min(settings.width, settings.height)/1000
