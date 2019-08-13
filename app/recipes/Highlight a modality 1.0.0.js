@@ -317,7 +317,7 @@ function rescaleGraphToGraphicSpace() {
   var dmax = 0 // Maximal distance from barycenter
   nodesSelection.forEach(function(nid){
     var n = g.getNodeAttributes(nid)
-    var d = Math.sqrt( Math.pow(n.x - xbarycenter, 2) + Math.pow(n.y - xbarycenter, 2) )
+    var d = Math.sqrt( Math.pow(n.x - xbarycenter, 2) + Math.pow(n.y - ybarycenter, 2) )
     dmax = Math.max(dmax, d)
   })
 
